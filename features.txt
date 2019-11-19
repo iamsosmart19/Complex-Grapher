@@ -1,0 +1,29 @@
+Two modes: Terminal(via 256 colour)
+		   OpenGl
+
+(for now) reads input from a file, preferably formatted in mathjax or asciimath (option in bar).
+Exits on invalid input
+
+		|
+		|
+		|
+		|
+--------|---------
+		|
+		|
+		|
+
+x-axis is reals
+y-axis is imaginary value.
+
+RGB display based on complex number graphing: explained below
+
+Using a basic formula:
+	Hue:		arg(z) or |z|
+	Lightness:	(1-a^|z|) x 100%
+	S = 100%
+
+pro resources for me
+	* https://learnopengl.com/Getting-started/OpenGL
+	* https://en.wikipedia.org/wiki/Domain_coloring
+
