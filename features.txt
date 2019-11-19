@@ -1,7 +1,60 @@
+AHEM
+VERSION 0.1: reading things from Asciimath:
+			0.0.1: +, -, *, /
+			0.0.2: ^
+			0.0.3: Trig Functions: sin, cos, tan, sec, csc, cot, arcsin, arccos, arctan, sinh, cosh, tanh, sech, csch, coth
+			0.0.4: Exponentials: exp, log, ln
+			0.0.5: Miscellaneous: maaaaybe step functions, ceiling and floor(read; just use C division), abs
+			0.0.6: Allow variable definitions
+			0.0.7: Error messages (Ranging from unclosed bracket at _pos_ to undefined variable)
+			0.0.8: Reading multiple lines/functions
+
+VERSION 0.2: displaying the functions with only real numbers
+			0.1.1: drawing polynomials
+			0.1.2: drawing exponentials
+			0.1.3: drawing log
+			0.1.4: drawing trigonometric functions
+			0.1.5: drawing semicircles
+			0.1.6: displaying multiple functions
+
+VERSION 0.3: displaying functions with imaginary outputs
+
+VERSION 0.4: displaying graphically
+
+VERSION 0.5: adding CLI arguments and GUI options
+
+VERSION 1.0: Adding support for LaTeX, MathMl and mathjax, (possibly with a parser that converts it all to asciimath)
+
+VERSION 1.0+: maybe add integral support, but probably not cause godamn
+			  Add inequality support (but seriously, why)
+
+Notes:
+
+ASCIIMATH:
+	v ::= [A-Za-z] | greek letters | numbers | other constant symbols
+	u ::= sqrt | text | bb | other unary symbols for font commands
+	b ::= frac | root | stackrel | other binary symbols
+	l ::= ( | [ | { | (: | {: | other left brackets
+	r ::= ) | ] | } | :) | :} | other right brackets
+	S ::= v | lEr | uS | bSS             Simple expression
+	I ::= S_S | S^S | S_S^S | S          Intermediate expression
+	E ::= IE | I/I                       Expression
+
+
+only FUNCTIONS are supported, relations can get out of my house
+
+might be a bit of a flexxor and use domain and range to save my ass some time, but probably not
+thats like a post implementation optimisation 
+and im not sure how i'd do it with imaginary numbers
+
+probably build in coupla constants like pi, e, and phi just to save everyone some headaches
+
+if you're using inequalities: we only gun have one colour and the brightness gon change
+
 Two modes: Terminal(via 256 colour)
 		   OpenGl
 
-(for now) reads input from a file, preferably formatted in mathjax or asciimath (option in bar).
+(for now) reads input from a file, preferably formatted in MathML, mathjax or asciimath (cli option or GUI toggleable).
 Exits on invalid input
 
 		|
@@ -18,10 +71,12 @@ y-axis is imaginary value.
 
 RGB display based on complex number graphing: explained below
 
+Cursor hover for values
+
 Using a basic formula:
 	Hue:		arg(z) or |z|
 	Lightness:	(1-a^|z|) x 100%
-	S = 100%
+	Saturation = 100%
 
 pro resources for me
 	* https://learnopengl.com/Getting-started/OpenGL
