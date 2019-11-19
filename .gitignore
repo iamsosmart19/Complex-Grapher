@@ -1,0 +1,7 @@
+#binaries
+bin/
+obj/
+
+#READMEs
+*.md
+*.txt
