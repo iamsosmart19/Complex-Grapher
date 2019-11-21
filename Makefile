@@ -1,6 +1,6 @@
 #C
 CC = gcc
-CFLAGS = -I
+CFLAGS = -O3
 
 .PHONY: clean
 
@@ -10,16 +10,17 @@ BDIR=bin
 
 #Dependencies
 IDIR=src
-_DEPS = main.h
+_DEPS = asciimath/parser.h stack.h queue.h main.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Object files
 ODIR=obj
-_OBJ = main.o
+_OBJ = asciimath/parser.o stack.o queue.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: $(IDIR)/%.c $(DEPS)
 		@mkdir -p $(ODIR)
+		@mkdir -p $(ODIR)/asciimath
 		$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
 cplxgraph: $(OBJ)

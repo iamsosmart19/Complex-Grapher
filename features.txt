@@ -47,6 +47,8 @@ might be a bit of a flexxor and use domain and range to save my ass some time, b
 thats like a post implementation optimisation 
 and im not sure how i'd do it with imaginary numbers
 
+for parsing mathematical notation: Shunting yard algorithm
+
 probably build in coupla constants like pi, e, and phi just to save everyone some headaches
 
 if you're using inequalities: we only gun have one colour and the brightness gon change
