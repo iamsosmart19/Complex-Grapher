@@ -1,13 +1,3 @@
-Nonterminals useless in grammar
-
-    eol
-
-
-Rules useless in grammar
-
-   31 eol: ENDL
-
-
 State 33 conflicts: 5 shift/reduce
 State 34 conflicts: 5 shift/reduce
 
@@ -23,17 +13,17 @@ Grammar
     4     | expression ENDL
 
     5 expression: unary expression
-    6           | expression binary expression
+    6           | expression bin expression
     7           | num
 
     8 num: INT
     9    | FLOAT
 
-   10 binary: ADD
-   11       | SUB
-   12       | MUL
-   13       | DIV
-   14       | EXP
+   10 bin: ADD
+   11    | SUB
+   12    | MUL
+   13    | DIV
+   14    | EXP
 
    15 unary: SUB
    16      | ASIN
@@ -99,7 +89,7 @@ Nonterminals, with rules where they appear
     num (31)
         on left: 8 9
         on right: 7
-    binary (32)
+    bin (32)
         on left: 10 11 12 13 14
         on right: 6
     unary (33)
@@ -110,8 +100,6 @@ Nonterminals, with rules where they appear
 State 0
 
     0 $accept: . asciimath $end
-    1 asciimath: . %empty
-    2          | . asciimath line
 
     $default  reduce using rule 1 (asciimath)
 
@@ -122,29 +110,6 @@ State 1
 
     0 $accept: asciimath . $end
     2 asciimath: asciimath . line
-    3 line: . ENDL
-    4     | . expression ENDL
-    5 expression: . unary expression
-    6           | . expression binary expression
-    7           | . num
-    8 num: . INT
-    9    | . FLOAT
-   15 unary: . SUB
-   16      | . ASIN
-   17      | . ACOS
-   18      | . ATAN
-   19      | . SINH
-   20      | . COSH
-   21      | . TANH
-   22      | . SECH
-   23      | . CSCH
-   24      | . COTH
-   25      | . SIN
-   26      | . COS
-   27      | . TAN
-   28      | . SEC
-   29      | . CSC
-   30      | . COT
 
     $end   shift, and go to state 2
     INT    shift, and go to state 3
@@ -323,12 +288,7 @@ State 22
 State 23
 
     4 line: expression . ENDL
-    6 expression: expression . binary expression
-   10 binary: . ADD
-   11       | . SUB
-   12       | . MUL
-   13       | . DIV
-   14       | . EXP
+    6 expression: expression . bin expression
 
     ADD   shift, and go to state 26
     SUB   shift, and go to state 27
@@ -337,7 +297,7 @@ State 23
     EXP   shift, and go to state 30
     ENDL  shift, and go to state 31
 
-    binary  go to state 32
+    bin  go to state 32
 
 
 State 24
@@ -349,28 +309,7 @@ State 24
 
 State 25
 
-    5 expression: . unary expression
-    5           | unary . expression
-    6           | . expression binary expression
-    7           | . num
-    8 num: . INT
-    9    | . FLOAT
-   15 unary: . SUB
-   16      | . ASIN
-   17      | . ACOS
-   18      | . ATAN
-   19      | . SINH
-   20      | . COSH
-   21      | . TANH
-   22      | . SECH
-   23      | . CSCH
-   24      | . COTH
-   25      | . SIN
-   26      | . COS
-   27      | . TAN
-   28      | . SEC
-   29      | . CSC
-   30      | . COT
+    5 expression: unary . expression
 
     INT    shift, and go to state 3
     FLOAT  shift, and go to state 4
@@ -398,37 +337,37 @@ State 25
 
 State 26
 
-   10 binary: ADD .
+   10 bin: ADD .
 
-    $default  reduce using rule 10 (binary)
+    $default  reduce using rule 10 (bin)
 
 
 State 27
 
-   11 binary: SUB .
+   11 bin: SUB .
 
-    $default  reduce using rule 11 (binary)
+    $default  reduce using rule 11 (bin)
 
 
 State 28
 
-   12 binary: MUL .
+   12 bin: MUL .
 
-    $default  reduce using rule 12 (binary)
+    $default  reduce using rule 12 (bin)
 
 
 State 29
 
-   13 binary: DIV .
+   13 bin: DIV .
 
-    $default  reduce using rule 13 (binary)
+    $default  reduce using rule 13 (bin)
 
 
 State 30
 
-   14 binary: EXP .
+   14 bin: EXP .
 
-    $default  reduce using rule 14 (binary)
+    $default  reduce using rule 14 (bin)
 
 
 State 31
@@ -440,28 +379,7 @@ State 31
 
 State 32
 
-    5 expression: . unary expression
-    6           | . expression binary expression
-    6           | expression binary . expression
-    7           | . num
-    8 num: . INT
-    9    | . FLOAT
-   15 unary: . SUB
-   16      | . ASIN
-   17      | . ACOS
-   18      | . ATAN
-   19      | . SINH
-   20      | . COSH
-   21      | . TANH
-   22      | . SECH
-   23      | . CSCH
-   24      | . COTH
-   25      | . SIN
-   26      | . COS
-   27      | . TAN
-   28      | . SEC
-   29      | . CSC
-   30      | . COT
+    6 expression: expression bin . expression
 
     INT    shift, and go to state 3
     FLOAT  shift, and go to state 4
@@ -489,13 +407,8 @@ State 32
 
 State 33
 
-    5 expression: unary expression .  [ADD, SUB, MUL, DIV, EXP, ENDL]
-    6           | expression . binary expression
-   10 binary: . ADD
-   11       | . SUB
-   12       | . MUL
-   13       | . DIV
-   14       | . EXP
+    5 expression: unary expression .
+    6           | expression . bin expression
 
     ADD  shift, and go to state 26
     SUB  shift, and go to state 27
@@ -510,18 +423,13 @@ State 33
     EXP       [reduce using rule 5 (expression)]
     $default  reduce using rule 5 (expression)
 
-    binary  go to state 32
+    bin  go to state 32
 
 
 State 34
 
-    6 expression: expression . binary expression
-    6           | expression binary expression .  [ADD, SUB, MUL, DIV, EXP, ENDL]
-   10 binary: . ADD
-   11       | . SUB
-   12       | . MUL
-   13       | . DIV
-   14       | . EXP
+    6 expression: expression . bin expression
+    6           | expression bin expression .
 
     ADD  shift, and go to state 26
     SUB  shift, and go to state 27
@@ -536,4 +444,4 @@ State 34
     EXP       [reduce using rule 6 (expression)]
     $default  reduce using rule 6 (expression)
 
-    binary  go to state 32
+    bin  go to state 32

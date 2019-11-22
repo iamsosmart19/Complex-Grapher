@@ -42,29 +42,34 @@
 
 %%
 asciimath:
-	%empty | asciimath line;
+	%empty | asciimath line
+;
 
 line:
-	ENDL | expression ENDL;
+	ENDL | expression ENDL {printf("\n");}
+;
 
 expression:
-	unary expression | expression binary expression | num;
+	unary expression |
+	expression bin expression |
+	num
+;
 
 num:
-	INT { printf("int: %d", $1); } |
-	FLOAT { printf("float: %f", $1); }; 
+	INT		{printf("%d", $1);} |
+	FLOAT	{printf("%1.1f", $1);}
+;
 
-binary:
-	 ADD { printf("+");} |
-	 SUB { printf("-");} |
-	 MUL { printf("*");} |
-	 DIV { printf("/");} |
-
-	 EXP { printf("^");} 
+bin:
+	ADD {printf("+");} |
+	SUB {printf("-");} |
+	MUL {printf("*");} |
+	DIV {printf("/");} |
+	EXP {printf("^");}
 ;
 
 unary:
-	 SUB %prec NEG |
+	 SUB %prec NEG {printf("-");} |
 	 ASIN { printf("^");} |
 	 ACOS { printf("^");} |
 	 ATAN { printf("^");} |
