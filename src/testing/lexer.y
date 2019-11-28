@@ -51,13 +51,13 @@ line:
 
 expression:
 	unary expression |
-	expression bin expression |
+	expression bin expression	{printf("%d", $1)} |
 	num
 ;
 
 num:
-	INT		{printf("%d", $1);} |
-	FLOAT	{printf("%1.1f", $1);}
+	INT		{printf("%d", $1); } |
+	FLOAT	{printf("%1.1f", $1); }
 ;
 
 bin:
@@ -69,22 +69,22 @@ bin:
 ;
 
 unary:
-	 SUB %prec NEG {printf("-");} |
-	 ASIN { printf("^");} |
-	 ACOS { printf("^");} |
-	 ATAN { printf("^");} |
-	 SINH { printf("^");} |
-	 COSH { printf("^");} |
-	 TANH { printf("^");} |
-	 SECH { printf("^");} |
-	 CSCH { printf("^");} |
-	 COTH { printf("^");} |
-	 SIN { printf("^");} |
-	 COS { printf("^");} |
-	 TAN { printf("^");} |
-	 SEC { printf("^");} |
-	 CSC { printf("^");} |
-	 COT  { printf("^");} 
+	 SUB %prec NEG {printf("-%s");} |
+	 ASIN {printf("^");} |
+	 ACOS {printf("^");} |
+	 ATAN {printf("^");} |
+	 SINH {printf("^");} |
+	 COSH {printf("^");} |
+	 TANH {printf("^");} |
+	 SECH {printf("^");} |
+	 CSCH {printf("^");} |
+	 COTH {printf("^");} |
+	 SIN {printf("^");} |
+	 COS {printf("^");} |
+	 TAN {printf("^");} |
+	 SEC {printf("^");} |
+	 CSC {printf("^");} |
+	 COT  {printf("^");} 
 ;
 
 %%

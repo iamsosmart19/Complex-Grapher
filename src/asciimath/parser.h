@@ -16,7 +16,7 @@
 int lineNum;
 
 //extracts C strings from files into raw
-int getString(const char* filename, char*** raw);
+int getString(const char* filename, char*** raw, char*** operations);
 
 //converts raw into operationsc
 int parseString(const char** raw, char** operations);

@@ -6,7 +6,7 @@ int main(int argv, char* argc[]) {
 		return 1;
 	}
 	char **raw, **operations;
-	getString(argc[1], &raw);
+	getString(argc[1], &raw, &operations);
 	printf("%d\n", raw);
 	parseString(raw, operations);
 	return 0;

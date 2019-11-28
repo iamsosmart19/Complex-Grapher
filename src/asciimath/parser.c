@@ -3,7 +3,7 @@
 //char* operations[];
 //char* raw[];
 
-int getString(const char* filename, char*** raw) {
+int getString(const char* filename, char*** raw, char*** operations) {
 	FILE* inputfile;
 	lineNum = 0; //Holds number of lines
 	int* lineLen; //int array; holds length of lines
@@ -49,8 +49,10 @@ int getString(const char* filename, char*** raw) {
 	qsort(lineLen, lineNum, sizeof(int), cmp);
 	//Initialises raw with the number of lines and the space of the largest possible line
 	raw = malloc(sizeof(char*) * lineNum);
+	operations = malloc(sizeof(char*) * lineNum);
 	for(i = 0; i < lineNum; i++) {
 		*(raw+i) = calloc(sizeof(char), (lineLen[0] + 1));
+		*(operations+i) = calloc(sizeof(char), (lineLen[0] + 1));
 	}
 	fflush(stderr);
 	//fprintf(stderr, "ramen\n");

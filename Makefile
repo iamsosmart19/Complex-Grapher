@@ -1,6 +1,6 @@
 #C
 CC = gcc
-CFLAGS = -O3
+CFLAGS = -O3 -Wincompatible-pointer-types
 
 .PHONY: clean
 
