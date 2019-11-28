@@ -3,7 +3,7 @@
 //char* operations[];
 //char* raw[];
 
-int getString(const char* filename) {
+int getString(const char* filename, char*** raw) {
 	FILE* inputfile;
 	lineNum = 0; //Holds number of lines
 	int* lineLen; //int array; holds length of lines
@@ -50,27 +50,37 @@ int getString(const char* filename) {
 	//Initialises raw with the number of lines and the space of the largest possible line
 	raw = malloc(sizeof(char*) * lineNum);
 	for(i = 0; i < lineNum; i++) {
-		raw[i] = malloc(sizeof(char) * (lineLen[0] + 1));
+		*(raw+i) = calloc(sizeof(char), (lineLen[0] + 1));
+	}
+	fflush(stderr);
+	//fprintf(stderr, "ramen\n");
+
+	for(i = 0; i < lineNum; i++) {
+		fgets(*(raw+i), lineLen[0] + 1, inputfile);
 	}
 
 	for(i = 0; i < lineNum; i++) {
-		fgets(raw[i], sizeof(raw[i]), inputfile);
-		//printf("raw[%d]: %s\n", i, raw[i]);
+		printf("raw[%d]: |%s|\n", i, *(raw+i));
 	}
 
-	for(i = 0; i < lineNum; i++) {
-		printf("raw[%d]: |%s|\n", i, raw[i]);
-	}
-	
 	return 0;
 }
 
-int parseString() {
+int parseString(const char** raw, char** operations) {
+	/*
+	operations = malloc(sizeof(char*) * lineNum);
+	for(int i = 0; i < lineNum; i++) {
+		operations[i] = malloc(sizeof(char) * (sizeof(raw[0])));
+	}
+	*/
+
+	//printf("%s\n", raw[0]);
+
 	stack operators = stackInit();
 	queue output = queueInit();
 	for(int i = 0; i < lineNum; i++) {
-		printf("%d: %s", i, raw[i]);
-		for(int j = 0; j < sizeof(raw[i]); j++) {
+		printf("%d: %s", i, (raw+i));
+		for(int j = 0; j < sizeof(*(raw+i)); j++) {
 			if(raw[i][j] == '\n') {
 				break;
 			}

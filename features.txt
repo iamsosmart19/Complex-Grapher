@@ -3,7 +3,7 @@ VERSION 0.1: reading things from Asciimath:
 			0.0.1: +, -, *, /
 			0.0.2: ^
 			0.0.3: Trig Functions: sin, cos, tan, sec, csc, cot, arcsin, arccos, arctan, sinh, cosh, tanh, sech, csch, coth
-			0.0.4: Exponentials: exp, log, ln
+			0.0.4: Exponentials: log, ln
 			0.0.5: Miscellaneous: maaaaybe step functions, ceiling and floor(read; just use C division), abs
 			0.0.6: Allow variable definitions
 			0.0.7: Error messages (Ranging from unclosed bracket at _pos_ to undefined variable)
