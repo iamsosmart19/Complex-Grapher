@@ -51,7 +51,7 @@ line:
 
 expression:
 	unary expression |
-	expression bin expression	{printf("%d", $1)} |
+	expression bin expression |
 	num
 ;
 
@@ -69,7 +69,7 @@ bin:
 ;
 
 unary:
-	 SUB %prec NEG {printf("-%s");} |
+	 SUB %prec NEG {printf("-");} |
 	 ASIN {printf("^");} |
 	 ACOS {printf("^");} |
 	 ATAN {printf("^");} |

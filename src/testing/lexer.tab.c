@@ -1279,13 +1279,13 @@ yyreduce:
 
   case 9:
 #line 59 "lexer.y"
-    {printf("%d", (yyvsp[0].ival));}
+    {printf("%d", (yyvsp[0].ival)); }
 #line 1284 "lexer.tab.c"
     break;
 
   case 10:
 #line 60 "lexer.y"
-    {printf("%1.1f", (yyvsp[0].fval));}
+    {printf("%1.1f", (yyvsp[0].fval)); }
 #line 1290 "lexer.tab.c"
     break;
 
@@ -1327,91 +1327,91 @@ yyreduce:
 
   case 17:
 #line 73 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1332 "lexer.tab.c"
     break;
 
   case 18:
 #line 74 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1338 "lexer.tab.c"
     break;
 
   case 19:
 #line 75 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1344 "lexer.tab.c"
     break;
 
   case 20:
 #line 76 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1350 "lexer.tab.c"
     break;
 
   case 21:
 #line 77 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1356 "lexer.tab.c"
     break;
 
   case 22:
 #line 78 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1362 "lexer.tab.c"
     break;
 
   case 23:
 #line 79 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1368 "lexer.tab.c"
     break;
 
   case 24:
 #line 80 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1374 "lexer.tab.c"
     break;
 
   case 25:
 #line 81 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1380 "lexer.tab.c"
     break;
 
   case 26:
 #line 82 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1386 "lexer.tab.c"
     break;
 
   case 27:
 #line 83 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1392 "lexer.tab.c"
     break;
 
   case 28:
 #line 84 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1398 "lexer.tab.c"
     break;
 
   case 29:
 #line 85 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1404 "lexer.tab.c"
     break;
 
   case 30:
 #line 86 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1410 "lexer.tab.c"
     break;
 
   case 31:
 #line 87 "lexer.y"
-    { printf("^");}
+    {printf("^");}
 #line 1416 "lexer.tab.c"
     break;
 
