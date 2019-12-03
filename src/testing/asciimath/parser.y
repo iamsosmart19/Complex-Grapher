@@ -118,22 +118,121 @@ asciimath:
 	%empty | asciimath line
 ;
 
+line:
+	ENDL | expr ENDL { printf("\n\r"); }
+;
+
+expr:
+	intexpr expr | intexpr
+;
+
+intexpr:
+	simpexpr EXP simpexpr |
+	simpexpr
+;
+
+simpexpr:
+	variable |
+	left simpexpr right |
+	unary simpexpr |
+	simpexpr bin simpexpr |
+	binfunc simpexpr simpexpr
+;
+
+left:
+	LBRAC |
+	LSBRAC |
+	LCBRAC |
+	LANGLE |
+	LABRAC
+;
+
+right:
+	RBRAC |
+	RSBRAC |
+	RCBRAC |
+	RANGLE |
+	RABRAC
+;
+
+variable:
+	num |
+	greek | 
+	const
+;
+
 num:
-	INT		{printf("%d", $1); } |
-	FLOAT	{printf("%1.1f", $1); }
+	INT		{printf("%d ", $1); } |
+	FLOAT	{printf("%1.1f ", $1); }
+;
+
+greek:
+	ALPHA			{ printf("alpha "); } |
+	BETA			{ printf("beta "); } |
+	GAMMA			{ printf("gamma "); } |
+	GAMMACAP		{ printf("gammacap "); } |
+	DELTA			{ printf("delta "); } |
+	DELTACAP		{ printf("deltacap "); } |
+	EPSILON			{ printf("epsilon "); } |
+	VAREPSILON		{ printf("varepsilon "); } |
+	ZETA			{ printf("zeta "); } |
+	ETA				{ printf("eta "); } |
+	THETA			{ printf("theta "); } |
+	THETACAP		{ printf("thetacap "); } |
+	VARTHETA		{ printf("vartheta "); } |
+	IOTA			{ printf("iota "); } |
+	KAPPA			{ printf("kappa "); } |
+	LAMBDA			{ printf("lambda "); } |
+	LAMBDACAP		{ printf("lambdacap "); } |
+	MU				{ printf("mu "); } |
+	NU				{ printf("nu "); } |
+	XI				{ printf("xi "); } |
+	XICAP			{ printf("xicap "); } |
+	PI				{ printf("pi "); } |
+	PICAP			{ printf("picap "); } |
+	SIGMA			{ printf("sigma "); } |
+	SIGMACAP		{ printf("sigmacap "); } |
+	TAU				{ printf("tau "); } |
+	UPSILON			{ printf("upsilon "); } |
+	PHI				{ printf("phi "); } |
+	PHICAP			{ printf("phicap "); } |
+	VARPHI			{ printf("varphi "); } |
+	CHI				{ printf("chi "); } |
+	PSI				{ printf("psi "); } |
+	PSICAP			{ printf("psicap "); } |
+	OMEGA			{ printf("omega "); }
+;
+
+const:
+	E				{ printf("e "); } |
+	INFINITY		{ printf("oo "); }
 ;
 
 bin:
-	ADD {printf("+");} |
-	SUB {printf("-");} |
-	MUL {printf("*");} |
-	DIV {printf("/");} |
-	EXP {printf("^");} 
+	ADD {printf("+ ");} |
+	SUB {printf("- ");} |
+	MUL {printf("* ");} |
+	DIV {printf("/ ");} |
+	EXP {printf("^ ");} 
+;
+
+binfunc:
+	FRAC |
+	ROOT 
 ;
 
 unary:
-	BRACK {printf("[");} |
 	SUB %prec NEG {printf("-");} |
+
+	SQRT { printf("sqrt "); } |
+
+	LOG { printf("log "); } |
+	LN { printf("ln "); } |
+
+	ABS { printf("abs "); } |
+	FLOOR { printf("floor "); } |
+	CEIL { printf("ceil "); } |
+
 	ASIN {printf("^");} |
 	ACOS {printf("^");} |
 	ATAN {printf("^");} |

@@ -2,7 +2,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 
-	#include "lexer.tab.h"
+	#include "parser.tab.h"
 	extern int yylex();
 %}
 %option noyywrap
