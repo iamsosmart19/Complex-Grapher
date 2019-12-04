@@ -29,6 +29,7 @@
 	#include <stdarg.h> // va_list.
 	#include <stdio.h>  // printf.
 	#include <stdlib.h> // getenv.
+	#include <math.h>
 }
 
 %code {
@@ -47,12 +48,13 @@
 %param {yyscan_t scanner}{result *res}
 
 %token
-  PLUS   "+"
-  MINUS  "-"
-  STAR   "*"
-  SLASH  "/"
-  EOL    "end-of-line"
-  EOF 0  "end-of-file"
+	PLUS	"+"
+	MINUS	"-"
+	STAR	"*"
+	SLASH	"/"
+	LN		"ln"
+	EOL		"end-of-line"
+	EOF 0	"end-of-file"
 ;
 
 %token <int> NUM "number"
@@ -103,8 +105,12 @@ exp:
 			$$ = $1 / $3;
 		}
 	} | 
+
 	"+" exp %prec UNARY  { $$ = + $2; }	| 
 	"-" exp %prec UNARY  { $$ = - $2; } | 
+
+	"ln" exp %prec UNARY { $$ = log($2); } |
+
 	STR {
 		result r = parse_string ($1);
 		free ($1);

@@ -68,10 +68,11 @@ extern int yydebug;
     TOK_MINUS = 259,
     TOK_STAR = 260,
     TOK_SLASH = 261,
-    TOK_EOL = 262,
-    TOK_NUM = 263,
-    TOK_STR = 264,
-    TOK_UNARY = 265
+    TOK_LN = 262,
+    TOK_EOL = 263,
+    TOK_NUM = 264,
+    TOK_STR = 265,
+    TOK_UNARY = 266
   };
 #endif
 
@@ -86,7 +87,7 @@ union YYSTYPE
   int TOK_NUM;
   /* exp  */
   int TOK_exp;
-#line 90 "parse.h"
+#line 91 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -107,6 +108,6 @@ int yyparse (yyscan_t scanner, result *res);
 
   void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 111 "parse.h"
+#line 112 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */

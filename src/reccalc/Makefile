@@ -6,6 +6,8 @@ BISON = bison
 FLEX = flex
 XSLTPROC = xsltproc
 
+LIBS=-lm
+
 all: $(BASE)
 
 %.c %.h %.xml %.gv: %.y
@@ -14,10 +16,12 @@ all: $(BASE)
 %.c %.h: %.l
 	$(FLEX) $(FLEXFLAGS) -o$*.c --header-file=$*.h $<
 
-scan.o: parse.h
-parse.o: scan.h
+scan.o: scan.c parse.h
+	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
+parse.o: parse.c scan.h 
+	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 $(BASE): parse.o scan.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(LIBS) $(CFLAGS) -o $@ $^
 
 run: $(BASE)
 	@echo "Type arithmetic expressions.  Quit with ctrl-d."

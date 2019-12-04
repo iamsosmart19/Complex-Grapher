@@ -104,7 +104,14 @@
           <symbol>exp</symbol>
         </rhs>
       </rule>
-      <rule number="14" usefulness="useful">
+      <rule number="14" usefulness="useful" percent_prec="UNARY">
+        <lhs>exp</lhs>
+        <rhs>
+          <symbol>&quot;ln&quot;</symbol>
+          <symbol>exp</symbol>
+        </rhs>
+      </rule>
+      <rule number="15" usefulness="useful">
         <lhs>exp</lhs>
         <rhs>
           <symbol>&quot;string&quot;</symbol>
@@ -118,17 +125,18 @@
       <terminal symbol-number="4" token-number="259" name="&quot;-&quot;" usefulness="useful" prec="1" assoc="left"/>
       <terminal symbol-number="5" token-number="260" name="&quot;*&quot;" usefulness="useful" prec="2" assoc="left"/>
       <terminal symbol-number="6" token-number="261" name="&quot;/&quot;" usefulness="useful" prec="2" assoc="left"/>
-      <terminal symbol-number="7" token-number="262" name="&quot;end-of-line&quot;" usefulness="useful"/>
-      <terminal symbol-number="8" token-number="263" name="&quot;number&quot;" usefulness="useful"/>
-      <terminal symbol-number="9" token-number="264" name="&quot;string&quot;" usefulness="useful"/>
-      <terminal symbol-number="10" token-number="265" name="UNARY" usefulness="useful" prec="3" assoc="precedence"/>
+      <terminal symbol-number="7" token-number="262" name="&quot;ln&quot;" usefulness="useful"/>
+      <terminal symbol-number="8" token-number="263" name="&quot;end-of-line&quot;" usefulness="useful"/>
+      <terminal symbol-number="9" token-number="264" name="&quot;number&quot;" usefulness="useful"/>
+      <terminal symbol-number="10" token-number="265" name="&quot;string&quot;" usefulness="useful"/>
+      <terminal symbol-number="11" token-number="266" name="UNARY" usefulness="useful" prec="3" assoc="precedence"/>
     </terminals>
     <nonterminals>
-      <nonterminal symbol-number="11" name="$accept" usefulness="useful"/>
-      <nonterminal symbol-number="12" name="input" usefulness="useful"/>
-      <nonterminal symbol-number="13" name="line" usefulness="useful"/>
-      <nonterminal symbol-number="14" name="eol" usefulness="useful"/>
-      <nonterminal symbol-number="15" name="exp" usefulness="useful"/>
+      <nonterminal symbol-number="12" name="$accept" usefulness="useful"/>
+      <nonterminal symbol-number="13" name="input" usefulness="useful"/>
+      <nonterminal symbol-number="14" name="line" usefulness="useful"/>
+      <nonterminal symbol-number="15" name="eol" usefulness="useful"/>
+      <nonterminal symbol-number="16" name="exp" usefulness="useful"/>
     </nonterminals>
   </grammar>
 
@@ -149,17 +157,19 @@
         <item rule-number="12" point="0"/>
         <item rule-number="13" point="0"/>
         <item rule-number="14" point="0"/>
+        <item rule-number="15" point="0"/>
       </itemset>
       <actions>
         <transitions>
           <transition type="shift" symbol="error" state="1"/>
           <transition type="shift" symbol="&quot;+&quot;" state="2"/>
           <transition type="shift" symbol="&quot;-&quot;" state="3"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="4"/>
-          <transition type="shift" symbol="&quot;string&quot;" state="5"/>
-          <transition type="goto" symbol="input" state="6"/>
-          <transition type="goto" symbol="line" state="7"/>
-          <transition type="goto" symbol="exp" state="8"/>
+          <transition type="shift" symbol="&quot;ln&quot;" state="4"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="6"/>
+          <transition type="goto" symbol="input" state="7"/>
+          <transition type="goto" symbol="line" state="8"/>
+          <transition type="goto" symbol="exp" state="9"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -175,9 +185,9 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="&quot;end-of-file&quot;" state="9"/>
-          <transition type="shift" symbol="&quot;end-of-line&quot;" state="10"/>
-          <transition type="goto" symbol="eol" state="11"/>
+          <transition type="shift" symbol="&quot;end-of-file&quot;" state="10"/>
+          <transition type="shift" symbol="&quot;end-of-line&quot;" state="11"/>
+          <transition type="goto" symbol="eol" state="12"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -196,14 +206,16 @@
         <item rule-number="12" point="1"/>
         <item rule-number="13" point="0"/>
         <item rule-number="14" point="0"/>
+        <item rule-number="15" point="0"/>
       </itemset>
       <actions>
         <transitions>
           <transition type="shift" symbol="&quot;+&quot;" state="2"/>
           <transition type="shift" symbol="&quot;-&quot;" state="3"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="4"/>
-          <transition type="shift" symbol="&quot;string&quot;" state="5"/>
-          <transition type="goto" symbol="exp" state="12"/>
+          <transition type="shift" symbol="&quot;ln&quot;" state="4"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="6"/>
+          <transition type="goto" symbol="exp" state="13"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -222,14 +234,16 @@
         <item rule-number="13" point="0"/>
         <item rule-number="13" point="1"/>
         <item rule-number="14" point="0"/>
+        <item rule-number="15" point="0"/>
       </itemset>
       <actions>
         <transitions>
           <transition type="shift" symbol="&quot;+&quot;" state="2"/>
           <transition type="shift" symbol="&quot;-&quot;" state="3"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="4"/>
-          <transition type="shift" symbol="&quot;string&quot;" state="5"/>
-          <transition type="goto" symbol="exp" state="13"/>
+          <transition type="shift" symbol="&quot;ln&quot;" state="4"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="6"/>
+          <transition type="goto" symbol="exp" state="14"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -238,6 +252,34 @@
     </state>
 
     <state number="4">
+      <itemset>
+        <item rule-number="7" point="0"/>
+        <item rule-number="8" point="0"/>
+        <item rule-number="9" point="0"/>
+        <item rule-number="10" point="0"/>
+        <item rule-number="11" point="0"/>
+        <item rule-number="12" point="0"/>
+        <item rule-number="13" point="0"/>
+        <item rule-number="14" point="0"/>
+        <item rule-number="14" point="1"/>
+        <item rule-number="15" point="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="&quot;+&quot;" state="2"/>
+          <transition type="shift" symbol="&quot;-&quot;" state="3"/>
+          <transition type="shift" symbol="&quot;ln&quot;" state="4"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="6"/>
+          <transition type="goto" symbol="exp" state="15"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="5">
       <itemset>
         <item rule-number="7" point="1"/>
       </itemset>
@@ -251,21 +293,21 @@
       <solved-conflicts/>
     </state>
 
-    <state number="5">
+    <state number="6">
       <itemset>
-        <item rule-number="14" point="1"/>
+        <item rule-number="15" point="1"/>
       </itemset>
       <actions>
         <transitions/>
         <errors/>
         <reductions>
-          <reduction symbol="$default" rule="14" enabled="true"/>
+          <reduction symbol="$default" rule="15" enabled="true"/>
         </reductions>
       </actions>
       <solved-conflicts/>
     </state>
 
-    <state number="6">
+    <state number="7">
       <itemset>
         <item rule-number="0" point="1"/>
         <item rule-number="2" point="1"/>
@@ -279,17 +321,19 @@
         <item rule-number="12" point="0"/>
         <item rule-number="13" point="0"/>
         <item rule-number="14" point="0"/>
+        <item rule-number="15" point="0"/>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="&quot;end-of-file&quot;" state="14"/>
+          <transition type="shift" symbol="&quot;end-of-file&quot;" state="16"/>
           <transition type="shift" symbol="error" state="1"/>
           <transition type="shift" symbol="&quot;+&quot;" state="2"/>
           <transition type="shift" symbol="&quot;-&quot;" state="3"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="4"/>
-          <transition type="shift" symbol="&quot;string&quot;" state="5"/>
-          <transition type="goto" symbol="line" state="15"/>
-          <transition type="goto" symbol="exp" state="8"/>
+          <transition type="shift" symbol="&quot;ln&quot;" state="4"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="6"/>
+          <transition type="goto" symbol="line" state="17"/>
+          <transition type="goto" symbol="exp" state="9"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -297,7 +341,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="7">
+    <state number="8">
       <itemset>
         <item rule-number="1" point="1"/>
       </itemset>
@@ -311,7 +355,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="8">
+    <state number="9">
       <itemset>
         <item rule-number="3" point="1"/>
         <item rule-number="5" point="0"/>
@@ -323,13 +367,13 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="&quot;end-of-file&quot;" state="9"/>
-          <transition type="shift" symbol="&quot;+&quot;" state="16"/>
-          <transition type="shift" symbol="&quot;-&quot;" state="17"/>
-          <transition type="shift" symbol="&quot;*&quot;" state="18"/>
-          <transition type="shift" symbol="&quot;/&quot;" state="19"/>
-          <transition type="shift" symbol="&quot;end-of-line&quot;" state="10"/>
-          <transition type="goto" symbol="eol" state="20"/>
+          <transition type="shift" symbol="&quot;end-of-file&quot;" state="10"/>
+          <transition type="shift" symbol="&quot;+&quot;" state="18"/>
+          <transition type="shift" symbol="&quot;-&quot;" state="19"/>
+          <transition type="shift" symbol="&quot;*&quot;" state="20"/>
+          <transition type="shift" symbol="&quot;/&quot;" state="21"/>
+          <transition type="shift" symbol="&quot;end-of-line&quot;" state="11"/>
+          <transition type="goto" symbol="eol" state="22"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -337,7 +381,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="9">
+    <state number="10">
       <itemset>
         <item rule-number="5" point="1"/>
       </itemset>
@@ -351,7 +395,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="10">
+    <state number="11">
       <itemset>
         <item rule-number="6" point="1"/>
       </itemset>
@@ -365,7 +409,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="11">
+    <state number="12">
       <itemset>
         <item rule-number="4" point="2"/>
       </itemset>
@@ -379,7 +423,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="12">
+    <state number="13">
       <itemset>
         <item rule-number="8" point="1"/>
         <item rule-number="9" point="1"/>
@@ -411,7 +455,7 @@
       </solved-conflicts>
     </state>
 
-    <state number="13">
+    <state number="14">
       <itemset>
         <item rule-number="8" point="1"/>
         <item rule-number="9" point="1"/>
@@ -443,7 +487,39 @@
       </solved-conflicts>
     </state>
 
-    <state number="14">
+    <state number="15">
+      <itemset>
+        <item rule-number="8" point="1"/>
+        <item rule-number="9" point="1"/>
+        <item rule-number="10" point="1"/>
+        <item rule-number="11" point="1"/>
+        <item rule-number="14" point="2">
+          <lookaheads>
+            <symbol>&quot;end-of-file&quot;</symbol>
+            <symbol>&quot;+&quot;</symbol>
+            <symbol>&quot;-&quot;</symbol>
+            <symbol>&quot;*&quot;</symbol>
+            <symbol>&quot;/&quot;</symbol>
+            <symbol>&quot;end-of-line&quot;</symbol>
+          </lookaheads>
+        </item>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="14" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts>
+        <resolution rule="14" symbol="&quot;+&quot;" type="reduce">&quot;+&quot; &lt; UNARY</resolution>
+        <resolution rule="14" symbol="&quot;-&quot;" type="reduce">&quot;-&quot; &lt; UNARY</resolution>
+        <resolution rule="14" symbol="&quot;*&quot;" type="reduce">&quot;*&quot; &lt; UNARY</resolution>
+        <resolution rule="14" symbol="&quot;/&quot;" type="reduce">&quot;/&quot; &lt; UNARY</resolution>
+      </solved-conflicts>
+    </state>
+
+    <state number="16">
       <itemset>
         <item rule-number="0" point="2"/>
       </itemset>
@@ -457,7 +533,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="15">
+    <state number="17">
       <itemset>
         <item rule-number="2" point="2"/>
       </itemset>
@@ -471,7 +547,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="16">
+    <state number="18">
       <itemset>
         <item rule-number="7" point="0"/>
         <item rule-number="8" point="0"/>
@@ -482,65 +558,15 @@
         <item rule-number="12" point="0"/>
         <item rule-number="13" point="0"/>
         <item rule-number="14" point="0"/>
+        <item rule-number="15" point="0"/>
       </itemset>
       <actions>
         <transitions>
           <transition type="shift" symbol="&quot;+&quot;" state="2"/>
           <transition type="shift" symbol="&quot;-&quot;" state="3"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="4"/>
-          <transition type="shift" symbol="&quot;string&quot;" state="5"/>
-          <transition type="goto" symbol="exp" state="21"/>
-        </transitions>
-        <errors/>
-        <reductions/>
-      </actions>
-      <solved-conflicts/>
-    </state>
-
-    <state number="17">
-      <itemset>
-        <item rule-number="7" point="0"/>
-        <item rule-number="8" point="0"/>
-        <item rule-number="9" point="0"/>
-        <item rule-number="9" point="2"/>
-        <item rule-number="10" point="0"/>
-        <item rule-number="11" point="0"/>
-        <item rule-number="12" point="0"/>
-        <item rule-number="13" point="0"/>
-        <item rule-number="14" point="0"/>
-      </itemset>
-      <actions>
-        <transitions>
-          <transition type="shift" symbol="&quot;+&quot;" state="2"/>
-          <transition type="shift" symbol="&quot;-&quot;" state="3"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="4"/>
-          <transition type="shift" symbol="&quot;string&quot;" state="5"/>
-          <transition type="goto" symbol="exp" state="22"/>
-        </transitions>
-        <errors/>
-        <reductions/>
-      </actions>
-      <solved-conflicts/>
-    </state>
-
-    <state number="18">
-      <itemset>
-        <item rule-number="7" point="0"/>
-        <item rule-number="8" point="0"/>
-        <item rule-number="9" point="0"/>
-        <item rule-number="10" point="0"/>
-        <item rule-number="10" point="2"/>
-        <item rule-number="11" point="0"/>
-        <item rule-number="12" point="0"/>
-        <item rule-number="13" point="0"/>
-        <item rule-number="14" point="0"/>
-      </itemset>
-      <actions>
-        <transitions>
-          <transition type="shift" symbol="&quot;+&quot;" state="2"/>
-          <transition type="shift" symbol="&quot;-&quot;" state="3"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="4"/>
-          <transition type="shift" symbol="&quot;string&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;ln&quot;" state="4"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="6"/>
           <transition type="goto" symbol="exp" state="23"/>
         </transitions>
         <errors/>
@@ -554,19 +580,21 @@
         <item rule-number="7" point="0"/>
         <item rule-number="8" point="0"/>
         <item rule-number="9" point="0"/>
+        <item rule-number="9" point="2"/>
         <item rule-number="10" point="0"/>
         <item rule-number="11" point="0"/>
-        <item rule-number="11" point="2"/>
         <item rule-number="12" point="0"/>
         <item rule-number="13" point="0"/>
         <item rule-number="14" point="0"/>
+        <item rule-number="15" point="0"/>
       </itemset>
       <actions>
         <transitions>
           <transition type="shift" symbol="&quot;+&quot;" state="2"/>
           <transition type="shift" symbol="&quot;-&quot;" state="3"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="4"/>
-          <transition type="shift" symbol="&quot;string&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;ln&quot;" state="4"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="6"/>
           <transition type="goto" symbol="exp" state="24"/>
         </transitions>
         <errors/>
@@ -576,6 +604,62 @@
     </state>
 
     <state number="20">
+      <itemset>
+        <item rule-number="7" point="0"/>
+        <item rule-number="8" point="0"/>
+        <item rule-number="9" point="0"/>
+        <item rule-number="10" point="0"/>
+        <item rule-number="10" point="2"/>
+        <item rule-number="11" point="0"/>
+        <item rule-number="12" point="0"/>
+        <item rule-number="13" point="0"/>
+        <item rule-number="14" point="0"/>
+        <item rule-number="15" point="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="&quot;+&quot;" state="2"/>
+          <transition type="shift" symbol="&quot;-&quot;" state="3"/>
+          <transition type="shift" symbol="&quot;ln&quot;" state="4"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="6"/>
+          <transition type="goto" symbol="exp" state="25"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="21">
+      <itemset>
+        <item rule-number="7" point="0"/>
+        <item rule-number="8" point="0"/>
+        <item rule-number="9" point="0"/>
+        <item rule-number="10" point="0"/>
+        <item rule-number="11" point="0"/>
+        <item rule-number="11" point="2"/>
+        <item rule-number="12" point="0"/>
+        <item rule-number="13" point="0"/>
+        <item rule-number="14" point="0"/>
+        <item rule-number="15" point="0"/>
+      </itemset>
+      <actions>
+        <transitions>
+          <transition type="shift" symbol="&quot;+&quot;" state="2"/>
+          <transition type="shift" symbol="&quot;-&quot;" state="3"/>
+          <transition type="shift" symbol="&quot;ln&quot;" state="4"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="5"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="6"/>
+          <transition type="goto" symbol="exp" state="26"/>
+        </transitions>
+        <errors/>
+        <reductions/>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="22">
       <itemset>
         <item rule-number="3" point="2"/>
       </itemset>
@@ -589,7 +673,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="21">
+    <state number="23">
       <itemset>
         <item rule-number="8" point="1"/>
         <item rule-number="8" point="3">
@@ -606,8 +690,8 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="&quot;*&quot;" state="18"/>
-          <transition type="shift" symbol="&quot;/&quot;" state="19"/>
+          <transition type="shift" symbol="&quot;*&quot;" state="20"/>
+          <transition type="shift" symbol="&quot;/&quot;" state="21"/>
         </transitions>
         <errors/>
         <reductions>
@@ -622,7 +706,7 @@
       </solved-conflicts>
     </state>
 
-    <state number="22">
+    <state number="24">
       <itemset>
         <item rule-number="8" point="1"/>
         <item rule-number="9" point="1"/>
@@ -639,8 +723,8 @@
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="&quot;*&quot;" state="18"/>
-          <transition type="shift" symbol="&quot;/&quot;" state="19"/>
+          <transition type="shift" symbol="&quot;*&quot;" state="20"/>
+          <transition type="shift" symbol="&quot;/&quot;" state="21"/>
         </transitions>
         <errors/>
         <reductions>
@@ -655,7 +739,7 @@
       </solved-conflicts>
     </state>
 
-    <state number="23">
+    <state number="25">
       <itemset>
         <item rule-number="8" point="1"/>
         <item rule-number="9" point="1"/>
@@ -687,7 +771,7 @@
       </solved-conflicts>
     </state>
 
-    <state number="24">
+    <state number="26">
       <itemset>
         <item rule-number="8" point="1"/>
         <item rule-number="9" point="1"/>

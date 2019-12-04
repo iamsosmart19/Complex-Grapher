@@ -18,7 +18,8 @@ Grammar
    11    | exp "/" exp
    12    | "+" exp
    13    | "-" exp
-   14    | "string"
+   14    | "ln" exp
+   15    | "string"
 
 
 Terminals, with rules where they appear
@@ -29,28 +30,29 @@ Terminals, with rules where they appear
     "-" (259) 9 13
     "*" (260) 10
     "/" (261) 11
-    "end-of-line" (262) 6
-    "number" <int> (263) 7
-    "string" <char*> (264) 14
-    UNARY (265)
+    "ln" (262) 14
+    "end-of-line" (263) 6
+    "number" <int> (264) 7
+    "string" <char*> (265) 15
+    UNARY (266)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (11)
+    $accept (12)
         on left: 0
-    input (12)
+    input (13)
         on left: 1 2
         on right: 0 2
-    line (13)
+    line (14)
         on left: 3 4
         on right: 1 2
-    eol (14)
+    eol (15)
         on left: 5 6
         on right: 3 4
-    exp <int> (15)
-        on left: 7 8 9 10 11 12 13 14
-        on right: 3 8 9 10 11 12 13
+    exp <int> (16)
+        on left: 7 8 9 10 11 12 13 14 15
+        on right: 3 8 9 10 11 12 13 14
 
 
 State 0
@@ -60,22 +62,23 @@ State 0
     error     shift, and go to state 1
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
-    "number"  shift, and go to state 4
-    "string"  shift, and go to state 5
+    "ln"      shift, and go to state 4
+    "number"  shift, and go to state 5
+    "string"  shift, and go to state 6
 
-    input  go to state 6
-    line   go to state 7
-    exp    go to state 8
+    input  go to state 7
+    line   go to state 8
+    exp    go to state 9
 
 
 State 1
 
     4 line: error . eol
 
-    "end-of-file"  shift, and go to state 9
-    "end-of-line"  shift, and go to state 10
+    "end-of-file"  shift, and go to state 10
+    "end-of-line"  shift, and go to state 11
 
-    eol  go to state 11
+    eol  go to state 12
 
 
 State 2
@@ -84,10 +87,11 @@ State 2
 
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
-    "number"  shift, and go to state 4
-    "string"  shift, and go to state 5
+    "ln"      shift, and go to state 4
+    "number"  shift, and go to state 5
+    "string"  shift, and go to state 6
 
-    exp  go to state 12
+    exp  go to state 13
 
 
 State 3
@@ -96,50 +100,65 @@ State 3
 
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
-    "number"  shift, and go to state 4
-    "string"  shift, and go to state 5
+    "ln"      shift, and go to state 4
+    "number"  shift, and go to state 5
+    "string"  shift, and go to state 6
 
-    exp  go to state 13
+    exp  go to state 14
 
 
 State 4
+
+   14 exp: "ln" . exp
+
+    "+"       shift, and go to state 2
+    "-"       shift, and go to state 3
+    "ln"      shift, and go to state 4
+    "number"  shift, and go to state 5
+    "string"  shift, and go to state 6
+
+    exp  go to state 15
+
+
+State 5
 
     7 exp: "number" .
 
     $default  reduce using rule 7 (exp)
 
 
-State 5
-
-   14 exp: "string" .
-
-    $default  reduce using rule 14 (exp)
-
-
 State 6
+
+   15 exp: "string" .
+
+    $default  reduce using rule 15 (exp)
+
+
+State 7
 
     0 $accept: input . "end-of-file"
     2 input: input . line
 
-    "end-of-file"  shift, and go to state 14
+    "end-of-file"  shift, and go to state 16
     error          shift, and go to state 1
     "+"            shift, and go to state 2
     "-"            shift, and go to state 3
-    "number"       shift, and go to state 4
-    "string"       shift, and go to state 5
+    "ln"           shift, and go to state 4
+    "number"       shift, and go to state 5
+    "string"       shift, and go to state 6
 
-    line  go to state 15
-    exp   go to state 8
+    line  go to state 17
+    exp   go to state 9
 
 
-State 7
+State 8
 
     1 input: line .
 
     $default  reduce using rule 1 (input)
 
 
-State 8
+State 9
 
     3 line: exp . eol
     8 exp: exp . "+" exp
@@ -147,38 +166,38 @@ State 8
    10    | exp . "*" exp
    11    | exp . "/" exp
 
-    "end-of-file"  shift, and go to state 9
-    "+"            shift, and go to state 16
-    "-"            shift, and go to state 17
-    "*"            shift, and go to state 18
-    "/"            shift, and go to state 19
-    "end-of-line"  shift, and go to state 10
+    "end-of-file"  shift, and go to state 10
+    "+"            shift, and go to state 18
+    "-"            shift, and go to state 19
+    "*"            shift, and go to state 20
+    "/"            shift, and go to state 21
+    "end-of-line"  shift, and go to state 11
 
-    eol  go to state 20
+    eol  go to state 22
 
 
-State 9
+State 10
 
     5 eol: "end-of-file" .
 
     $default  reduce using rule 5 (eol)
 
 
-State 10
+State 11
 
     6 eol: "end-of-line" .
 
     $default  reduce using rule 6 (eol)
 
 
-State 11
+State 12
 
     4 line: error eol .
 
     $default  reduce using rule 4 (line)
 
 
-State 12
+State 13
 
     8 exp: exp . "+" exp
     9    | exp . "-" exp
@@ -189,7 +208,7 @@ State 12
     $default  reduce using rule 12 (exp)
 
 
-State 13
+State 14
 
     8 exp: exp . "+" exp
     9    | exp . "-" exp
@@ -200,76 +219,91 @@ State 13
     $default  reduce using rule 13 (exp)
 
 
-State 14
+State 15
+
+    8 exp: exp . "+" exp
+    9    | exp . "-" exp
+   10    | exp . "*" exp
+   11    | exp . "/" exp
+   14    | "ln" exp .
+
+    $default  reduce using rule 14 (exp)
+
+
+State 16
 
     0 $accept: input "end-of-file" .
 
     $default  accept
 
 
-State 15
+State 17
 
     2 input: input line .
 
     $default  reduce using rule 2 (input)
 
 
-State 16
+State 18
 
     8 exp: exp "+" . exp
 
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
-    "number"  shift, and go to state 4
-    "string"  shift, and go to state 5
-
-    exp  go to state 21
-
-
-State 17
-
-    9 exp: exp "-" . exp
-
-    "+"       shift, and go to state 2
-    "-"       shift, and go to state 3
-    "number"  shift, and go to state 4
-    "string"  shift, and go to state 5
-
-    exp  go to state 22
-
-
-State 18
-
-   10 exp: exp "*" . exp
-
-    "+"       shift, and go to state 2
-    "-"       shift, and go to state 3
-    "number"  shift, and go to state 4
-    "string"  shift, and go to state 5
+    "ln"      shift, and go to state 4
+    "number"  shift, and go to state 5
+    "string"  shift, and go to state 6
 
     exp  go to state 23
 
 
 State 19
 
-   11 exp: exp "/" . exp
+    9 exp: exp "-" . exp
 
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
-    "number"  shift, and go to state 4
-    "string"  shift, and go to state 5
+    "ln"      shift, and go to state 4
+    "number"  shift, and go to state 5
+    "string"  shift, and go to state 6
 
     exp  go to state 24
 
 
 State 20
 
+   10 exp: exp "*" . exp
+
+    "+"       shift, and go to state 2
+    "-"       shift, and go to state 3
+    "ln"      shift, and go to state 4
+    "number"  shift, and go to state 5
+    "string"  shift, and go to state 6
+
+    exp  go to state 25
+
+
+State 21
+
+   11 exp: exp "/" . exp
+
+    "+"       shift, and go to state 2
+    "-"       shift, and go to state 3
+    "ln"      shift, and go to state 4
+    "number"  shift, and go to state 5
+    "string"  shift, and go to state 6
+
+    exp  go to state 26
+
+
+State 22
+
     3 line: exp eol .
 
     $default  reduce using rule 3 (line)
 
 
-State 21
+State 23
 
     8 exp: exp . "+" exp
     8    | exp "+" exp .
@@ -277,13 +311,13 @@ State 21
    10    | exp . "*" exp
    11    | exp . "/" exp
 
-    "*"  shift, and go to state 18
-    "/"  shift, and go to state 19
+    "*"  shift, and go to state 20
+    "/"  shift, and go to state 21
 
     $default  reduce using rule 8 (exp)
 
 
-State 22
+State 24
 
     8 exp: exp . "+" exp
     9    | exp . "-" exp
@@ -291,13 +325,13 @@ State 22
    10    | exp . "*" exp
    11    | exp . "/" exp
 
-    "*"  shift, and go to state 18
-    "/"  shift, and go to state 19
+    "*"  shift, and go to state 20
+    "/"  shift, and go to state 21
 
     $default  reduce using rule 9 (exp)
 
 
-State 23
+State 25
 
     8 exp: exp . "+" exp
     9    | exp . "-" exp
@@ -308,7 +342,7 @@ State 23
     $default  reduce using rule 10 (exp)
 
 
-State 24
+State 26
 
     8 exp: exp . "+" exp
     9    | exp . "-" exp

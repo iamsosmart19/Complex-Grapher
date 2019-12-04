@@ -43,7 +43,7 @@
 \*		return TOK_STAR;
 \/		return TOK_SLASH;
 
-	/*ln		return TOK_LN;*/
+ln		return TOK_LN ;
 
 "("		nesting += 1; BEGIN SC_STRING;
 
