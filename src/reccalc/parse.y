@@ -52,6 +52,7 @@
 	STAR	"*"
 	SLASH	"/"
 	LN		"ln"
+	E		"e"
 	EOL		"end-of-line"
 	TOK_EOF	0 "end-of-file"
 ;
@@ -92,6 +93,7 @@ eol:
 
 exp:
 	NUM				{ $$ = $1; } | 
+	"e"				{ $$ = M_E; } |
 	exp "+" exp		{ $$ = $1 + $3; } | 
 	exp "-" exp		{ $$ = $1 - $3; }	| 
 	exp "*" exp		{ $$ = $1 * $3; }	|

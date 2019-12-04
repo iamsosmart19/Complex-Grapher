@@ -43,11 +43,12 @@
 \*		return STAR;
 \/		return SLASH;
 
-ln		return LN ;
+ln		return LN;
+e		return E;
 
-"("		nesting += 1; BEGIN SC_STRING;
+\(		nesting += 1; BEGIN SC_STRING;
 
- /* Scan an integer.  */
+	/* Scan an integer.  */
 [0-9]+   {
 	errno = 0;
 	long n = strtol (yytext, NULL, 10);
