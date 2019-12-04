@@ -64,15 +64,15 @@ extern int yydebug;
   enum yytokentype
   {
     TOK_EOF = 0,
-    TOK_PLUS = 258,
-    TOK_MINUS = 259,
-    TOK_STAR = 260,
-    TOK_SLASH = 261,
-    TOK_LN = 262,
-    TOK_EOL = 263,
-    TOK_NUM = 264,
-    TOK_STR = 265,
-    TOK_UNARY = 266
+    PLUS = 258,
+    MINUS = 259,
+    STAR = 260,
+    SLASH = 261,
+    LN = 262,
+    EOL = 263,
+    NUM = 264,
+    STR = 265,
+    UNARY = 266
   };
 #endif
 
@@ -82,11 +82,11 @@ union YYSTYPE
 {
 
   /* "string"  */
-  char* TOK_STR;
+  char* STR;
   /* "number"  */
-  int TOK_NUM;
+  int NUM;
   /* exp  */
-  int TOK_exp;
+  int exp;
 #line 91 "parse.h"
 
 };

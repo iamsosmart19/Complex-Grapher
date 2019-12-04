@@ -127,15 +127,15 @@ extern int yydebug;
   enum yytokentype
   {
     TOK_EOF = 0,
-    TOK_PLUS = 258,
-    TOK_MINUS = 259,
-    TOK_STAR = 260,
-    TOK_SLASH = 261,
-    TOK_LN = 262,
-    TOK_EOL = 263,
-    TOK_NUM = 264,
-    TOK_STR = 265,
-    TOK_UNARY = 266
+    PLUS = 258,
+    MINUS = 259,
+    STAR = 260,
+    SLASH = 261,
+    LN = 262,
+    EOL = 263,
+    NUM = 264,
+    STR = 265,
+    UNARY = 266
   };
 #endif
 
@@ -145,11 +145,11 @@ union YYSTYPE
 {
 
   /* "string"  */
-  char* TOK_STR;
+  char* STR;
   /* "number"  */
-  int TOK_NUM;
+  int NUM;
   /* exp  */
-  int TOK_exp;
+  int exp;
 #line 154 "parse.c"
 
 };
@@ -473,8 +473,8 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    76,    76,    77,    81,    87,    91,    91,    95,    96,
-      97,    98,    99,   109,   110,   112,   114
+       0,    75,    75,    76,    80,    86,    90,    90,    94,    95,
+      96,    97,    98,   108,   109,   111,   113
 };
 #endif
 
@@ -673,20 +673,20 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yy
   switch (yytype)
     {
     case 9: /* "number"  */
-#line 62 "parse.y"
-      { fprintf (yyo, "%d", ((*yyvaluep).TOK_NUM)); }
+#line 61 "parse.y"
+      { fprintf (yyo, "%d", ((*yyvaluep).NUM)); }
 #line 679 "parse.c"
         break;
 
     case 10: /* "string"  */
-#line 65 "parse.y"
-      { fprintf (yyo, "\"%s\"", ((*yyvaluep).TOK_STR)); }
+#line 64 "parse.y"
+      { fprintf (yyo, "\"%s\"", ((*yyvaluep).STR)); }
 #line 685 "parse.c"
         break;
 
     case 16: /* exp  */
-#line 62 "parse.y"
-      { fprintf (yyo, "%d", ((*yyvaluep).TOK_exp)); }
+#line 61 "parse.y"
+      { fprintf (yyo, "%d", ((*yyvaluep).exp)); }
 #line 691 "parse.c"
         break;
 
@@ -1038,8 +1038,8 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t scanner, 
   switch (yytype)
     {
     case 10: /* "string"  */
-#line 66 "parse.y"
-      { free (((*yyvaluep).TOK_STR)); }
+#line 65 "parse.y"
+      { free (((*yyvaluep).STR)); }
 #line 1044 "parse.c"
         break;
 
@@ -1308,89 +1308,89 @@ yyreduce:
   switch (yyn)
     {
   case 4:
-#line 81 "parse.y"
+#line 80 "parse.y"
     {
-		res->value = (yyvsp[-1].TOK_exp);
+		res->value = (yyvsp[-1].exp);
 		if (res->verbose) {
-			printf ("%d\n", (yyvsp[-1].TOK_exp));
+			printf ("%d\n", (yyvsp[-1].exp));
 		}
     }
 #line 1319 "parse.c"
     break;
 
   case 5:
-#line 87 "parse.y"
+#line 86 "parse.y"
     { yyerrok; }
 #line 1325 "parse.c"
     break;
 
   case 8:
-#line 95 "parse.y"
-    { (yyval.TOK_exp) = (yyvsp[0].TOK_NUM); }
+#line 94 "parse.y"
+    { (yyval.exp) = (yyvsp[0].NUM); }
 #line 1331 "parse.c"
     break;
 
   case 9:
-#line 96 "parse.y"
-    { (yyval.TOK_exp) = (yyvsp[-2].TOK_exp) + (yyvsp[0].TOK_exp); }
+#line 95 "parse.y"
+    { (yyval.exp) = (yyvsp[-2].exp) + (yyvsp[0].exp); }
 #line 1337 "parse.c"
     break;
 
   case 10:
-#line 97 "parse.y"
-    { (yyval.TOK_exp) = (yyvsp[-2].TOK_exp) - (yyvsp[0].TOK_exp); }
+#line 96 "parse.y"
+    { (yyval.exp) = (yyvsp[-2].exp) - (yyvsp[0].exp); }
 #line 1343 "parse.c"
     break;
 
   case 11:
-#line 98 "parse.y"
-    { (yyval.TOK_exp) = (yyvsp[-2].TOK_exp) * (yyvsp[0].TOK_exp); }
+#line 97 "parse.y"
+    { (yyval.exp) = (yyvsp[-2].exp) * (yyvsp[0].exp); }
 #line 1349 "parse.c"
     break;
 
   case 12:
-#line 99 "parse.y"
+#line 98 "parse.y"
     {
-		if ((yyvsp[0].TOK_exp) == 0) {
+		if ((yyvsp[0].exp) == 0) {
 			yyerror (scanner, res, "invalid division by zero");
 			YYERROR;
 		}
 		else {
-			(yyval.TOK_exp) = (yyvsp[-2].TOK_exp) / (yyvsp[0].TOK_exp);
+			(yyval.exp) = (yyvsp[-2].exp) / (yyvsp[0].exp);
 		}
 	}
 #line 1363 "parse.c"
     break;
 
   case 13:
-#line 109 "parse.y"
-    { (yyval.TOK_exp) = + (yyvsp[0].TOK_exp); }
+#line 108 "parse.y"
+    { (yyval.exp) = + (yyvsp[0].exp); }
 #line 1369 "parse.c"
     break;
 
   case 14:
-#line 110 "parse.y"
-    { (yyval.TOK_exp) = - (yyvsp[0].TOK_exp); }
+#line 109 "parse.y"
+    { (yyval.exp) = - (yyvsp[0].exp); }
 #line 1375 "parse.c"
     break;
 
   case 15:
-#line 112 "parse.y"
-    { (yyval.TOK_exp) = log((yyvsp[0].TOK_exp)); }
+#line 111 "parse.y"
+    { (yyval.exp) = log((yyvsp[0].exp)); }
 #line 1381 "parse.c"
     break;
 
   case 16:
-#line 114 "parse.y"
+#line 113 "parse.y"
     {
-		result r = parse_string ((yyvsp[0].TOK_STR));
-		free ((yyvsp[0].TOK_STR));
+		result r = parse_string ((yyvsp[0].STR));
+		//free ($1);
 		if (r.nerrs) {
 			res->nerrs += r.nerrs;
 			YYERROR;
 		}
 		else {
-			(yyval.TOK_exp) = r.value;
+			(yyval.exp) = r.value;
 		}
 	}
 #line 1397 "parse.c"
@@ -1629,7 +1629,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 127 "parse.y"
+#line 126 "parse.y"
 
 // Epilogue (C code).
 

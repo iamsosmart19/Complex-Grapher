@@ -38,7 +38,6 @@
 }
 
 %define api.pure full
-%define api.token.prefix {TOK_}
 %define api.value.type union
 %define parse.error verbose
 %define parse.trace
@@ -54,7 +53,7 @@
 	SLASH	"/"
 	LN		"ln"
 	EOL		"end-of-line"
-	EOF 0	"end-of-file"
+	TOK_EOF	0 "end-of-file"
 ;
 
 %token <int> NUM "number"
@@ -88,7 +87,7 @@ line:
 ;
 
 eol:
-	EOF | EOL
+	TOK_EOF | EOL
 ;
 
 exp:
@@ -113,7 +112,7 @@ exp:
 
 	STR {
 		result r = parse_string ($1);
-		free ($1);
+		//free ($1);
 		if (r.nerrs) {
 			res->nerrs += r.nerrs;
 			YYERROR;

@@ -11,16 +11,17 @@
 	#include <stdlib.h> /* strtol */
 
 	#include "parse.h"
-
-	int nesting = 0;
-	char *str = NULL;
-	int size = 0;
-	int capacity = 0;
 %}
 
 %x SC_STRING
 
+%%
 %{
+	int nesting = 0;
+	char *str = NULL;
+	int size = 0;
+	int capacity = 0;
+
 	#define STR_APPEND()											\
 	do {															\
 		if (capacity < size + yyleng + 1) {							\
@@ -35,15 +36,14 @@
 	} while (0)
 %}
 
-%%
 	/* Rules. */
 
-\+		return TOK_PLUS;
--		return TOK_MINUS;
-\*		return TOK_STAR;
-\/		return TOK_SLASH;
+\+		return PLUS;
+-		return MINUS;
+\*		return STAR;
+\/		return SLASH;
 
-ln		return TOK_LN ;
+ln		return LN ;
 
 "("		nesting += 1; BEGIN SC_STRING;
 
@@ -54,28 +54,28 @@ ln		return TOK_LN ;
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror (yyscanner, res, "integer is out of range");
 	}
-	yylval->TOK_NUM = (int) n;
-	return TOK_NUM;
+	yylval->NUM = (int) n;
+	return NUM;
 }
 
  /* Ignore white spaces. */
 [ \t]+	continue;
 
-[\n\r]	return TOK_EOL;
+[\n\r]	return EOL;
 
 .		;/*yyerror (yyscanner, res, "syntax error, invalid character: %c", yytext[0]);*/
 
 <SC_STRING>
 {
-	\(+		nesting += yyleng; STR_APPEND ();
-	\)		{
+	"("+	nesting += yyleng; STR_APPEND ();
+	")"		{
 		if (!--nesting) {
 			BEGIN INITIAL;
 			if (str) {
 				str[size] = 0;
 			}
-			yylval->TOK_STR = str;
-			return TOK_STR;
+			yylval->STR = str;
+			return STR;
 		}
 		else {
 			STR_APPEND ();
