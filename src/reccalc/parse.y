@@ -8,7 +8,7 @@
 		// Whether to print the intermediate results.
 		int verbose;
 		// Value of the last computation.
-		int value;
+		float value;
 		// Number of errors.
 		int nerrs;
 	} result;
@@ -16,12 +16,12 @@
 
 // Emitted in the header file, after the definition of YYSTYPE.
 %code provides {
-  // Tell Flex the expected prototype of yylex.
-  // The scanner argument must be named yyscanner.
-#define YY_DECL enum yytokentype yylex (YYSTYPE* yylval, yyscan_t yyscanner, result *res)
-  YY_DECL;
+	// Tell Flex the expected prototype of yylex.
+	// The scanner argument must be named yyscanner.
+	#define YY_DECL enum yytokentype yylex (YYSTYPE* yylval, yyscan_t yyscanner, result *res)
+	YY_DECL;
 
-  void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
+	void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
 }
 
 // Emitted on top of the implementation file.
@@ -56,9 +56,9 @@
 	TOK_EOF	0 "end-of-file"
 ;
 
-%token <int> NUM "number"
-%type <int> exp
-%printer { fprintf (yyo, "%d", $$); } <int>
+%token <float> NUM "number"
+%type <float> exp
+%printer { fprintf (yyo, "%f", $$); } <float>
 
 %token <char*> STR "string"
 %printer { fprintf (yyo, "\"%s\"", $$); } <char*>
@@ -80,7 +80,7 @@ line:
 	exp eol {
 		res->value = $exp;
 		if (res->verbose) {
-			printf ("%d\n", $exp);
+			printf ("%f\n", $exp);
 		}
     } | 
 	error eol { yyerrok; }
@@ -112,7 +112,7 @@ exp:
 
 	STR {
 		result r = parse_string ($1);
-		//free ($1);
+		free ($1);
 		if (r.nerrs) {
 			res->nerrs += r.nerrs;
 			YYERROR;

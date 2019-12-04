@@ -32,7 +32,7 @@ Terminals, with rules where they appear
     "/" (261) 11
     "ln" (262) 14
     "end-of-line" (263) 6
-    "number" <int> (264) 7
+    "number" <float> (264) 7
     "string" <char*> (265) 15
     UNARY (266)
 
@@ -50,7 +50,7 @@ Nonterminals, with rules where they appear
     eol (15)
         on left: 5 6
         on right: 3 4
-    exp <int> (16)
+    exp <float> (16)
         on left: 7 8 9 10 11 12 13 14 15
         on right: 3 8 9 10 11 12 13 14
 

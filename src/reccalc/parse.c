@@ -114,7 +114,7 @@ extern int yydebug;
 		// Whether to print the intermediate results.
 		int verbose;
 		// Value of the last computation.
-		int value;
+		float value;
 		// Number of errors.
 		int nerrs;
 	} result;
@@ -147,9 +147,9 @@ union YYSTYPE
   /* "string"  */
   char* STR;
   /* "number"  */
-  int NUM;
+  float NUM;
   /* exp  */
-  int exp;
+  float exp;
 #line 154 "parse.c"
 
 };
@@ -164,12 +164,12 @@ int yyparse (yyscan_t scanner, result *res);
 /* "%code provides" blocks.  */
 #line 18 "parse.y"
 
-  // Tell Flex the expected prototype of yylex.
-  // The scanner argument must be named yyscanner.
-#define YY_DECL enum yytokentype yylex (YYSTYPE* yylval, yyscan_t yyscanner, result *res)
-  YY_DECL;
+	// Tell Flex the expected prototype of yylex.
+	// The scanner argument must be named yyscanner.
+	#define YY_DECL enum yytokentype yylex (YYSTYPE* yylval, yyscan_t yyscanner, result *res)
+	YY_DECL;
 
-  void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
+	void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
 
 #line 175 "parse.c"
 
@@ -674,7 +674,7 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yy
     {
     case 9: /* "number"  */
 #line 61 "parse.y"
-      { fprintf (yyo, "%d", ((*yyvaluep).NUM)); }
+      { fprintf (yyo, "%f", ((*yyvaluep).NUM)); }
 #line 679 "parse.c"
         break;
 
@@ -686,7 +686,7 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yy
 
     case 16: /* exp  */
 #line 61 "parse.y"
-      { fprintf (yyo, "%d", ((*yyvaluep).exp)); }
+      { fprintf (yyo, "%f", ((*yyvaluep).exp)); }
 #line 691 "parse.c"
         break;
 
@@ -1312,7 +1312,7 @@ yyreduce:
     {
 		res->value = (yyvsp[-1].exp);
 		if (res->verbose) {
-			printf ("%d\n", (yyvsp[-1].exp));
+			printf ("%f\n", (yyvsp[-1].exp));
 		}
     }
 #line 1319 "parse.c"
@@ -1384,7 +1384,7 @@ yyreduce:
 #line 113 "parse.y"
     {
 		result r = parse_string ((yyvsp[0].STR));
-		//free ($1);
+		free ((yyvsp[0].STR));
 		if (r.nerrs) {
 			res->nerrs += r.nerrs;
 			YYERROR;

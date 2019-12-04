@@ -54,7 +54,7 @@ ln		return LN ;
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror (yyscanner, res, "integer is out of range");
 	}
-	yylval->NUM = (int) n;
+	yylval->NUM = (float) n;
 	return NUM;
 }
 
@@ -67,8 +67,8 @@ ln		return LN ;
 
 <SC_STRING>
 {
-	"("+	nesting += yyleng; STR_APPEND ();
-	")"		{
+	\(+	nesting += yyleng; STR_APPEND ();
+	\)		{
 		if (!--nesting) {
 			BEGIN INITIAL;
 			if (str) {
