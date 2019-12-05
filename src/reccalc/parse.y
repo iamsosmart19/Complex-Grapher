@@ -51,8 +51,19 @@
 	MINUS	"-"
 	STAR	"*"
 	SLASH	"/"
+	UNDERSCORE	"_"
+
+	SQRT	"sqrt"
+
 	LN		"ln"
+	LOG		"log"
 	E		"e"
+
+	SIN		"sin"
+	COS		"cos"
+	TAN		"tan"
+	PI		"pi"
+
 	EOL		"end-of-line"
 	TOK_EOF	0 "end-of-file"
 ;
@@ -68,6 +79,7 @@
 // Precedence (from lowest to highest) and associativity.
 %left "+" "-"
 %left "*" "/"
+%right "log" "_"
 %precedence UNARY
 
 %%
@@ -94,6 +106,7 @@ eol:
 exp:
 	NUM				{ $$ = $1; } | 
 	"e"				{ $$ = M_E; } |
+	"pi"			{ $$ = M_PI; } |
 	exp "+" exp		{ $$ = $1 + $3; } | 
 	exp "-" exp		{ $$ = $1 - $3; }	| 
 	exp "*" exp		{ $$ = $1 * $3; }	|
@@ -107,10 +120,17 @@ exp:
 		}
 	} | 
 
-	"+" exp %prec UNARY  { $$ = + $2; }	| 
-	"-" exp %prec UNARY  { $$ = - $2; } | 
+	"+" exp %prec UNARY		{ $$ = + $2; }	| 
+	"-" exp %prec UNARY		{ $$ = - $2; } | 
 
-	"ln" exp %prec UNARY { $$ = log($2); } |
+	"sqrt" exp %prec UNARY	{ $$ = sqrt($2); } |
+
+	"log" "_" exp STR		{ $$ = log(atof($4)) / log($3); } |
+	"ln" exp %prec UNARY	{ $$ = log($2); } |
+
+	"sin" exp %prec UNARY	{ $$ = sin($2); } |
+	"cos" exp %prec UNARY	{ $$ = cos($2); } |
+	"tan" exp %prec UNARY	{ $$ = tan($2); } |
 
 	STR {
 		result r = parse_string ($1);

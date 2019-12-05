@@ -68,12 +68,19 @@ extern int yydebug;
     MINUS = 259,
     STAR = 260,
     SLASH = 261,
-    LN = 262,
-    E = 263,
-    EOL = 264,
-    NUM = 265,
-    STR = 266,
-    UNARY = 267
+    UNDERSCORE = 262,
+    SQRT = 263,
+    LN = 264,
+    LOG = 265,
+    E = 266,
+    SIN = 267,
+    COS = 268,
+    TAN = 269,
+    PI = 270,
+    EOL = 271,
+    NUM = 272,
+    STR = 273,
+    UNARY = 274
   };
 #endif
 
@@ -88,7 +95,7 @@ union YYSTYPE
   float NUM;
   /* exp  */
   float exp;
-#line 92 "parse.h"
+#line 99 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -109,6 +116,6 @@ int yyparse (yyscan_t scanner, result *res);
 
 	void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 113 "parse.h"
+#line 120 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */

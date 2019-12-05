@@ -42,9 +42,18 @@
 -		return MINUS;
 \*		return STAR;
 \/		return SLASH;
+_		return UNDERSCORE;
+
+sqrt 	return SQRT;
 
 ln		return LN;
+log		return LOG;
 e		return E;
+
+sin		return SIN;
+cos		return COS;
+tan		return TAN;
+pi		return PI;
 
 \(		nesting += 1; BEGIN SC_STRING;
 
