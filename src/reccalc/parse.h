@@ -77,10 +77,12 @@ extern int yydebug;
     COS = 268,
     TAN = 269,
     PI = 270,
-    EOL = 271,
-    NUM = 272,
-    STR = 273,
-    UNARY = 274
+    LBRAC = 271,
+    RBRAC = 272,
+    EOL = 273,
+    NUM = 274,
+    STR = 275,
+    UNARY = 276
   };
 #endif
 
@@ -95,7 +97,9 @@ union YYSTYPE
   float NUM;
   /* exp  */
   float exp;
-#line 99 "parse.h"
+  /* sexp  */
+  float sexp;
+#line 103 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -116,6 +120,6 @@ int yyparse (yyscan_t scanner, result *res);
 
 	void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 120 "parse.h"
+#line 124 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */

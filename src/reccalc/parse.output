@@ -1,3 +1,9 @@
+Terminals unused in grammar
+
+    "("
+    ")"
+
+
 Grammar
 
     0 $accept: input "end-of-file"
@@ -14,60 +20,67 @@ Grammar
     7 exp: "number"
     8    | "e"
     9    | "pi"
-   10    | exp "+" exp
-   11    | exp "-" exp
-   12    | exp "*" exp
-   13    | exp "/" exp
-   14    | "+" exp
-   15    | "-" exp
-   16    | "sqrt" exp
-   17    | "log" "_" exp "string"
-   18    | "ln" exp
-   19    | "sin" exp
-   20    | "cos" exp
-   21    | "tan" exp
-   22    | "string"
+   10    | sexp
+   11    | exp "+" exp
+   12    | exp "-" exp
+   13    | exp "*" exp
+   14    | exp "/" exp
+   15    | "+" exp
+   16    | "-" exp
+   17    | "sqrt" sexp
+   18    | "log" "_" "number" sexp
+   19    | "ln" sexp
+   20    | "sin" sexp
+   21    | "cos" sexp
+   22    | "tan" sexp
+
+   23 sexp: "string"
 
 
 Terminals, with rules where they appear
 
     "end-of-file" (0) 0 5
     error (256) 4
-    "+" (258) 10 14
-    "-" (259) 11 15
-    "*" (260) 12
-    "/" (261) 13
-    "_" (262) 17
-    "sqrt" (263) 16
-    "ln" (264) 18
-    "log" (265) 17
+    "+" (258) 11 15
+    "-" (259) 12 16
+    "*" (260) 13
+    "/" (261) 14
+    "_" (262) 18
+    "sqrt" (263) 17
+    "ln" (264) 19
+    "log" (265) 18
     "e" (266) 8
-    "sin" (267) 19
-    "cos" (268) 20
-    "tan" (269) 21
+    "sin" (267) 20
+    "cos" (268) 21
+    "tan" (269) 22
     "pi" (270) 9
-    "end-of-line" (271) 6
-    "number" <float> (272) 7
-    "string" <char*> (273) 17 22
-    UNARY (274)
+    "(" (271)
+    ")" (272)
+    "end-of-line" (273) 6
+    "number" <float> (274) 7 18
+    "string" <char*> (275) 23
+    UNARY (276)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (20)
+    $accept (22)
         on left: 0
-    input (21)
+    input (23)
         on left: 1 2
         on right: 0 2
-    line (22)
+    line (24)
         on left: 3 4
         on right: 1 2
-    eol (23)
+    eol (25)
         on left: 5 6
         on right: 3 4
-    exp <float> (24)
+    exp <float> (26)
         on left: 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22
-        on right: 3 10 11 12 13 14 15 16 17 18 19 20 21
+        on right: 3 11 12 13 14 15 16
+    sexp <float> (27)
+        on left: 23
+        on right: 10 17 18 19 20 21 22
 
 
 State 0
@@ -91,21 +104,22 @@ State 0
     input  go to state 14
     line   go to state 15
     exp    go to state 16
+    sexp   go to state 17
 
 
 State 1
 
     4 line: error . eol
 
-    "end-of-file"  shift, and go to state 17
-    "end-of-line"  shift, and go to state 18
+    "end-of-file"  shift, and go to state 18
+    "end-of-line"  shift, and go to state 19
 
-    eol  go to state 19
+    eol  go to state 20
 
 
 State 2
 
-   14 exp: "+" . exp
+   15 exp: "+" . exp
 
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
@@ -120,12 +134,13 @@ State 2
     "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 20
+    exp   go to state 21
+    sexp  go to state 17
 
 
 State 3
 
-   15 exp: "-" . exp
+   16 exp: "-" . exp
 
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
@@ -140,54 +155,33 @@ State 3
     "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 21
+    exp   go to state 22
+    sexp  go to state 17
 
 
 State 4
 
-   16 exp: "sqrt" . exp
+   17 exp: "sqrt" . sexp
 
-    "+"       shift, and go to state 2
-    "-"       shift, and go to state 3
-    "sqrt"    shift, and go to state 4
-    "ln"      shift, and go to state 5
-    "log"     shift, and go to state 6
-    "e"       shift, and go to state 7
-    "sin"     shift, and go to state 8
-    "cos"     shift, and go to state 9
-    "tan"     shift, and go to state 10
-    "pi"      shift, and go to state 11
-    "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 22
+    sexp  go to state 23
 
 
 State 5
 
-   18 exp: "ln" . exp
+   19 exp: "ln" . sexp
 
-    "+"       shift, and go to state 2
-    "-"       shift, and go to state 3
-    "sqrt"    shift, and go to state 4
-    "ln"      shift, and go to state 5
-    "log"     shift, and go to state 6
-    "e"       shift, and go to state 7
-    "sin"     shift, and go to state 8
-    "cos"     shift, and go to state 9
-    "tan"     shift, and go to state 10
-    "pi"      shift, and go to state 11
-    "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 23
+    sexp  go to state 24
 
 
 State 6
 
-   17 exp: "log" . "_" exp "string"
+   18 exp: "log" . "_" "number" sexp
 
-    "_"  shift, and go to state 24
+    "_"  shift, and go to state 25
 
 
 State 7
@@ -199,62 +193,29 @@ State 7
 
 State 8
 
-   19 exp: "sin" . exp
+   20 exp: "sin" . sexp
 
-    "+"       shift, and go to state 2
-    "-"       shift, and go to state 3
-    "sqrt"    shift, and go to state 4
-    "ln"      shift, and go to state 5
-    "log"     shift, and go to state 6
-    "e"       shift, and go to state 7
-    "sin"     shift, and go to state 8
-    "cos"     shift, and go to state 9
-    "tan"     shift, and go to state 10
-    "pi"      shift, and go to state 11
-    "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 25
+    sexp  go to state 26
 
 
 State 9
 
-   20 exp: "cos" . exp
+   21 exp: "cos" . sexp
 
-    "+"       shift, and go to state 2
-    "-"       shift, and go to state 3
-    "sqrt"    shift, and go to state 4
-    "ln"      shift, and go to state 5
-    "log"     shift, and go to state 6
-    "e"       shift, and go to state 7
-    "sin"     shift, and go to state 8
-    "cos"     shift, and go to state 9
-    "tan"     shift, and go to state 10
-    "pi"      shift, and go to state 11
-    "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 26
+    sexp  go to state 27
 
 
 State 10
 
-   21 exp: "tan" . exp
+   22 exp: "tan" . sexp
 
-    "+"       shift, and go to state 2
-    "-"       shift, and go to state 3
-    "sqrt"    shift, and go to state 4
-    "ln"      shift, and go to state 5
-    "log"     shift, and go to state 6
-    "e"       shift, and go to state 7
-    "sin"     shift, and go to state 8
-    "cos"     shift, and go to state 9
-    "tan"     shift, and go to state 10
-    "pi"      shift, and go to state 11
-    "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 27
+    sexp  go to state 28
 
 
 State 11
@@ -273,9 +234,9 @@ State 12
 
 State 13
 
-   22 exp: "string" .
+   23 sexp: "string" .
 
-    $default  reduce using rule 22 (exp)
+    $default  reduce using rule 23 (sexp)
 
 
 State 14
@@ -283,7 +244,7 @@ State 14
     0 $accept: input . "end-of-file"
     2 input: input . line
 
-    "end-of-file"  shift, and go to state 28
+    "end-of-file"  shift, and go to state 29
     error          shift, and go to state 1
     "+"            shift, and go to state 2
     "-"            shift, and go to state 3
@@ -298,8 +259,9 @@ State 14
     "number"       shift, and go to state 12
     "string"       shift, and go to state 13
 
-    line  go to state 29
+    line  go to state 30
     exp   go to state 16
+    sexp  go to state 17
 
 
 State 15
@@ -312,176 +274,130 @@ State 15
 State 16
 
     3 line: exp . eol
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
+   11 exp: exp . "+" exp
+   12    | exp . "-" exp
+   13    | exp . "*" exp
+   14    | exp . "/" exp
 
-    "end-of-file"  shift, and go to state 17
-    "+"            shift, and go to state 30
-    "-"            shift, and go to state 31
-    "*"            shift, and go to state 32
-    "/"            shift, and go to state 33
-    "end-of-line"  shift, and go to state 18
+    "end-of-file"  shift, and go to state 18
+    "+"            shift, and go to state 31
+    "-"            shift, and go to state 32
+    "*"            shift, and go to state 33
+    "/"            shift, and go to state 34
+    "end-of-line"  shift, and go to state 19
 
-    eol  go to state 34
+    eol  go to state 35
 
 
 State 17
+
+   10 exp: sexp .
+
+    $default  reduce using rule 10 (exp)
+
+
+State 18
 
     5 eol: "end-of-file" .
 
     $default  reduce using rule 5 (eol)
 
 
-State 18
+State 19
 
     6 eol: "end-of-line" .
 
     $default  reduce using rule 6 (eol)
 
 
-State 19
+State 20
 
     4 line: error eol .
 
     $default  reduce using rule 4 (line)
 
 
-State 20
-
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
-   14    | "+" exp .
-
-    $default  reduce using rule 14 (exp)
-
-
 State 21
 
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
-   15    | "-" exp .
+   11 exp: exp . "+" exp
+   12    | exp . "-" exp
+   13    | exp . "*" exp
+   14    | exp . "/" exp
+   15    | "+" exp .
 
     $default  reduce using rule 15 (exp)
 
 
 State 22
 
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
-   16    | "sqrt" exp .
+   11 exp: exp . "+" exp
+   12    | exp . "-" exp
+   13    | exp . "*" exp
+   14    | exp . "/" exp
+   16    | "-" exp .
 
     $default  reduce using rule 16 (exp)
 
 
 State 23
 
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
-   18    | "ln" exp .
+   17 exp: "sqrt" sexp .
 
-    $default  reduce using rule 18 (exp)
+    $default  reduce using rule 17 (exp)
 
 
 State 24
 
-   17 exp: "log" "_" . exp "string"
-
-    "+"       shift, and go to state 2
-    "-"       shift, and go to state 3
-    "sqrt"    shift, and go to state 4
-    "ln"      shift, and go to state 5
-    "log"     shift, and go to state 6
-    "e"       shift, and go to state 7
-    "sin"     shift, and go to state 8
-    "cos"     shift, and go to state 9
-    "tan"     shift, and go to state 10
-    "pi"      shift, and go to state 11
-    "number"  shift, and go to state 12
-    "string"  shift, and go to state 13
-
-    exp  go to state 35
-
-
-State 25
-
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
-   19    | "sin" exp .
+   19 exp: "ln" sexp .
 
     $default  reduce using rule 19 (exp)
 
 
+State 25
+
+   18 exp: "log" "_" . "number" sexp
+
+    "number"  shift, and go to state 36
+
+
 State 26
 
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
-   20    | "cos" exp .
+   20 exp: "sin" sexp .
 
     $default  reduce using rule 20 (exp)
 
 
 State 27
 
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
-   21    | "tan" exp .
+   21 exp: "cos" sexp .
 
     $default  reduce using rule 21 (exp)
 
 
 State 28
 
+   22 exp: "tan" sexp .
+
+    $default  reduce using rule 22 (exp)
+
+
+State 29
+
     0 $accept: input "end-of-file" .
 
     $default  accept
 
 
-State 29
+State 30
 
     2 input: input line .
 
     $default  reduce using rule 2 (input)
 
 
-State 30
-
-   10 exp: exp "+" . exp
-
-    "+"       shift, and go to state 2
-    "-"       shift, and go to state 3
-    "sqrt"    shift, and go to state 4
-    "ln"      shift, and go to state 5
-    "log"     shift, and go to state 6
-    "e"       shift, and go to state 7
-    "sin"     shift, and go to state 8
-    "cos"     shift, and go to state 9
-    "tan"     shift, and go to state 10
-    "pi"      shift, and go to state 11
-    "number"  shift, and go to state 12
-    "string"  shift, and go to state 13
-
-    exp  go to state 36
-
-
 State 31
 
-   11 exp: exp "-" . exp
+   11 exp: exp "+" . exp
 
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
@@ -496,12 +412,13 @@ State 31
     "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 37
+    exp   go to state 37
+    sexp  go to state 17
 
 
 State 32
 
-   12 exp: exp "*" . exp
+   12 exp: exp "-" . exp
 
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
@@ -516,12 +433,13 @@ State 32
     "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 38
+    exp   go to state 38
+    sexp  go to state 17
 
 
 State 33
 
-   13 exp: exp "/" . exp
+   13 exp: exp "*" . exp
 
     "+"       shift, and go to state 2
     "-"       shift, and go to state 3
@@ -536,83 +454,99 @@ State 33
     "number"  shift, and go to state 12
     "string"  shift, and go to state 13
 
-    exp  go to state 39
+    exp   go to state 39
+    sexp  go to state 17
 
 
 State 34
+
+   14 exp: exp "/" . exp
+
+    "+"       shift, and go to state 2
+    "-"       shift, and go to state 3
+    "sqrt"    shift, and go to state 4
+    "ln"      shift, and go to state 5
+    "log"     shift, and go to state 6
+    "e"       shift, and go to state 7
+    "sin"     shift, and go to state 8
+    "cos"     shift, and go to state 9
+    "tan"     shift, and go to state 10
+    "pi"      shift, and go to state 11
+    "number"  shift, and go to state 12
+    "string"  shift, and go to state 13
+
+    exp   go to state 40
+    sexp  go to state 17
+
+
+State 35
 
     3 line: exp eol .
 
     $default  reduce using rule 3 (line)
 
 
-State 35
-
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
-   17    | "log" "_" exp . "string"
-
-    "+"       shift, and go to state 30
-    "-"       shift, and go to state 31
-    "*"       shift, and go to state 32
-    "/"       shift, and go to state 33
-    "string"  shift, and go to state 40
-
-
 State 36
 
-   10 exp: exp . "+" exp
-   10    | exp "+" exp .
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
+   18 exp: "log" "_" "number" . sexp
 
-    "*"  shift, and go to state 32
-    "/"  shift, and go to state 33
+    "string"  shift, and go to state 13
 
-    $default  reduce using rule 10 (exp)
+    sexp  go to state 41
 
 
 State 37
 
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   11    | exp "-" exp .
-   12    | exp . "*" exp
-   13    | exp . "/" exp
+   11 exp: exp . "+" exp
+   11    | exp "+" exp .
+   12    | exp . "-" exp
+   13    | exp . "*" exp
+   14    | exp . "/" exp
 
-    "*"  shift, and go to state 32
-    "/"  shift, and go to state 33
+    "*"  shift, and go to state 33
+    "/"  shift, and go to state 34
 
     $default  reduce using rule 11 (exp)
 
 
 State 38
 
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   12    | exp "*" exp .
-   13    | exp . "/" exp
+   11 exp: exp . "+" exp
+   12    | exp . "-" exp
+   12    | exp "-" exp .
+   13    | exp . "*" exp
+   14    | exp . "/" exp
+
+    "*"  shift, and go to state 33
+    "/"  shift, and go to state 34
 
     $default  reduce using rule 12 (exp)
 
 
 State 39
 
-   10 exp: exp . "+" exp
-   11    | exp . "-" exp
-   12    | exp . "*" exp
-   13    | exp . "/" exp
-   13    | exp "/" exp .
+   11 exp: exp . "+" exp
+   12    | exp . "-" exp
+   13    | exp . "*" exp
+   13    | exp "*" exp .
+   14    | exp . "/" exp
 
     $default  reduce using rule 13 (exp)
 
 
 State 40
 
-   17 exp: "log" "_" exp "string" .
+   11 exp: exp . "+" exp
+   12    | exp . "-" exp
+   13    | exp . "*" exp
+   14    | exp . "/" exp
+   14    | exp "/" exp .
 
-    $default  reduce using rule 17 (exp)
+    $default  reduce using rule 14 (exp)
+
+
+State 41
+
+   18 exp: "log" "_" "number" sexp .
+
+    $default  reduce using rule 18 (exp)

@@ -64,6 +64,9 @@
 	TAN		"tan"
 	PI		"pi"
 
+	LBRAC	"("
+	RBRAC	")"
+
 	EOL		"end-of-line"
 	TOK_EOF	0 "end-of-file"
 ;
@@ -71,6 +74,8 @@
 %token <float> NUM "number"
 %type <float> exp
 %printer { fprintf (yyo, "%f", $$); } <float>
+
+%type <float> sexp
 
 %token <char*> STR "string"
 %printer { fprintf (yyo, "\"%s\"", $$); } <char*>
@@ -93,7 +98,7 @@ line:
 	exp eol {
 		res->value = $exp;
 		if (res->verbose) {
-			printf ("%f\n", $exp);
+			printf ("%.10f\n", $exp);
 		}
     } | 
 	error eol { yyerrok; }
@@ -107,6 +112,8 @@ exp:
 	NUM				{ $$ = $1; } | 
 	"e"				{ $$ = M_E; } |
 	"pi"			{ $$ = M_PI; } |
+	sexp			{ $$ = $1; } |
+
 	exp "+" exp		{ $$ = $1 + $3; } | 
 	exp "-" exp		{ $$ = $1 - $3; }	| 
 	exp "*" exp		{ $$ = $1 * $3; }	|
@@ -123,15 +130,17 @@ exp:
 	"+" exp %prec UNARY		{ $$ = + $2; }	| 
 	"-" exp %prec UNARY		{ $$ = - $2; } | 
 
-	"sqrt" exp %prec UNARY	{ $$ = sqrt($2); } |
+	"sqrt" sexp %prec UNARY	{ $$ = sqrt($2); } |
 
-	"log" "_" exp STR		{ $$ = log(atof($4)) / log($3); } |
-	"ln" exp %prec UNARY	{ $$ = log($2); } |
+	"log" "_" NUM sexp		{ $$ = log($4) / log($3); } |
+	"ln" sexp %prec UNARY	{ $$ = log($2); } |
 
-	"sin" exp %prec UNARY	{ $$ = sin($2); } |
-	"cos" exp %prec UNARY	{ $$ = cos($2); } |
-	"tan" exp %prec UNARY	{ $$ = tan($2); } |
+	"sin" sexp %prec UNARY	{ $$ = sin($2); } |
+	"cos" sexp %prec UNARY	{ $$ = cos($2); } |
+	"tan" sexp %prec UNARY	{ $$ = tan($2); }
+;
 
+sexp:
 	STR {
 		result r = parse_string ($1);
 		free ($1);
