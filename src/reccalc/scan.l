@@ -65,17 +65,34 @@
 -		return MINUS;
 \*		return STAR;
 \/		return SLASH;
+\^		return EXP;
 _		return UNDERSCORE;
 
 sqrt 	return SQRT;
+root	return ROOT;
 
 ln		return LN;
 log		return LOG;
 e		return E;
 
+floor	return FLOOR;
+ceil	return CEIL;
+
+arcsin	return ASIN;
+arccos	return ACOS;
+arctan	return ATAN;
+sinh	return SINH;
+cosh	return COSH;
+tanh	return TANH;
+sech	return SECH;
+csch	return CSCH;
+coth	return COTH;
 sin		return SIN;
 cos		return COS;
 tan		return TAN;
+sec		return SEC;
+csc		return CSC;
+cot		return COT;
 pi		return PI;
 
 \(		nesting += 1; BEGIN SC_STRING;

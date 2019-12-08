@@ -53,17 +53,34 @@
 	MINUS	"-"
 	STAR	"*"
 	SLASH	"/"
+	EXP		"^"
 	UNDERSCORE	"_"
 
 	SQRT	"sqrt"
+	ROOT	"root"
 
 	LN		"ln"
 	LOG		"log"
 	E		"e"
 
+	FLOOR	"floor"
+	CEIL	"ceil"
+
+	ASIN	"asin"
+	ACOS	"acos"
+	ATAN	"atan"
+	SINH	"sinh"
+	COSH	"cosh"
+	TANH	"tanh"
+	SECH	"sech"
+	CSCH	"csch"
+	COTH	"coth"
 	SIN		"sin"
 	COS		"cos"
 	TAN		"tan"
+	SEC		"sec"
+	CSC		"csc"
+	COT		"cot"
 	PI		"pi"
 
 	LBRAC	"("
@@ -86,7 +103,8 @@
 // Precedence (from lowest to highest) and associativity.
 %left "+" "-"
 %left "*" "/"
-%right "log" "_"
+%right "^"
+%right "log" "_" "root"
 %precedence UNARY
 
 %%
@@ -128,18 +146,35 @@ exp:
 			$$ = $1 / $3;
 		}
 	} | 
+	exp "^" exp		{ $$ = pow($1, $3); } | 
 
 	"+" exp %prec UNARY		{ $$ = + $2; }	| 
 	"-" exp %prec UNARY		{ $$ = - $2; } | 
 
 	"sqrt" sexp %prec UNARY	{ $$ = sqrt($2); } |
+	"root" sexp sexp 	 	{ $$ = pow($3, 1./$2); } |
 
 	"log" "_" sexp sexp		{ $$ = log($4) / log($3); } |
 	"ln" sexp %prec UNARY	{ $$ = log($2); } |
 
+	"floor" sexp %prec UNARY { $$ = floor($2); } |
+	"ceil" sexp %prec UNARY { $$ = ceil($2); } |
+
+	"asin" sexp %prec UNARY	{ $$ = asin($2); } |
+	"acos" sexp %prec UNARY	{ $$ = acos($2); } |
+	"atan" sexp %prec UNARY	{ $$ = atan($2); } |
+	"sinh" sexp %prec UNARY	{ $$ = sinh($2); } |
+	"cosh" sexp %prec UNARY	{ $$ = cosh($2); } |
+	"tanh" sexp %prec UNARY	{ $$ = tanh($2); } |
+	"sech" sexp %prec UNARY	{ $$ = 1./cosh($2); } |
+	"csch" sexp %prec UNARY	{ $$ = 1./sinh($2); } |
+	"coth" sexp %prec UNARY	{ $$ = 1./tanh($2); } |
 	"sin" sexp %prec UNARY	{ $$ = sin($2); } |
 	"cos" sexp %prec UNARY	{ $$ = cos($2); } |
-	"tan" sexp %prec UNARY	{ $$ = tan($2); }
+	"tan" sexp %prec UNARY	{ $$ = tan($2); } |
+	"sec" sexp %prec UNARY	{ $$ = 1./cos($2); } |
+	"csc" sexp %prec UNARY	{ $$ = 1./sin($2); } |
+	"cot" sexp %prec UNARY	{ $$ = 1./tan($2); } 
 ;
 
 sexp:
