@@ -28,7 +28,7 @@ Grammar
    15    | "+" exp
    16    | "-" exp
    17    | "sqrt" sexp
-   18    | "log" "_" "number" sexp
+   18    | "log" "_" sexp sexp
    19    | "ln" sexp
    20    | "sin" sexp
    21    | "cos" sexp
@@ -57,7 +57,7 @@ Terminals, with rules where they appear
     "(" (271)
     ")" (272)
     "end-of-line" (273) 6
-    "number" <float> (274) 7 18
+    "number" <float> (274) 7
     "string" <char*> (275) 23
     UNARY (276)
 
@@ -179,7 +179,7 @@ State 5
 
 State 6
 
-   18 exp: "log" . "_" "number" sexp
+   18 exp: "log" . "_" sexp sexp
 
     "_"  shift, and go to state 25
 
@@ -355,9 +355,11 @@ State 24
 
 State 25
 
-   18 exp: "log" "_" . "number" sexp
+   18 exp: "log" "_" . sexp sexp
 
-    "number"  shift, and go to state 36
+    "string"  shift, and go to state 13
+
+    sexp  go to state 36
 
 
 State 26
@@ -488,7 +490,7 @@ State 35
 
 State 36
 
-   18 exp: "log" "_" "number" . sexp
+   18 exp: "log" "_" sexp . sexp
 
     "string"  shift, and go to state 13
 
@@ -547,6 +549,6 @@ State 40
 
 State 41
 
-   18 exp: "log" "_" "number" sexp .
+   18 exp: "log" "_" sexp sexp .
 
     $default  reduce using rule 18 (exp)

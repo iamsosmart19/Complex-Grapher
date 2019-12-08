@@ -29,7 +29,9 @@
 	#include <stdarg.h> // va_list.
 	#include <stdio.h>  // printf.
 	#include <stdlib.h> // getenv.
+
 	#include <math.h>
+	#include <float.h>
 }
 
 %code {
@@ -109,7 +111,7 @@ eol:
 ;
 
 exp:
-	NUM				{ $$ = $1; } | 
+	NUM				{ $$ = (float)$1; } | 
 	"e"				{ $$ = M_E; } |
 	"pi"			{ $$ = M_PI; } |
 	sexp			{ $$ = $1; } |
@@ -132,7 +134,7 @@ exp:
 
 	"sqrt" sexp %prec UNARY	{ $$ = sqrt($2); } |
 
-	"log" "_" NUM sexp		{ $$ = log($4) / log($3); } |
+	"log" "_" sexp sexp		{ $$ = log($4) / log($3); } |
 	"ln" sexp %prec UNARY	{ $$ = log($2); } |
 
 	"sin" sexp %prec UNARY	{ $$ = sin($2); } |

@@ -134,7 +134,7 @@
         <rhs>
           <symbol>&quot;log&quot;</symbol>
           <symbol>&quot;_&quot;</symbol>
-          <symbol>&quot;number&quot;</symbol>
+          <symbol>sexp</symbol>
           <symbol>sexp</symbol>
         </rhs>
       </rule>
@@ -756,10 +756,12 @@
     <state number="25">
       <itemset>
         <item rule-number="18" point="2"/>
+        <item rule-number="23" point="0"/>
       </itemset>
       <actions>
         <transitions>
-          <transition type="shift" symbol="&quot;number&quot;" state="36"/>
+          <transition type="shift" symbol="&quot;string&quot;" state="13"/>
+          <transition type="goto" symbol="sexp" state="36"/>
         </transitions>
         <errors/>
         <reductions/>

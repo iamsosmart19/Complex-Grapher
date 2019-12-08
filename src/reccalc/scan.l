@@ -8,6 +8,7 @@
 %{
 	#include <assert.h>
 	#include <limits.h> /* INT_MIN */
+	#include <float.h>
 	#include <stdlib.h> /* strtol */
 
 	#include "parse.h"
@@ -38,6 +39,28 @@
 
 	/* Rules. */
 
+	/* Scan a float. */
+[0-9]+\.[0-9]+	{
+	errno = 0;
+	float n = strtof (yytext, NULL);
+	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
+		yyerror (yyscanner, res, "float is out of range");
+	}
+	yylval->NUM = (float) n;
+	return NUM;
+}
+
+	/* Scan an integer.  */
+[0-9]+   {
+	errno = 0;
+	long n = strtol (yytext, NULL, 10);
+	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
+		yyerror (yyscanner, res, "integer is out of range");
+	}
+	yylval->NUM = (int) n;
+	return NUM;
+}
+
 \+		return PLUS;
 -		return MINUS;
 \*		return STAR;
@@ -56,17 +79,6 @@ tan		return TAN;
 pi		return PI;
 
 \(		nesting += 1; BEGIN SC_STRING;
-
-	/* Scan an integer.  */
-[0-9]+   {
-	errno = 0;
-	long n = strtol (yytext, NULL, 10);
-	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
-		yyerror (yyscanner, res, "integer is out of range");
-	}
-	yylval->NUM = (float) n;
-	return NUM;
-}
 
  /* Ignore white spaces. */
 [ \t]+	continue;
