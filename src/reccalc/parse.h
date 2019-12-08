@@ -93,12 +93,18 @@ extern int yydebug;
     CSC = 284,
     COT = 285,
     PI = 286,
-    LBRAC = 287,
-    RBRAC = 288,
-    EOL = 289,
-    NUM = 290,
-    STR = 291,
-    UNARY = 292
+    LINESTART = 287,
+    LETR = 288,
+    EQUALS = 289,
+    LESSTHAN = 290,
+    GREATERTHAN = 291,
+    LTHANEQTO = 292,
+    GTHANEQTO = 293,
+    EOL = 294,
+    NUM = 295,
+    pronum = 296,
+    STR = 297,
+    UNARY = 298
   };
 #endif
 
@@ -107,6 +113,8 @@ extern int yydebug;
 union YYSTYPE
 {
 
+  /* pronum  */
+  char pronum;
   /* "string"  */
   char* STR;
   /* "number"  */
@@ -115,7 +123,7 @@ union YYSTYPE
   float exp;
   /* sexp  */
   float sexp;
-#line 119 "parse.h"
+#line 127 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -136,6 +144,6 @@ int yyparse (yyscan_t scanner, result *res);
 
 	void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 140 "parse.h"
+#line 148 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */

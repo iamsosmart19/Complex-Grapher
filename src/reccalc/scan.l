@@ -102,6 +102,24 @@ pi		return PI;
 
 [\n\r]	return EOL;
 
+(y)|(f\([a-z]\))	{
+	errno = 0;
+	if(strlen(yytext) - 1) {
+		yylval->pronum = yytext[2];
+	}
+	else {
+		yylval->pronum = 'x';	
+	}
+	printf("%c\n", yylval->pronum);
+	return LINESTART;
+}
+[a-z]		return LETR;
+=		return EQUALS;
+\<		return LESSTHAN;
+\>		return GREATERTHAN;
+\<=		return LTHANEQTO;
+\>=		return GTHANEQTO;
+
 .		;/*yyerror (yyscanner, res, "syntax error, invalid character: %c", yytext[0]);*/
 
 <SC_STRING>

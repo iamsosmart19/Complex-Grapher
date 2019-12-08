@@ -83,8 +83,13 @@
 	COT		"cot"
 	PI		"pi"
 
-	LBRAC	"("
-	RBRAC	")"
+	LINESTART		"linestart"
+	LETR			"x"
+	EQUALS			"="
+	LESSTHAN		"<"
+	GREATERTHAN		">"
+	LTHANEQTO		"<="
+	GTHANEQTO		">="
 
 	EOL		"end-of-line"
 	TOK_EOF	0 "end-of-file"
@@ -95,6 +100,8 @@
 %printer { fprintf (yyo, "%f", $$); } <float>
 
 %type <float> sexp
+
+%token <char> pronum
 
 %token <char*> STR "string"
 %printer { fprintf (yyo, "\"%s\"", $$); } <char*>
@@ -115,13 +122,21 @@ input:
 ;
 
 line:
-	exp eol {
+	"linestart" mid exp eol {
 		res->value = $exp;
 		if (res->verbose) {
 			printf ("%.10f\n", $exp);
 		}
     } | 
 	error eol { yyerrok; }
+;
+
+mid:
+	"=" |
+	"<" |
+	">" |
+	"<=" |
+	">="
 ;
 
 eol:
