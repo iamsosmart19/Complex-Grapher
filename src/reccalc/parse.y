@@ -18,10 +18,10 @@
 %code provides {
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
-	#define YY_DECL enum yytokentype yylex (YYSTYPE* yylval, yyscan_t yyscanner, result *res)
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res)
 	YY_DECL;
 
-	void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
+	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
 }
 
 // Emitted on top of the implementation file.
@@ -35,15 +35,14 @@
 }
 
 %code {
-  result parse_string (const char* cp);
-  result parse (void);
+  result parse_string(const char* cp);
+  result parse(void);
 }
 
 %define api.pure full
 %define api.value.type union
 %define parse.error verbose
 %define parse.trace
-%verbose
 
  // Scanner and error count are exchanged between main, yyparse and yylex.
 %param {yyscan_t scanner}{result *res}
@@ -63,6 +62,7 @@
 	LOG		"log"
 	E		"e"
 
+	ABS		"abs"
 	FLOOR	"floor"
 	CEIL	"ceil"
 
@@ -83,8 +83,9 @@
 	COT		"cot"
 	PI		"pi"
 
-	LINESTART		"linestart"
-	LETR			"x"
+	Y		"y"
+	FZ		"f(z)"
+	LETR			"z"
 	EQUALS			"="
 	LESSTHAN		"<"
 	GREATERTHAN		">"
@@ -97,15 +98,15 @@
 
 %token <float> NUM "number"
 %type <float> exp
-%printer { fprintf (yyo, "%f", $$); } <float>
+%printer { fprintf(yyo, "%f", $$); } <float>
 
 %type <float> sexp
 
-%token <char> pronum
+%type <float> eqtn
 
 %token <char*> STR "string"
-%printer { fprintf (yyo, "\"%s\"", $$); } <char*>
-%destructor { free ($$); } <char*>
+%printer { fprintf(yyo, "\"%s\"", $$); } <char*>
+%destructor { free($$); } <char*>
 
 // Precedence (from lowest to highest) and associativity.
 %left "+" "-"
@@ -122,13 +123,23 @@ input:
 ;
 
 line:
-	"linestart" mid exp eol {
-		res->value = $exp;
+	eqtn eol {
+		res->value = $eqtn;
 		if (res->verbose) {
-			printf ("%.10f\n", $exp);
+			printf("\t%.10f\n", $eqtn);
 		}
     } | 
-	error eol { yyerrok; }
+	exp %prec UNARY { res->value = $exp; } | 
+	error eol { printf("err\n"); yyerrok; }
+;
+
+eqtn:
+	linestart mid exp { $$ = $exp; }
+; 
+
+linestart:
+	"y"	|
+	"f(z)"
 ;
 
 mid:
@@ -140,7 +151,7 @@ mid:
 ;
 
 eol:
-	TOK_EOF | EOL
+	TOK_EOF | EOL 
 ;
 
 exp:
@@ -154,7 +165,7 @@ exp:
 	exp "*" exp		{ $$ = $1 * $3; }	|
 	exp "/" exp		{
 		if ($3 == 0) {
-			yyerror (scanner, res, "invalid division by zero");
+			yyerror(scanner, res, "invalid division by zero");
 			YYERROR;
 		}
 		else {
@@ -194,8 +205,9 @@ exp:
 
 sexp:
 	STR {
-		result r = parse_string ($1);
-		free ($1);
+		printf("STR\n");
+		result r = parse_string($1);
+		free($1);
 		if (r.nerrs) {
 			res->nerrs += r.nerrs;
 			YYERROR;
@@ -211,40 +223,40 @@ sexp:
 
 #include "scan.h"
 
-result parse (void) {
+result parse(void) {
 	yyscan_t scanner;
-	yylex_init (&scanner);
+	yylex_init(&scanner);
 	result res = {1, 0, 0};
-	yyparse (scanner, &res);
-	yylex_destroy (scanner);
+	yyparse(scanner, &res);
+	yylex_destroy(scanner);
 	return res;
 }
 
-result parse_string (const char *str) {
+result parse_string(const char *str) {
 	yyscan_t scanner;
-	yylex_init (&scanner);
-	YY_BUFFER_STATE buf = yy_scan_string (str ? str : "", scanner);
+	yylex_init(&scanner);
+	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);
 	result res = {0, 0, 0};
-	yyparse (scanner, &res);
-	yy_delete_buffer (buf, scanner);
-	yylex_destroy (scanner);
+	yyparse(scanner, &res);
+	yy_delete_buffer(buf, scanner);
+	yylex_destroy(scanner);
 	return res;
 }
 
-void yyerror (yyscan_t scanner, result *res, const char *msg, ...) {
+void yyerror(yyscan_t scanner, result *res, const char *msg, ...) {
 	(void) scanner;
 	va_list args;
-	va_start (args, msg);
-	vfprintf (stderr, msg, args);
-	va_end (args);
-	fputc ('\n', stderr);
+	va_start(args, msg);
+	vfprintf(stderr, msg, args);
+	va_end(args);
+	fputc('\n', stderr);
 	res->nerrs += 1;
 }
 
 int main(void) {
 	// Possibly enable parser runtime debugging.
-	yydebug = !!getenv ("YYDEBUG");
-	result res = parse ();
+	yydebug = !!getenv("YYDEBUG");
+	result res = parse();
 	// Exit on failure if there were errors.
 	return !!res.nerrs;
 }

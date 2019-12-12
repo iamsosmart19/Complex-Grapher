@@ -75,6 +75,7 @@ ln		return LN;
 log		return LOG;
 e		return E;
 
+abs		return ABS;
 floor	return FLOOR;
 ceil	return CEIL;
 
@@ -95,37 +96,31 @@ csc		return CSC;
 cot		return COT;
 pi		return PI;
 
-\(		nesting += 1; BEGIN SC_STRING;
 
  /* Ignore white spaces. */
 [ \t]+	continue;
 
 [\n\r]	return EOL;
 
-(y)|(f\([a-z]\))	{
-	errno = 0;
-	if(strlen(yytext) - 1) {
-		yylval->pronum = yytext[2];
-	}
-	else {
-		yylval->pronum = 'x';	
-	}
-	printf("%c\n", yylval->pronum);
-	return LINESTART;
-}
-[a-z]		return LETR;
+y		return Y;
+f\(z\)	return FZ;
+
+z		return LETR;
 =		return EQUALS;
 \<		return LESSTHAN;
 \>		return GREATERTHAN;
 \<=		return LTHANEQTO;
 \>=		return GTHANEQTO;
 
-.		;/*yyerror (yyscanner, res, "syntax error, invalid character: %c", yytext[0]);*/
+\(		printf("lbrac\n"); nesting += 1; BEGIN SC_STRING;
+
+.		;yyerror (yyscanner, res, "syntax error, invalid character: %c", yytext[0]);
 
 <SC_STRING>
 {
 	\(+	nesting += yyleng; STR_APPEND ();
 	\)		{
+		printf("rbrac\n");
 		if (!--nesting) {
 			BEGIN INITIAL;
 			if (str) {
@@ -135,10 +130,10 @@ pi		return PI;
 			return STR;
 		}
 		else {
-			STR_APPEND ();
+			STR_APPEND();
 		}
 	}
-	[^()]+  STR_APPEND ();
+	[^()]+  STR_APPEND();
 }
 
 <<EOF>>  return TOK_EOF;

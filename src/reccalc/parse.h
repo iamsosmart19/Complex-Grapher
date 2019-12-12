@@ -75,36 +75,37 @@ extern int yydebug;
     LN = 266,
     LOG = 267,
     E = 268,
-    FLOOR = 269,
-    CEIL = 270,
-    ASIN = 271,
-    ACOS = 272,
-    ATAN = 273,
-    SINH = 274,
-    COSH = 275,
-    TANH = 276,
-    SECH = 277,
-    CSCH = 278,
-    COTH = 279,
-    SIN = 280,
-    COS = 281,
-    TAN = 282,
-    SEC = 283,
-    CSC = 284,
-    COT = 285,
-    PI = 286,
-    LINESTART = 287,
-    LETR = 288,
-    EQUALS = 289,
-    LESSTHAN = 290,
-    GREATERTHAN = 291,
-    LTHANEQTO = 292,
-    GTHANEQTO = 293,
-    EOL = 294,
-    NUM = 295,
-    pronum = 296,
-    STR = 297,
-    UNARY = 298
+    ABS = 269,
+    FLOOR = 270,
+    CEIL = 271,
+    ASIN = 272,
+    ACOS = 273,
+    ATAN = 274,
+    SINH = 275,
+    COSH = 276,
+    TANH = 277,
+    SECH = 278,
+    CSCH = 279,
+    COTH = 280,
+    SIN = 281,
+    COS = 282,
+    TAN = 283,
+    SEC = 284,
+    CSC = 285,
+    COT = 286,
+    PI = 287,
+    Y = 288,
+    FZ = 289,
+    LETR = 290,
+    EQUALS = 291,
+    LESSTHAN = 292,
+    GREATERTHAN = 293,
+    LTHANEQTO = 294,
+    GTHANEQTO = 295,
+    EOL = 296,
+    NUM = 297,
+    STR = 298,
+    UNARY = 299
   };
 #endif
 
@@ -113,17 +114,17 @@ extern int yydebug;
 union YYSTYPE
 {
 
-  /* pronum  */
-  char pronum;
   /* "string"  */
   char* STR;
   /* "number"  */
   float NUM;
+  /* eqtn  */
+  float eqtn;
   /* exp  */
   float exp;
   /* sexp  */
   float sexp;
-#line 127 "parse.h"
+#line 128 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -139,11 +140,11 @@ int yyparse (yyscan_t scanner, result *res);
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
-	#define YY_DECL enum yytokentype yylex (YYSTYPE* yylval, yyscan_t yyscanner, result *res)
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res)
 	YY_DECL;
 
-	void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
+	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 148 "parse.h"
+#line 149 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */
