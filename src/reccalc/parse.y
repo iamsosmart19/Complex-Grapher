@@ -3,12 +3,13 @@
 
 // Emitted in the header file, before the definition of YYSTYPE.
 %code requires {
+	typedef double complex cplx;
 	typedef void* yyscan_t;
 	typedef struct {
 		// Whether to print the intermediate results.
 		int verbose;
 		// Value of the last computation.
-		float value;
+		cplx value;
 		// Number of errors.
 		int nerrs;
 	} result;
@@ -31,7 +32,9 @@
 	#include <stdlib.h> // getenv.
 
 	#include <math.h>
+	#include <tgmath.h>
 	#include <float.h>
+	#include <complex.h>
 }
 
 %code {
@@ -83,6 +86,8 @@
 	COT		"cot"
 	PI		"pi"
 
+	MI		"i"
+
 	Y		"y"
 	FZ		"f(z)"
 	LETR			"z"
@@ -96,13 +101,13 @@
 	TOK_EOF	0 "end-of-file"
 ;
 
-%token <float> NUM "number"
-%type <float> exp
-%printer { fprintf(yyo, "%f", $$); } <float>
+%token <cplx> NUM "number"
+%type <cplx> exp
+%printer { fprintf(yyo, "%lf + %lfi", creal($$), cimag($$)); } <cplx>
 
-%type <float> sexp
+%type <cplx> sexp
 
-%type <float> eqtn
+%type <cplx> eqtn
 
 %token <char*> STR "string"
 %printer { fprintf(yyo, "\"%s\"", $$); } <char*>
@@ -126,7 +131,7 @@ line:
 	eqtn eol {
 		res->value = $eqtn;
 		if (res->verbose) {
-			printf("\t%.10f\n", $eqtn);
+			printf("\t%.7lf+%.7lfi\n", creal($eqtn), cimag($eqtn));
 		}
     } | 
 	exp %prec UNARY { res->value = $exp; } | 
@@ -155,9 +160,11 @@ eol:
 ;
 
 exp:
-	NUM				{ $$ = (float)$1; } | 
+	NUM				{ $$ = $1; printf("%lf\n", creal($1)); } | 
+	NUM "z"			{ $$ = $1 * 1; } |
 	"e"				{ $$ = M_E; } |
-	"pi"			{ $$ = M_PI; } |
+	"pi"			{ $$ = 3; } |
+	"i"				{ $$ = I; } |
 	sexp			{ $$ = $1; } |
 
 	exp "+" exp		{ $$ = $1 + $3; } | 
@@ -183,8 +190,8 @@ exp:
 	"log" "_" sexp sexp		{ $$ = log($4) / log($3); } |
 	"ln" sexp %prec UNARY	{ $$ = log($2); } |
 
-	"floor" sexp %prec UNARY { $$ = floor($2); } |
-	"ceil" sexp %prec UNARY { $$ = ceil($2); } |
+	"floor" sexp %prec UNARY { $$ = floor((float)$2); } |
+	"ceil" sexp %prec UNARY { $$ = ceil((float)$2); } |
 
 	"asin" sexp %prec UNARY	{ $$ = asin($2); } |
 	"acos" sexp %prec UNARY	{ $$ = acos($2); } |
@@ -205,7 +212,6 @@ exp:
 
 sexp:
 	STR {
-		printf("STR\n");
 		result r = parse_string($1);
 		free($1);
 		if (r.nerrs) {

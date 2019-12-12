@@ -11,6 +11,7 @@
 	#include <float.h>
 	#include <stdlib.h> /* strtol */
 
+	#include <complex.h>
 	#include "parse.h"
 %}
 
@@ -42,22 +43,27 @@
 	/* Scan a float. */
 [0-9]+\.[0-9]+	{
 	errno = 0;
-	float n = strtof (yytext, NULL);
+	float n = strtof(yytext, NULL);
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror (yyscanner, res, "float is out of range");
 	}
-	yylval->NUM = (float) n;
+	printf("%f\n", n);
+	cplx temp = n;
+	printf("%f+%fi\n", creal(temp), cimag(temp));
+	yylval->NUM = n;
 	return NUM;
 }
 
 	/* Scan an integer.  */
 [0-9]+   {
 	errno = 0;
-	long n = strtol (yytext, NULL, 10);
+	long n = strtol(yytext, NULL, 10);
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror (yyscanner, res, "integer is out of range");
 	}
-	yylval->NUM = (int) n;
+	cplx temp = n;
+	printf("%f+%fi\n", creal(temp), cimag(temp));
+	yylval->NUM = n;
 	return NUM;
 }
 
@@ -96,6 +102,7 @@ csc		return CSC;
 cot		return COT;
 pi		return PI;
 
+i		return MI;
 
  /* Ignore white spaces. */
 [ \t]+	continue;
@@ -112,7 +119,7 @@ z		return LETR;
 \<=		return LTHANEQTO;
 \>=		return GTHANEQTO;
 
-\(		printf("lbrac\n"); nesting += 1; BEGIN SC_STRING;
+\(		nesting += 1; BEGIN SC_STRING;
 
 .		;yyerror (yyscanner, res, "syntax error, invalid character: %c", yytext[0]);
 
@@ -120,7 +127,6 @@ z		return LETR;
 {
 	\(+	nesting += yyleng; STR_APPEND ();
 	\)		{
-		printf("rbrac\n");
 		if (!--nesting) {
 			BEGIN INITIAL;
 			if (str) {

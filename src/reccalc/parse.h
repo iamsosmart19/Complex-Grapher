@@ -46,17 +46,18 @@ extern int yydebug;
 /* "%code requires" blocks.  */
 #line 5 "parse.y"
 
+	typedef double complex cplx;
 	typedef void* yyscan_t;
 	typedef struct {
 		// Whether to print the intermediate results.
 		int verbose;
 		// Value of the last computation.
-		float value;
+		cplx value;
 		// Number of errors.
 		int nerrs;
 	} result;
 
-#line 60 "parse.h"
+#line 61 "parse.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -94,18 +95,19 @@ extern int yydebug;
     CSC = 285,
     COT = 286,
     PI = 287,
-    Y = 288,
-    FZ = 289,
-    LETR = 290,
-    EQUALS = 291,
-    LESSTHAN = 292,
-    GREATERTHAN = 293,
-    LTHANEQTO = 294,
-    GTHANEQTO = 295,
-    EOL = 296,
-    NUM = 297,
-    STR = 298,
-    UNARY = 299
+    MI = 288,
+    Y = 289,
+    FZ = 290,
+    LETR = 291,
+    EQUALS = 292,
+    LESSTHAN = 293,
+    GREATERTHAN = 294,
+    LTHANEQTO = 295,
+    GTHANEQTO = 296,
+    EOL = 297,
+    NUM = 298,
+    STR = 299,
+    UNARY = 300
   };
 #endif
 
@@ -117,14 +119,14 @@ union YYSTYPE
   /* "string"  */
   char* STR;
   /* "number"  */
-  float NUM;
+  cplx NUM;
   /* eqtn  */
-  float eqtn;
+  cplx eqtn;
   /* exp  */
-  float exp;
+  cplx exp;
   /* sexp  */
-  float sexp;
-#line 128 "parse.h"
+  cplx sexp;
+#line 130 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -136,7 +138,7 @@ typedef union YYSTYPE YYSTYPE;
 
 int yyparse (yyscan_t scanner, result *res);
 /* "%code provides" blocks.  */
-#line 18 "parse.y"
+#line 19 "parse.y"
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
@@ -145,6 +147,6 @@ int yyparse (yyscan_t scanner, result *res);
 
 	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 149 "parse.h"
+#line 151 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */
