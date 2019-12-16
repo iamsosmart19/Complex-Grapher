@@ -103,7 +103,7 @@
 
 %token <cplx> NUM "number"
 %type <cplx> exp
-%printer { fprintf(yyo, "%lf + %lfi", creal($$), cimag($$)); } <cplx>
+%printer { fprintf(yyo, "%lf%+lfi", creal($$), cimag($$)); } <cplx>
 
 %type <cplx> sexp
 
@@ -114,6 +114,7 @@
 %destructor { free($$); } <char*>
 
 // Precedence (from lowest to highest) and associativity.
+%precedence BINARY
 %left "+" "-"
 %left "*" "/"
 %right "^"
@@ -131,10 +132,10 @@ line:
 	eqtn eol {
 		res->value = $eqtn;
 		if (res->verbose) {
-			printf("\t%.7lf+%.7lfi\n", creal($eqtn), cimag($eqtn));
+			printf("\t%.7lf%+.7lfi\n", creal($eqtn), cimag($eqtn));
 		}
     } | 
-	exp %prec UNARY { res->value = $exp; } | 
+	exp %prec BINARY { res->value = $exp; /*printf("\t%.7lf%+.7lfi\n", creal($exp), cimag($exp)); */} | 
 	error eol { printf("err\n"); yyerrok; }
 ;
 
@@ -160,12 +161,15 @@ eol:
 ;
 
 exp:
-	NUM				{ $$ = $1; printf("%lf\n", creal($1)); } | 
+	NUM %prec UNARY { $$ = $1; /*printf("%lf%+lfi\n", creal($1), cimag($1)); */} | 
 	NUM "z"			{ $$ = $1 * 1; } |
 	"e"				{ $$ = M_E; } |
 	"pi"			{ $$ = 3; } |
-	"i"				{ $$ = I; } |
+	"i"	%prec UNARY			{ $$ = I; } |
+	/* NUM "i"			{ $$ = $1 * I; } | */
 	sexp			{ $$ = $1; } |
+
+	/* NUM sexp		{ $$ = $1 * $2; } | */
 
 	exp "+" exp		{ $$ = $1 + $3; } | 
 	exp "-" exp		{ $$ = $1 - $3; }	| 
@@ -212,6 +216,7 @@ exp:
 
 sexp:
 	STR {
+		/* printf("str\n"); */
 		result r = parse_string($1);
 		free($1);
 		if (r.nerrs) {

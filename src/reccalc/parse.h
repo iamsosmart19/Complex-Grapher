@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.4.2.  */
+/* A Bison parser, made by GNU Bison 3.5.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -107,7 +107,8 @@ extern int yydebug;
     EOL = 297,
     NUM = 298,
     STR = 299,
-    UNARY = 300
+    BINARY = 300,
+    UNARY = 301
   };
 #endif
 
@@ -126,7 +127,7 @@ union YYSTYPE
   cplx exp;
   /* sexp  */
   cplx sexp;
-#line 130 "parse.h"
+#line 131 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -147,6 +148,6 @@ int yyparse (yyscan_t scanner, result *res);
 
 	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 151 "parse.h"
+#line 152 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */

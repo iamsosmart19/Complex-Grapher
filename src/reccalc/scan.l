@@ -47,9 +47,6 @@
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror (yyscanner, res, "float is out of range");
 	}
-	printf("%f\n", n);
-	cplx temp = n;
-	printf("%f+%fi\n", creal(temp), cimag(temp));
 	yylval->NUM = n;
 	return NUM;
 }
@@ -61,8 +58,6 @@
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror (yyscanner, res, "integer is out of range");
 	}
-	cplx temp = n;
-	printf("%f+%fi\n", creal(temp), cimag(temp));
 	yylval->NUM = n;
 	return NUM;
 }

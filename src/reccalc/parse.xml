@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<bison-xml-report version="3.4.2" bug-report="bug-bison@gnu.org" url="http://www.gnu.org/software/bison/">
+<bison-xml-report version="3.5" bug-report="bug-bison@gnu.org" url="http://www.gnu.org/software/bison/">
 
   <filename>parse.y</filename>
 
@@ -33,7 +33,7 @@
           <symbol>eol</symbol>
         </rhs>
       </rule>
-      <rule number="4" usefulness="useful" percent_prec="UNARY">
+      <rule number="4" usefulness="useful" percent_prec="BINARY">
         <lhs>line</lhs>
         <rhs>
           <symbol>exp</symbol>
@@ -108,7 +108,7 @@
           <symbol>&quot;end-of-line&quot;</symbol>
         </rhs>
       </rule>
-      <rule number="16" usefulness="useful">
+      <rule number="16" usefulness="useful" percent_prec="UNARY">
         <lhs>exp</lhs>
         <rhs>
           <symbol>&quot;number&quot;</symbol>
@@ -133,7 +133,7 @@
           <symbol>&quot;pi&quot;</symbol>
         </rhs>
       </rule>
-      <rule number="20" usefulness="useful">
+      <rule number="20" usefulness="useful" percent_prec="UNARY">
         <lhs>exp</lhs>
         <rhs>
           <symbol>&quot;i&quot;</symbol>
@@ -359,16 +359,16 @@
     <terminals>
       <terminal symbol-number="0" token-number="0" name="&quot;end-of-file&quot;" usefulness="useful"/>
       <terminal symbol-number="1" token-number="256" name="error" usefulness="useful"/>
-      <terminal symbol-number="3" token-number="258" name="&quot;+&quot;" usefulness="useful" prec="1" assoc="left"/>
-      <terminal symbol-number="4" token-number="259" name="&quot;-&quot;" usefulness="useful" prec="1" assoc="left"/>
-      <terminal symbol-number="5" token-number="260" name="&quot;*&quot;" usefulness="useful" prec="2" assoc="left"/>
-      <terminal symbol-number="6" token-number="261" name="&quot;/&quot;" usefulness="useful" prec="2" assoc="left"/>
-      <terminal symbol-number="7" token-number="262" name="&quot;^&quot;" usefulness="useful" prec="3" assoc="right"/>
-      <terminal symbol-number="8" token-number="263" name="&quot;_&quot;" usefulness="useful" prec="4" assoc="right"/>
+      <terminal symbol-number="3" token-number="258" name="&quot;+&quot;" usefulness="useful" prec="2" assoc="left"/>
+      <terminal symbol-number="4" token-number="259" name="&quot;-&quot;" usefulness="useful" prec="2" assoc="left"/>
+      <terminal symbol-number="5" token-number="260" name="&quot;*&quot;" usefulness="useful" prec="3" assoc="left"/>
+      <terminal symbol-number="6" token-number="261" name="&quot;/&quot;" usefulness="useful" prec="3" assoc="left"/>
+      <terminal symbol-number="7" token-number="262" name="&quot;^&quot;" usefulness="useful" prec="4" assoc="right"/>
+      <terminal symbol-number="8" token-number="263" name="&quot;_&quot;" usefulness="useful" prec="5" assoc="right"/>
       <terminal symbol-number="9" token-number="264" name="&quot;sqrt&quot;" usefulness="useful"/>
-      <terminal symbol-number="10" token-number="265" name="&quot;root&quot;" usefulness="useful" prec="4" assoc="right"/>
+      <terminal symbol-number="10" token-number="265" name="&quot;root&quot;" usefulness="useful" prec="5" assoc="right"/>
       <terminal symbol-number="11" token-number="266" name="&quot;ln&quot;" usefulness="useful"/>
-      <terminal symbol-number="12" token-number="267" name="&quot;log&quot;" usefulness="useful" prec="4" assoc="right"/>
+      <terminal symbol-number="12" token-number="267" name="&quot;log&quot;" usefulness="useful" prec="5" assoc="right"/>
       <terminal symbol-number="13" token-number="268" name="&quot;e&quot;" usefulness="useful"/>
       <terminal symbol-number="14" token-number="269" name="&quot;abs&quot;" usefulness="unused-in-grammar"/>
       <terminal symbol-number="15" token-number="270" name="&quot;floor&quot;" usefulness="useful"/>
@@ -401,18 +401,19 @@
       <terminal symbol-number="42" token-number="297" name="&quot;end-of-line&quot;" usefulness="useful"/>
       <terminal symbol-number="43" token-number="298" name="&quot;number&quot;" usefulness="useful"/>
       <terminal symbol-number="44" token-number="299" name="&quot;string&quot;" usefulness="useful"/>
-      <terminal symbol-number="45" token-number="300" name="UNARY" usefulness="useful" prec="5" assoc="precedence"/>
+      <terminal symbol-number="45" token-number="300" name="BINARY" usefulness="useful" prec="1" assoc="precedence"/>
+      <terminal symbol-number="46" token-number="301" name="UNARY" usefulness="useful" prec="6" assoc="precedence"/>
     </terminals>
     <nonterminals>
-      <nonterminal symbol-number="46" name="$accept" usefulness="useful"/>
-      <nonterminal symbol-number="47" name="input" usefulness="useful"/>
-      <nonterminal symbol-number="48" name="line" usefulness="useful"/>
-      <nonterminal symbol-number="49" name="eqtn" usefulness="useful"/>
-      <nonterminal symbol-number="50" name="linestart" usefulness="useful"/>
-      <nonterminal symbol-number="51" name="mid" usefulness="useful"/>
-      <nonterminal symbol-number="52" name="eol" usefulness="useful"/>
-      <nonterminal symbol-number="53" name="exp" usefulness="useful"/>
-      <nonterminal symbol-number="54" name="sexp" usefulness="useful"/>
+      <nonterminal symbol-number="47" name="$accept" usefulness="useful"/>
+      <nonterminal symbol-number="48" name="input" usefulness="useful"/>
+      <nonterminal symbol-number="49" name="line" usefulness="useful"/>
+      <nonterminal symbol-number="50" name="eqtn" usefulness="useful"/>
+      <nonterminal symbol-number="51" name="linestart" usefulness="useful"/>
+      <nonterminal symbol-number="52" name="mid" usefulness="useful"/>
+      <nonterminal symbol-number="53" name="eol" usefulness="useful"/>
+      <nonterminal symbol-number="54" name="exp" usefulness="useful"/>
+      <nonterminal symbol-number="55" name="sexp" usefulness="useful"/>
     </nonterminals>
   </grammar>
 
@@ -1313,8 +1314,6 @@
           <lookaheads>
             <symbol>&quot;end-of-file&quot;</symbol>
             <symbol>error</symbol>
-            <symbol>&quot;+&quot;</symbol>
-            <symbol>&quot;-&quot;</symbol>
             <symbol>&quot;sqrt&quot;</symbol>
             <symbol>&quot;root&quot;</symbol>
             <symbol>&quot;ln&quot;</symbol>
@@ -1353,6 +1352,8 @@
       </itemset>
       <actions>
         <transitions>
+          <transition type="shift" symbol="&quot;+&quot;" state="74"/>
+          <transition type="shift" symbol="&quot;-&quot;" state="75"/>
           <transition type="shift" symbol="&quot;*&quot;" state="76"/>
           <transition type="shift" symbol="&quot;/&quot;" state="77"/>
           <transition type="shift" symbol="&quot;^&quot;" state="78"/>
@@ -1363,8 +1364,8 @@
         </reductions>
       </actions>
       <solved-conflicts>
-        <resolution rule="4" symbol="&quot;+&quot;" type="reduce">&quot;+&quot; &lt; UNARY</resolution>
-        <resolution rule="4" symbol="&quot;-&quot;" type="reduce">&quot;-&quot; &lt; UNARY</resolution>
+        <resolution rule="4" symbol="&quot;+&quot;" type="shift">BINARY &lt; &quot;+&quot;</resolution>
+        <resolution rule="4" symbol="&quot;-&quot;" type="shift">BINARY &lt; &quot;-&quot;</resolution>
       </solved-conflicts>
     </state>
 
