@@ -98,14 +98,14 @@ extern int yydebug;
     MI = 288,
     Y = 289,
     FZ = 290,
-    LETR = 291,
-    EQUALS = 292,
-    LESSTHAN = 293,
-    GREATERTHAN = 294,
-    LTHANEQTO = 295,
-    GTHANEQTO = 296,
-    EOL = 297,
-    NUM = 298,
+    EQUALS = 291,
+    LESSTHAN = 292,
+    GREATERTHAN = 293,
+    LTHANEQTO = 294,
+    GTHANEQTO = 295,
+    EOL = 296,
+    NUM = 297,
+    LETR = 298,
     STR = 299,
     BINARY = 300,
     UNARY = 301
@@ -121,13 +121,15 @@ union YYSTYPE
   char* STR;
   /* "number"  */
   cplx NUM;
+  /* "variable"  */
+  cplx LETR;
   /* eqtn  */
   cplx eqtn;
   /* exp  */
   cplx exp;
   /* sexp  */
   cplx sexp;
-#line 131 "parse.h"
+#line 133 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -148,6 +150,6 @@ int yyparse (yyscan_t scanner, result *res);
 
 	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 152 "parse.h"
+#line 154 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */

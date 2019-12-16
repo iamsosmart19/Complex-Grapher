@@ -90,7 +90,6 @@
 
 	Y		"y"
 	FZ		"f(z)"
-	LETR			"z"
 	EQUALS			"="
 	LESSTHAN		"<"
 	GREATERTHAN		">"
@@ -102,6 +101,7 @@
 ;
 
 %token <cplx> NUM "number"
+%token <cplx> LETR "variable" 
 %type <cplx> exp
 %printer { fprintf(yyo, "%lf%+lfi", creal($$), cimag($$)); } <cplx>
 
@@ -161,14 +161,12 @@ eol:
 ;
 
 exp:
-	NUM "z"			{ $$ = $1 * 1; } |
 	NUM %prec UNARY	{ $$ = $1; /*printf("%lf%+lfi\n", creal($1), cimag($1)); */} | 
 	"e"				{ $$ = M_E; } |
-	"pi"			{ $$ = 3; } |
+	"pi"			{ $$ = M_PI; } |
 	"i"	%prec UNARY	{ $$ = I; } |
+	LETR %prec UNARY { $$ = $1; } |
 	sexp			{ $$ = $1; } |
-
-	/* NUM sexp		{ $$ = $1 * $2; } | */
 
 	exp "+" exp		{ $$ = $1 + $3; } | 
 	exp "-" exp		{ $$ = $1 - $3; }	| 

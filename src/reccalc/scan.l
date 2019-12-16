@@ -43,7 +43,7 @@
 	/* Scan a float. */
 [0-9]+\.[0-9]+	{
 	errno = 0;
-	float n = strtof(yytext, NULL);
+	double n = strtod(yytext, NULL);
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror (yyscanner, res, "float is out of range");
 	}
@@ -74,12 +74,32 @@
 
 [0-9]+\.[0-9]+i	{
 	errno = 0;
-	float n = strtof(yytext, NULL);
+	double n = strtod(yytext, NULL);
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror (yyscanner, res, "float is out of range");
 	}
 	yylval->NUM = n*I;
 	return NUM;
+}
+
+[0-9]+z		{
+	errno = 0;
+	long n = strtol(yytext, NULL, 10);
+	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
+		yyerror (yyscanner, res, "integer is out of range");
+	}
+	yylval->LETR = n;
+	return LETR;
+}
+
+[0-9]+\.[0-9]+z	{
+	errno = 0;
+	double n = strtod(yytext, NULL);
+	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
+		yyerror (yyscanner, res, "float is out of range");
+	}
+	yylval->LETR = n;
+	return LETR;
 }
 
 \+		return PLUS;
