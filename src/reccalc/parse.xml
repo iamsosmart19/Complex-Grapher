@@ -108,17 +108,17 @@
           <symbol>&quot;end-of-line&quot;</symbol>
         </rhs>
       </rule>
-      <rule number="16" usefulness="useful" percent_prec="UNARY">
-        <lhs>exp</lhs>
-        <rhs>
-          <symbol>&quot;number&quot;</symbol>
-        </rhs>
-      </rule>
-      <rule number="17" usefulness="useful">
+      <rule number="16" usefulness="useful">
         <lhs>exp</lhs>
         <rhs>
           <symbol>&quot;number&quot;</symbol>
           <symbol>&quot;z&quot;</symbol>
+        </rhs>
+      </rule>
+      <rule number="17" usefulness="useful" percent_prec="UNARY">
+        <lhs>exp</lhs>
+        <rhs>
+          <symbol>&quot;number&quot;</symbol>
         </rhs>
       </rule>
       <rule number="18" usefulness="useful">
@@ -1092,7 +1092,8 @@
 
     <state number="30">
       <itemset>
-        <item rule-number="16" point="1">
+        <item rule-number="16" point="1"/>
+        <item rule-number="17" point="1">
           <lookaheads>
             <symbol>&quot;end-of-file&quot;</symbol>
             <symbol>error</symbol>
@@ -1132,7 +1133,6 @@
             <symbol>&quot;string&quot;</symbol>
           </lookaheads>
         </item>
-        <item rule-number="17" point="1"/>
       </itemset>
       <actions>
         <transitions>
@@ -1140,7 +1140,7 @@
         </transitions>
         <errors/>
         <reductions>
-          <reduction symbol="$default" rule="16" enabled="true"/>
+          <reduction symbol="$default" rule="17" enabled="true"/>
         </reductions>
       </actions>
       <solved-conflicts/>
@@ -1853,13 +1853,13 @@
 
     <state number="64">
       <itemset>
-        <item rule-number="17" point="2"/>
+        <item rule-number="16" point="2"/>
       </itemset>
       <actions>
         <transitions/>
         <errors/>
         <reductions>
-          <reduction symbol="$default" rule="17" enabled="true"/>
+          <reduction symbol="$default" rule="16" enabled="true"/>
         </reductions>
       </actions>
       <solved-conflicts/>

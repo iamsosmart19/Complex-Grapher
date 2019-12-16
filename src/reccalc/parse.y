@@ -161,12 +161,11 @@ eol:
 ;
 
 exp:
-	NUM %prec UNARY { $$ = $1; /*printf("%lf%+lfi\n", creal($1), cimag($1)); */} | 
 	NUM "z"			{ $$ = $1 * 1; } |
+	NUM %prec UNARY	{ $$ = $1; /*printf("%lf%+lfi\n", creal($1), cimag($1)); */} | 
 	"e"				{ $$ = M_E; } |
 	"pi"			{ $$ = 3; } |
-	"i"	%prec UNARY			{ $$ = I; } |
-	/* NUM "i"			{ $$ = $1 * I; } | */
+	"i"	%prec UNARY	{ $$ = I; } |
 	sexp			{ $$ = $1; } |
 
 	/* NUM sexp		{ $$ = $1 * $2; } | */

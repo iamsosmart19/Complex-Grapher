@@ -602,10 +602,10 @@ static const yytype_uint8 yyrline[] =
 {
        0,   127,   127,   128,   132,   138,   139,   143,   147,   148,
      152,   153,   154,   155,   156,   160,   160,   164,   165,   166,
-     167,   168,   170,   174,   175,   176,   177,   186,   188,   189,
-     191,   192,   194,   195,   197,   198,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   218
+     167,   168,   169,   173,   174,   175,   176,   185,   187,   188,
+     190,   191,   193,   194,   196,   197,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
+     213,   217
 };
 #endif
 
@@ -672,10 +672,10 @@ static const yytype_int8 yydefact[] =
        0,     0,     0,     0,     0,     0,     0,     0,    19,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,    20,    21,     8,     9,
-      17,    51,     0,     2,     0,     0,     5,    22,    15,    16,
+      18,    51,     0,     2,     0,     0,     5,    22,    15,    16,
        6,    28,    29,    30,     0,    33,     0,    34,    35,    36,
       37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    18,     1,     3,     4,    10,    11,
+      47,    48,    49,    50,    17,     1,     3,     4,    10,    11,
       12,    13,    14,     0,     0,     0,     0,     0,     0,    31,
        0,     7,    23,    24,    25,    26,    27,    32
 };
@@ -769,7 +769,7 @@ static const yytype_int8 yyr1[] =
 static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     2,     2,     1,     2,     3,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     2,     1,
+       1,     1,     1,     1,     1,     1,     1,     2,     1,     1,
        1,     1,     1,     3,     3,     3,     3,     3,     2,     2,
        2,     3,     4,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1551,13 +1551,13 @@ yyreduce:
 
   case 17:
 #line 164 "parse.y"
-                        { (yyval.exp) = (yyvsp[0].NUM); /*printf("%lf%+lfi\n", creal($1), cimag($1)); */}
+                                { (yyval.exp) = (yyvsp[-1].NUM) * 1; }
 #line 1556 "parse.c"
     break;
 
   case 18:
 #line 165 "parse.y"
-                                { (yyval.exp) = (yyvsp[-1].NUM) * 1; }
+                        { (yyval.exp) = (yyvsp[0].NUM); /*printf("%lf%+lfi\n", creal($1), cimag($1)); */}
 #line 1562 "parse.c"
     break;
 
@@ -1575,36 +1575,36 @@ yyreduce:
 
   case 21:
 #line 168 "parse.y"
-                                                { (yyval.exp) = I; }
+                                { (yyval.exp) = I; }
 #line 1580 "parse.c"
     break;
 
   case 22:
-#line 170 "parse.y"
+#line 169 "parse.y"
                                 { (yyval.exp) = (yyvsp[0].sexp); }
 #line 1586 "parse.c"
     break;
 
   case 23:
-#line 174 "parse.y"
+#line 173 "parse.y"
                                 { (yyval.exp) = (yyvsp[-2].exp) + (yyvsp[0].exp); }
 #line 1592 "parse.c"
     break;
 
   case 24:
-#line 175 "parse.y"
+#line 174 "parse.y"
                                 { (yyval.exp) = (yyvsp[-2].exp) - (yyvsp[0].exp); }
 #line 1598 "parse.c"
     break;
 
   case 25:
-#line 176 "parse.y"
+#line 175 "parse.y"
                                 { (yyval.exp) = (yyvsp[-2].exp) * (yyvsp[0].exp); }
 #line 1604 "parse.c"
     break;
 
   case 26:
-#line 177 "parse.y"
+#line 176 "parse.y"
                                 {
 		if ((yyvsp[0].exp) == 0) {
 			yyerror(scanner, res, "invalid division by zero");
@@ -1618,151 +1618,151 @@ yyreduce:
     break;
 
   case 27:
-#line 186 "parse.y"
+#line 185 "parse.y"
                                 { (yyval.exp) = pow((yyvsp[-2].exp), (yyvsp[0].exp)); }
 #line 1624 "parse.c"
     break;
 
   case 28:
-#line 188 "parse.y"
+#line 187 "parse.y"
                                         { (yyval.exp) = + (yyvsp[0].exp); }
 #line 1630 "parse.c"
     break;
 
   case 29:
-#line 189 "parse.y"
+#line 188 "parse.y"
                                         { (yyval.exp) = - (yyvsp[0].exp); }
 #line 1636 "parse.c"
     break;
 
   case 30:
-#line 191 "parse.y"
+#line 190 "parse.y"
                                 { (yyval.exp) = sqrt((yyvsp[0].sexp)); }
 #line 1642 "parse.c"
     break;
 
   case 31:
-#line 192 "parse.y"
+#line 191 "parse.y"
                                         { (yyval.exp) = pow((yyvsp[0].sexp), 1./(yyvsp[-1].sexp)); }
 #line 1648 "parse.c"
     break;
 
   case 32:
-#line 194 "parse.y"
+#line 193 "parse.y"
                                         { (yyval.exp) = log((yyvsp[0].sexp)) / log((yyvsp[-1].sexp)); }
 #line 1654 "parse.c"
     break;
 
   case 33:
-#line 195 "parse.y"
+#line 194 "parse.y"
                                 { (yyval.exp) = log((yyvsp[0].sexp)); }
 #line 1660 "parse.c"
     break;
 
   case 34:
-#line 197 "parse.y"
+#line 196 "parse.y"
                                  { (yyval.exp) = floor((float)(yyvsp[0].sexp)); }
 #line 1666 "parse.c"
     break;
 
   case 35:
-#line 198 "parse.y"
+#line 197 "parse.y"
                                 { (yyval.exp) = ceil((float)(yyvsp[0].sexp)); }
 #line 1672 "parse.c"
     break;
 
   case 36:
-#line 200 "parse.y"
+#line 199 "parse.y"
                                 { (yyval.exp) = asin((yyvsp[0].sexp)); }
 #line 1678 "parse.c"
     break;
 
   case 37:
-#line 201 "parse.y"
+#line 200 "parse.y"
                                 { (yyval.exp) = acos((yyvsp[0].sexp)); }
 #line 1684 "parse.c"
     break;
 
   case 38:
-#line 202 "parse.y"
+#line 201 "parse.y"
                                 { (yyval.exp) = atan((yyvsp[0].sexp)); }
 #line 1690 "parse.c"
     break;
 
   case 39:
-#line 203 "parse.y"
+#line 202 "parse.y"
                                 { (yyval.exp) = sinh((yyvsp[0].sexp)); }
 #line 1696 "parse.c"
     break;
 
   case 40:
-#line 204 "parse.y"
+#line 203 "parse.y"
                                 { (yyval.exp) = cosh((yyvsp[0].sexp)); }
 #line 1702 "parse.c"
     break;
 
   case 41:
-#line 205 "parse.y"
+#line 204 "parse.y"
                                 { (yyval.exp) = tanh((yyvsp[0].sexp)); }
 #line 1708 "parse.c"
     break;
 
   case 42:
-#line 206 "parse.y"
+#line 205 "parse.y"
                                 { (yyval.exp) = 1./cosh((yyvsp[0].sexp)); }
 #line 1714 "parse.c"
     break;
 
   case 43:
-#line 207 "parse.y"
+#line 206 "parse.y"
                                 { (yyval.exp) = 1./sinh((yyvsp[0].sexp)); }
 #line 1720 "parse.c"
     break;
 
   case 44:
-#line 208 "parse.y"
+#line 207 "parse.y"
                                 { (yyval.exp) = 1./tanh((yyvsp[0].sexp)); }
 #line 1726 "parse.c"
     break;
 
   case 45:
-#line 209 "parse.y"
+#line 208 "parse.y"
                                 { (yyval.exp) = sin((yyvsp[0].sexp)); }
 #line 1732 "parse.c"
     break;
 
   case 46:
-#line 210 "parse.y"
+#line 209 "parse.y"
                                 { (yyval.exp) = cos((yyvsp[0].sexp)); }
 #line 1738 "parse.c"
     break;
 
   case 47:
-#line 211 "parse.y"
+#line 210 "parse.y"
                                 { (yyval.exp) = tan((yyvsp[0].sexp)); }
 #line 1744 "parse.c"
     break;
 
   case 48:
-#line 212 "parse.y"
+#line 211 "parse.y"
                                 { (yyval.exp) = 1./cos((yyvsp[0].sexp)); }
 #line 1750 "parse.c"
     break;
 
   case 49:
-#line 213 "parse.y"
+#line 212 "parse.y"
                                 { (yyval.exp) = 1./sin((yyvsp[0].sexp)); }
 #line 1756 "parse.c"
     break;
 
   case 50:
-#line 214 "parse.y"
+#line 213 "parse.y"
                                 { (yyval.exp) = 1./tan((yyvsp[0].sexp)); }
 #line 1762 "parse.c"
     break;
 
   case 51:
-#line 218 "parse.y"
+#line 217 "parse.y"
             {
 		/* printf("str\n"); */
 		result r = parse_string((yyvsp[0].STR));
@@ -2011,7 +2011,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 232 "parse.y"
+#line 231 "parse.y"
 
 // Epilogue (C code).
 

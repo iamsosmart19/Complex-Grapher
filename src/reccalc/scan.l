@@ -62,6 +62,26 @@
 	return NUM;
 }
 
+[0-9]+i		{
+	errno = 0;
+	long n = strtol(yytext, NULL, 10);
+	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
+		yyerror (yyscanner, res, "integer is out of range");
+	}
+	yylval->NUM = n * I;
+	return NUM;
+}
+
+[0-9]+\.[0-9]+i	{
+	errno = 0;
+	float n = strtof(yytext, NULL);
+	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
+		yyerror (yyscanner, res, "float is out of range");
+	}
+	yylval->NUM = n*I;
+	return NUM;
+}
+
 \+		return PLUS;
 -		return MINUS;
 \*		return STAR;
