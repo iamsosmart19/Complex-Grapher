@@ -1541,7 +1541,7 @@ yyreduce:
 
   case 6:
 #line 139 "parse.y"
-                  { printf("err\n"); yyerrok; }
+                  { /*printf("err\n");*/ yyerrok; }
 #line 1546 "parse.c"
     break;
 
@@ -2029,7 +2029,7 @@ result parse(void) {
 }
 
 result parse_string(const char *str) {
-	printf("%s\n", str);
+	//printf("%s\n", str);
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);

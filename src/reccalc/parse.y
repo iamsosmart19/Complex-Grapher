@@ -136,7 +136,7 @@ line:
 			printf("\t%.7lf%+.7lfi\n", creal($eqtn), cimag($eqtn));
 		}
     } | 
-	error eol { printf("err\n"); yyerrok; }
+	error eol { /*printf("err\n");*/ yyerrok; }
 ;
 
 eqtn:
@@ -241,7 +241,7 @@ result parse(void) {
 }
 
 result parse_string(const char *str) {
-	printf("%s\n", str);
+	//printf("%s\n", str);
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);
