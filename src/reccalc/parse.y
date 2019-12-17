@@ -124,6 +124,7 @@
 %%
 // Rules.
 input:
+	exp %prec BINARY	{ res->value = $exp; /*printf("\t%.7lf%+.7lfi\n", creal($exp), cimag($exp)); */} | 
 	line | 
 	input line
 ;
@@ -135,7 +136,6 @@ line:
 			printf("\t%.7lf%+.7lfi\n", creal($eqtn), cimag($eqtn));
 		}
     } | 
-	exp %prec BINARY { res->value = $exp; /*printf("\t%.7lf%+.7lfi\n", creal($exp), cimag($exp)); */} | 
 	error eol { printf("err\n"); yyerrok; }
 ;
 
@@ -241,6 +241,7 @@ result parse(void) {
 }
 
 result parse_string(const char *str) {
+	printf("%s\n", str);
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);

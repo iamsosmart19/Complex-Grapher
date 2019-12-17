@@ -13,30 +13,30 @@
           <symbol>&quot;end-of-file&quot;</symbol>
         </rhs>
       </rule>
-      <rule number="1" usefulness="useful">
+      <rule number="1" usefulness="useful" percent_prec="BINARY">
+        <lhs>input</lhs>
+        <rhs>
+          <symbol>exp</symbol>
+        </rhs>
+      </rule>
+      <rule number="2" usefulness="useful">
         <lhs>input</lhs>
         <rhs>
           <symbol>line</symbol>
         </rhs>
       </rule>
-      <rule number="2" usefulness="useful">
+      <rule number="3" usefulness="useful">
         <lhs>input</lhs>
         <rhs>
           <symbol>input</symbol>
           <symbol>line</symbol>
         </rhs>
       </rule>
-      <rule number="3" usefulness="useful">
+      <rule number="4" usefulness="useful">
         <lhs>line</lhs>
         <rhs>
           <symbol>eqtn</symbol>
           <symbol>eol</symbol>
-        </rhs>
-      </rule>
-      <rule number="4" usefulness="useful" percent_prec="BINARY">
-        <lhs>line</lhs>
-        <rhs>
-          <symbol>exp</symbol>
         </rhs>
       </rule>
       <rule number="5" usefulness="useful">
@@ -1137,89 +1137,22 @@
     <state number="33">
       <itemset>
         <item rule-number="0" point="1"/>
-        <item rule-number="2" point="1"/>
-        <item rule-number="3" point="0"/>
+        <item rule-number="3" point="1"/>
         <item rule-number="4" point="0"/>
         <item rule-number="5" point="0"/>
         <item rule-number="6" point="0"/>
         <item rule-number="7" point="0"/>
         <item rule-number="8" point="0"/>
-        <item rule-number="16" point="0"/>
-        <item rule-number="17" point="0"/>
-        <item rule-number="18" point="0"/>
-        <item rule-number="19" point="0"/>
-        <item rule-number="20" point="0"/>
-        <item rule-number="21" point="0"/>
-        <item rule-number="22" point="0"/>
-        <item rule-number="23" point="0"/>
-        <item rule-number="24" point="0"/>
-        <item rule-number="25" point="0"/>
-        <item rule-number="26" point="0"/>
-        <item rule-number="27" point="0"/>
-        <item rule-number="28" point="0"/>
-        <item rule-number="29" point="0"/>
-        <item rule-number="30" point="0"/>
-        <item rule-number="31" point="0"/>
-        <item rule-number="32" point="0"/>
-        <item rule-number="33" point="0"/>
-        <item rule-number="34" point="0"/>
-        <item rule-number="35" point="0"/>
-        <item rule-number="36" point="0"/>
-        <item rule-number="37" point="0"/>
-        <item rule-number="38" point="0"/>
-        <item rule-number="39" point="0"/>
-        <item rule-number="40" point="0"/>
-        <item rule-number="41" point="0"/>
-        <item rule-number="42" point="0"/>
-        <item rule-number="43" point="0"/>
-        <item rule-number="44" point="0"/>
-        <item rule-number="45" point="0"/>
-        <item rule-number="46" point="0"/>
-        <item rule-number="47" point="0"/>
-        <item rule-number="48" point="0"/>
-        <item rule-number="49" point="0"/>
-        <item rule-number="50" point="0"/>
       </itemset>
       <actions>
         <transitions>
           <transition type="shift" symbol="&quot;end-of-file&quot;" state="65"/>
           <transition type="shift" symbol="error" state="1"/>
-          <transition type="shift" symbol="&quot;+&quot;" state="2"/>
-          <transition type="shift" symbol="&quot;-&quot;" state="3"/>
-          <transition type="shift" symbol="&quot;sqrt&quot;" state="4"/>
-          <transition type="shift" symbol="&quot;root&quot;" state="5"/>
-          <transition type="shift" symbol="&quot;ln&quot;" state="6"/>
-          <transition type="shift" symbol="&quot;log&quot;" state="7"/>
-          <transition type="shift" symbol="&quot;e&quot;" state="8"/>
-          <transition type="shift" symbol="&quot;floor&quot;" state="9"/>
-          <transition type="shift" symbol="&quot;ceil&quot;" state="10"/>
-          <transition type="shift" symbol="&quot;asin&quot;" state="11"/>
-          <transition type="shift" symbol="&quot;acos&quot;" state="12"/>
-          <transition type="shift" symbol="&quot;atan&quot;" state="13"/>
-          <transition type="shift" symbol="&quot;sinh&quot;" state="14"/>
-          <transition type="shift" symbol="&quot;cosh&quot;" state="15"/>
-          <transition type="shift" symbol="&quot;tanh&quot;" state="16"/>
-          <transition type="shift" symbol="&quot;sech&quot;" state="17"/>
-          <transition type="shift" symbol="&quot;csch&quot;" state="18"/>
-          <transition type="shift" symbol="&quot;coth&quot;" state="19"/>
-          <transition type="shift" symbol="&quot;sin&quot;" state="20"/>
-          <transition type="shift" symbol="&quot;cos&quot;" state="21"/>
-          <transition type="shift" symbol="&quot;tan&quot;" state="22"/>
-          <transition type="shift" symbol="&quot;sec&quot;" state="23"/>
-          <transition type="shift" symbol="&quot;csc&quot;" state="24"/>
-          <transition type="shift" symbol="&quot;cot&quot;" state="25"/>
-          <transition type="shift" symbol="&quot;pi&quot;" state="26"/>
-          <transition type="shift" symbol="&quot;i&quot;" state="27"/>
           <transition type="shift" symbol="&quot;y&quot;" state="28"/>
           <transition type="shift" symbol="&quot;f(z)&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="30"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="31"/>
-          <transition type="shift" symbol="&quot;string&quot;" state="32"/>
           <transition type="goto" symbol="line" state="66"/>
           <transition type="goto" symbol="eqtn" state="35"/>
           <transition type="goto" symbol="linestart" state="36"/>
-          <transition type="goto" symbol="exp" state="37"/>
-          <transition type="goto" symbol="sexp" state="38"/>
         </transitions>
         <errors/>
         <reductions/>
@@ -1229,13 +1162,13 @@
 
     <state number="34">
       <itemset>
-        <item rule-number="1" point="1"/>
+        <item rule-number="2" point="1"/>
       </itemset>
       <actions>
         <transitions/>
         <errors/>
         <reductions>
-          <reduction symbol="$default" rule="1" enabled="true"/>
+          <reduction symbol="$default" rule="2" enabled="true"/>
         </reductions>
       </actions>
       <solved-conflicts/>
@@ -1243,7 +1176,7 @@
 
     <state number="35">
       <itemset>
-        <item rule-number="3" point="1"/>
+        <item rule-number="4" point="1"/>
         <item rule-number="14" point="0"/>
         <item rule-number="15" point="0"/>
       </itemset>
@@ -1285,39 +1218,12 @@
 
     <state number="37">
       <itemset>
-        <item rule-number="4" point="1">
+        <item rule-number="1" point="1">
           <lookaheads>
             <symbol>&quot;end-of-file&quot;</symbol>
             <symbol>error</symbol>
-            <symbol>&quot;sqrt&quot;</symbol>
-            <symbol>&quot;root&quot;</symbol>
-            <symbol>&quot;ln&quot;</symbol>
-            <symbol>&quot;log&quot;</symbol>
-            <symbol>&quot;e&quot;</symbol>
-            <symbol>&quot;floor&quot;</symbol>
-            <symbol>&quot;ceil&quot;</symbol>
-            <symbol>&quot;asin&quot;</symbol>
-            <symbol>&quot;acos&quot;</symbol>
-            <symbol>&quot;atan&quot;</symbol>
-            <symbol>&quot;sinh&quot;</symbol>
-            <symbol>&quot;cosh&quot;</symbol>
-            <symbol>&quot;tanh&quot;</symbol>
-            <symbol>&quot;sech&quot;</symbol>
-            <symbol>&quot;csch&quot;</symbol>
-            <symbol>&quot;coth&quot;</symbol>
-            <symbol>&quot;sin&quot;</symbol>
-            <symbol>&quot;cos&quot;</symbol>
-            <symbol>&quot;tan&quot;</symbol>
-            <symbol>&quot;sec&quot;</symbol>
-            <symbol>&quot;csc&quot;</symbol>
-            <symbol>&quot;cot&quot;</symbol>
-            <symbol>&quot;pi&quot;</symbol>
-            <symbol>&quot;i&quot;</symbol>
             <symbol>&quot;y&quot;</symbol>
             <symbol>&quot;f(z)&quot;</symbol>
-            <symbol>&quot;number&quot;</symbol>
-            <symbol>&quot;variable&quot;</symbol>
-            <symbol>&quot;string&quot;</symbol>
           </lookaheads>
         </item>
         <item rule-number="22" point="1"/>
@@ -1336,13 +1242,10 @@
         </transitions>
         <errors/>
         <reductions>
-          <reduction symbol="$default" rule="4" enabled="true"/>
+          <reduction symbol="$default" rule="1" enabled="true"/>
         </reductions>
       </actions>
-      <solved-conflicts>
-        <resolution rule="4" symbol="&quot;+&quot;" type="shift">BINARY &lt; &quot;+&quot;</resolution>
-        <resolution rule="4" symbol="&quot;-&quot;" type="shift">BINARY &lt; &quot;-&quot;</resolution>
-      </solved-conflicts>
+      <solved-conflicts/>
     </state>
 
     <state number="38">
@@ -1417,36 +1320,9 @@
             <symbol>&quot;*&quot;</symbol>
             <symbol>&quot;/&quot;</symbol>
             <symbol>&quot;^&quot;</symbol>
-            <symbol>&quot;sqrt&quot;</symbol>
-            <symbol>&quot;root&quot;</symbol>
-            <symbol>&quot;ln&quot;</symbol>
-            <symbol>&quot;log&quot;</symbol>
-            <symbol>&quot;e&quot;</symbol>
-            <symbol>&quot;floor&quot;</symbol>
-            <symbol>&quot;ceil&quot;</symbol>
-            <symbol>&quot;asin&quot;</symbol>
-            <symbol>&quot;acos&quot;</symbol>
-            <symbol>&quot;atan&quot;</symbol>
-            <symbol>&quot;sinh&quot;</symbol>
-            <symbol>&quot;cosh&quot;</symbol>
-            <symbol>&quot;tanh&quot;</symbol>
-            <symbol>&quot;sech&quot;</symbol>
-            <symbol>&quot;csch&quot;</symbol>
-            <symbol>&quot;coth&quot;</symbol>
-            <symbol>&quot;sin&quot;</symbol>
-            <symbol>&quot;cos&quot;</symbol>
-            <symbol>&quot;tan&quot;</symbol>
-            <symbol>&quot;sec&quot;</symbol>
-            <symbol>&quot;csc&quot;</symbol>
-            <symbol>&quot;cot&quot;</symbol>
-            <symbol>&quot;pi&quot;</symbol>
-            <symbol>&quot;i&quot;</symbol>
             <symbol>&quot;y&quot;</symbol>
             <symbol>&quot;f(z)&quot;</symbol>
             <symbol>&quot;end-of-line&quot;</symbol>
-            <symbol>&quot;number&quot;</symbol>
-            <symbol>&quot;variable&quot;</symbol>
-            <symbol>&quot;string&quot;</symbol>
           </lookaheads>
         </item>
       </itemset>
@@ -1482,36 +1358,9 @@
             <symbol>&quot;*&quot;</symbol>
             <symbol>&quot;/&quot;</symbol>
             <symbol>&quot;^&quot;</symbol>
-            <symbol>&quot;sqrt&quot;</symbol>
-            <symbol>&quot;root&quot;</symbol>
-            <symbol>&quot;ln&quot;</symbol>
-            <symbol>&quot;log&quot;</symbol>
-            <symbol>&quot;e&quot;</symbol>
-            <symbol>&quot;floor&quot;</symbol>
-            <symbol>&quot;ceil&quot;</symbol>
-            <symbol>&quot;asin&quot;</symbol>
-            <symbol>&quot;acos&quot;</symbol>
-            <symbol>&quot;atan&quot;</symbol>
-            <symbol>&quot;sinh&quot;</symbol>
-            <symbol>&quot;cosh&quot;</symbol>
-            <symbol>&quot;tanh&quot;</symbol>
-            <symbol>&quot;sech&quot;</symbol>
-            <symbol>&quot;csch&quot;</symbol>
-            <symbol>&quot;coth&quot;</symbol>
-            <symbol>&quot;sin&quot;</symbol>
-            <symbol>&quot;cos&quot;</symbol>
-            <symbol>&quot;tan&quot;</symbol>
-            <symbol>&quot;sec&quot;</symbol>
-            <symbol>&quot;csc&quot;</symbol>
-            <symbol>&quot;cot&quot;</symbol>
-            <symbol>&quot;pi&quot;</symbol>
-            <symbol>&quot;i&quot;</symbol>
             <symbol>&quot;y&quot;</symbol>
             <symbol>&quot;f(z)&quot;</symbol>
             <symbol>&quot;end-of-line&quot;</symbol>
-            <symbol>&quot;number&quot;</symbol>
-            <symbol>&quot;variable&quot;</symbol>
-            <symbol>&quot;string&quot;</symbol>
           </lookaheads>
         </item>
       </itemset>
@@ -1845,20 +1694,6 @@
 
     <state number="66">
       <itemset>
-        <item rule-number="2" point="2"/>
-      </itemset>
-      <actions>
-        <transitions/>
-        <errors/>
-        <reductions>
-          <reduction symbol="$default" rule="2" enabled="true"/>
-        </reductions>
-      </actions>
-      <solved-conflicts/>
-    </state>
-
-    <state number="67">
-      <itemset>
         <item rule-number="3" point="2"/>
       </itemset>
       <actions>
@@ -1866,6 +1701,20 @@
         <errors/>
         <reductions>
           <reduction symbol="$default" rule="3" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="67">
+      <itemset>
+        <item rule-number="4" point="2"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="4" enabled="true"/>
         </reductions>
       </actions>
       <solved-conflicts/>
@@ -2484,36 +2333,9 @@
             <symbol>error</symbol>
             <symbol>&quot;+&quot;</symbol>
             <symbol>&quot;-&quot;</symbol>
-            <symbol>&quot;sqrt&quot;</symbol>
-            <symbol>&quot;root&quot;</symbol>
-            <symbol>&quot;ln&quot;</symbol>
-            <symbol>&quot;log&quot;</symbol>
-            <symbol>&quot;e&quot;</symbol>
-            <symbol>&quot;floor&quot;</symbol>
-            <symbol>&quot;ceil&quot;</symbol>
-            <symbol>&quot;asin&quot;</symbol>
-            <symbol>&quot;acos&quot;</symbol>
-            <symbol>&quot;atan&quot;</symbol>
-            <symbol>&quot;sinh&quot;</symbol>
-            <symbol>&quot;cosh&quot;</symbol>
-            <symbol>&quot;tanh&quot;</symbol>
-            <symbol>&quot;sech&quot;</symbol>
-            <symbol>&quot;csch&quot;</symbol>
-            <symbol>&quot;coth&quot;</symbol>
-            <symbol>&quot;sin&quot;</symbol>
-            <symbol>&quot;cos&quot;</symbol>
-            <symbol>&quot;tan&quot;</symbol>
-            <symbol>&quot;sec&quot;</symbol>
-            <symbol>&quot;csc&quot;</symbol>
-            <symbol>&quot;cot&quot;</symbol>
-            <symbol>&quot;pi&quot;</symbol>
-            <symbol>&quot;i&quot;</symbol>
             <symbol>&quot;y&quot;</symbol>
             <symbol>&quot;f(z)&quot;</symbol>
             <symbol>&quot;end-of-line&quot;</symbol>
-            <symbol>&quot;number&quot;</symbol>
-            <symbol>&quot;variable&quot;</symbol>
-            <symbol>&quot;string&quot;</symbol>
           </lookaheads>
         </item>
         <item rule-number="23" point="1"/>
@@ -2551,36 +2373,9 @@
             <symbol>error</symbol>
             <symbol>&quot;+&quot;</symbol>
             <symbol>&quot;-&quot;</symbol>
-            <symbol>&quot;sqrt&quot;</symbol>
-            <symbol>&quot;root&quot;</symbol>
-            <symbol>&quot;ln&quot;</symbol>
-            <symbol>&quot;log&quot;</symbol>
-            <symbol>&quot;e&quot;</symbol>
-            <symbol>&quot;floor&quot;</symbol>
-            <symbol>&quot;ceil&quot;</symbol>
-            <symbol>&quot;asin&quot;</symbol>
-            <symbol>&quot;acos&quot;</symbol>
-            <symbol>&quot;atan&quot;</symbol>
-            <symbol>&quot;sinh&quot;</symbol>
-            <symbol>&quot;cosh&quot;</symbol>
-            <symbol>&quot;tanh&quot;</symbol>
-            <symbol>&quot;sech&quot;</symbol>
-            <symbol>&quot;csch&quot;</symbol>
-            <symbol>&quot;coth&quot;</symbol>
-            <symbol>&quot;sin&quot;</symbol>
-            <symbol>&quot;cos&quot;</symbol>
-            <symbol>&quot;tan&quot;</symbol>
-            <symbol>&quot;sec&quot;</symbol>
-            <symbol>&quot;csc&quot;</symbol>
-            <symbol>&quot;cot&quot;</symbol>
-            <symbol>&quot;pi&quot;</symbol>
-            <symbol>&quot;i&quot;</symbol>
             <symbol>&quot;y&quot;</symbol>
             <symbol>&quot;f(z)&quot;</symbol>
             <symbol>&quot;end-of-line&quot;</symbol>
-            <symbol>&quot;number&quot;</symbol>
-            <symbol>&quot;variable&quot;</symbol>
-            <symbol>&quot;string&quot;</symbol>
           </lookaheads>
         </item>
         <item rule-number="24" point="1"/>
@@ -2620,36 +2415,9 @@
             <symbol>&quot;-&quot;</symbol>
             <symbol>&quot;*&quot;</symbol>
             <symbol>&quot;/&quot;</symbol>
-            <symbol>&quot;sqrt&quot;</symbol>
-            <symbol>&quot;root&quot;</symbol>
-            <symbol>&quot;ln&quot;</symbol>
-            <symbol>&quot;log&quot;</symbol>
-            <symbol>&quot;e&quot;</symbol>
-            <symbol>&quot;floor&quot;</symbol>
-            <symbol>&quot;ceil&quot;</symbol>
-            <symbol>&quot;asin&quot;</symbol>
-            <symbol>&quot;acos&quot;</symbol>
-            <symbol>&quot;atan&quot;</symbol>
-            <symbol>&quot;sinh&quot;</symbol>
-            <symbol>&quot;cosh&quot;</symbol>
-            <symbol>&quot;tanh&quot;</symbol>
-            <symbol>&quot;sech&quot;</symbol>
-            <symbol>&quot;csch&quot;</symbol>
-            <symbol>&quot;coth&quot;</symbol>
-            <symbol>&quot;sin&quot;</symbol>
-            <symbol>&quot;cos&quot;</symbol>
-            <symbol>&quot;tan&quot;</symbol>
-            <symbol>&quot;sec&quot;</symbol>
-            <symbol>&quot;csc&quot;</symbol>
-            <symbol>&quot;cot&quot;</symbol>
-            <symbol>&quot;pi&quot;</symbol>
-            <symbol>&quot;i&quot;</symbol>
             <symbol>&quot;y&quot;</symbol>
             <symbol>&quot;f(z)&quot;</symbol>
             <symbol>&quot;end-of-line&quot;</symbol>
-            <symbol>&quot;number&quot;</symbol>
-            <symbol>&quot;variable&quot;</symbol>
-            <symbol>&quot;string&quot;</symbol>
           </lookaheads>
         </item>
         <item rule-number="25" point="1"/>
@@ -2687,36 +2455,9 @@
             <symbol>&quot;-&quot;</symbol>
             <symbol>&quot;*&quot;</symbol>
             <symbol>&quot;/&quot;</symbol>
-            <symbol>&quot;sqrt&quot;</symbol>
-            <symbol>&quot;root&quot;</symbol>
-            <symbol>&quot;ln&quot;</symbol>
-            <symbol>&quot;log&quot;</symbol>
-            <symbol>&quot;e&quot;</symbol>
-            <symbol>&quot;floor&quot;</symbol>
-            <symbol>&quot;ceil&quot;</symbol>
-            <symbol>&quot;asin&quot;</symbol>
-            <symbol>&quot;acos&quot;</symbol>
-            <symbol>&quot;atan&quot;</symbol>
-            <symbol>&quot;sinh&quot;</symbol>
-            <symbol>&quot;cosh&quot;</symbol>
-            <symbol>&quot;tanh&quot;</symbol>
-            <symbol>&quot;sech&quot;</symbol>
-            <symbol>&quot;csch&quot;</symbol>
-            <symbol>&quot;coth&quot;</symbol>
-            <symbol>&quot;sin&quot;</symbol>
-            <symbol>&quot;cos&quot;</symbol>
-            <symbol>&quot;tan&quot;</symbol>
-            <symbol>&quot;sec&quot;</symbol>
-            <symbol>&quot;csc&quot;</symbol>
-            <symbol>&quot;cot&quot;</symbol>
-            <symbol>&quot;pi&quot;</symbol>
-            <symbol>&quot;i&quot;</symbol>
             <symbol>&quot;y&quot;</symbol>
             <symbol>&quot;f(z)&quot;</symbol>
             <symbol>&quot;end-of-line&quot;</symbol>
-            <symbol>&quot;number&quot;</symbol>
-            <symbol>&quot;variable&quot;</symbol>
-            <symbol>&quot;string&quot;</symbol>
           </lookaheads>
         </item>
         <item rule-number="26" point="1"/>
@@ -2754,36 +2495,9 @@
             <symbol>&quot;-&quot;</symbol>
             <symbol>&quot;*&quot;</symbol>
             <symbol>&quot;/&quot;</symbol>
-            <symbol>&quot;sqrt&quot;</symbol>
-            <symbol>&quot;root&quot;</symbol>
-            <symbol>&quot;ln&quot;</symbol>
-            <symbol>&quot;log&quot;</symbol>
-            <symbol>&quot;e&quot;</symbol>
-            <symbol>&quot;floor&quot;</symbol>
-            <symbol>&quot;ceil&quot;</symbol>
-            <symbol>&quot;asin&quot;</symbol>
-            <symbol>&quot;acos&quot;</symbol>
-            <symbol>&quot;atan&quot;</symbol>
-            <symbol>&quot;sinh&quot;</symbol>
-            <symbol>&quot;cosh&quot;</symbol>
-            <symbol>&quot;tanh&quot;</symbol>
-            <symbol>&quot;sech&quot;</symbol>
-            <symbol>&quot;csch&quot;</symbol>
-            <symbol>&quot;coth&quot;</symbol>
-            <symbol>&quot;sin&quot;</symbol>
-            <symbol>&quot;cos&quot;</symbol>
-            <symbol>&quot;tan&quot;</symbol>
-            <symbol>&quot;sec&quot;</symbol>
-            <symbol>&quot;csc&quot;</symbol>
-            <symbol>&quot;cot&quot;</symbol>
-            <symbol>&quot;pi&quot;</symbol>
-            <symbol>&quot;i&quot;</symbol>
             <symbol>&quot;y&quot;</symbol>
             <symbol>&quot;f(z)&quot;</symbol>
             <symbol>&quot;end-of-line&quot;</symbol>
-            <symbol>&quot;number&quot;</symbol>
-            <symbol>&quot;variable&quot;</symbol>
-            <symbol>&quot;string&quot;</symbol>
           </lookaheads>
         </item>
       </itemset>
