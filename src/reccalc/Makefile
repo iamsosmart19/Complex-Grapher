@@ -12,6 +12,7 @@ all: $(BASE)
 
 %.c %.h %.xml %.gv: %.y
 	$(BISON) $(BISONFLAGS) --defines --xml --graph=$*.gv -o $*.c $<
+	cat main.c >> $*.c
 
 %.c %.h: %.l
 	$(FLEX) $(FLEXFLAGS) -o$*.c --header-file=$*.h $<

@@ -262,6 +262,7 @@ void yyerror(yyscan_t scanner, result *res, const char *msg, ...) {
 	res->nerrs += 1;
 }
 
+/*
 int main(void) {
 	// Possibly enable parser runtime debugging.
 	yydebug = !!getenv("YYDEBUG");
@@ -269,3 +270,4 @@ int main(void) {
 	// Exit on failure if there were errors.
 	return !!res.nerrs;
 }
+*/

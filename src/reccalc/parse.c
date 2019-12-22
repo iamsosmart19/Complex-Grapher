@@ -2050,7 +2050,18 @@ void yyerror(yyscan_t scanner, result *res, const char *msg, ...) {
 	res->nerrs += 1;
 }
 
+/*
 int main(void) {
+	// Possibly enable parser runtime debugging.
+	yydebug = !!getenv("YYDEBUG");
+	result res = parse();
+	// Exit on failure if there were errors.
+	return !!res.nerrs;
+}
+*/
+int main(void) {
+	/* yyin = fopen("input.txt", "r"); */
+
 	// Possibly enable parser runtime debugging.
 	yydebug = !!getenv("YYDEBUG");
 	result res = parse();
