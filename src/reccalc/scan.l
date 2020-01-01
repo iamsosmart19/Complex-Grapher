@@ -36,7 +36,7 @@
 		size += yyleng;												\
 		assert (size < capacity);									\
 	} while (0)
-	yyin = fopen("input.txt", "r");
+	/* yyin = fopen("input.txt", "r"); */
 %}
 
 	/* Rules. */

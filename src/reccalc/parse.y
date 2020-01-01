@@ -15,6 +15,7 @@
 		int nerrs;
 	} result;
 	result parse_string(const char* str);
+	result parse(void);
 }
 
 // Emitted in the header file, after the definition of YYSTYPE.
