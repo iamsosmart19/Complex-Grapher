@@ -12,7 +12,6 @@ all: $(BASE)
 
 %.c %.h %.xml %.gv: %.y
 	$(BISON) $(BISONFLAGS) --defines --xml --graph=$*.gv -o $*.c $<
-	cat main.c >> $*.c
 
 %.c %.h: %.l
 	$(FLEX) $(FLEXFLAGS) -o$*.c --header-file=$*.h $<
@@ -21,8 +20,11 @@ scan.o: scan.c parse.h
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 parse.o: parse.c scan.h 
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
-$(BASE): parse.o scan.o
+$(BASE): parse.o scan.o main.c
 	$(CC) $(LIBS) $(CFLAGS) -o $@ $^
+
+# $(BASE): parse.o scan.o main.c
+# 	$(CC) $(LIBS) $(CFLAGS) -o $@ $^
 
 run: $(BASE)
 	@echo "Type arithmetic expressions.  Quit with ctrl-d."

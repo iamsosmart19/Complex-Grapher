@@ -3,6 +3,7 @@
 
 // Emitted in the header file, before the definition of YYSTYPE.
 %code requires {
+	#include <complex.h>
 	typedef double complex cplx;
 	typedef void* yyscan_t;
 	typedef struct {
@@ -13,6 +14,7 @@
 		// Number of errors.
 		int nerrs;
 	} result;
+	result parse_string(const char* str);
 }
 
 // Emitted in the header file, after the definition of YYSTYPE.
@@ -125,7 +127,7 @@
 // Rules.
 input:
 	exp %prec BINARY	{ res->value = $exp; /*printf("\t%.7lf%+.7lfi\n", creal($exp), cimag($exp)); */} | 
-	line | 
+	line |
 	input line
 ;
 
@@ -268,6 +270,22 @@ int main(void) {
 	yydebug = !!getenv("YYDEBUG");
 	result res = parse();
 	// Exit on failure if there were errors.
+	return !!res.nerrs;
+}
+*/
+
+/*
+int main(void) {
+	// Possibly enable parser runtime debugging.
+	// Exit on failure if there were errors.
+	FILE* sample = fopen("input.txt", "r");
+	char function[1024];
+	fgets(function, 1024, sample);
+	fclose(sample);
+
+	yydebug = !!getenv("YYDEBUG");
+	result res = parse_string(function);
+
 	return !!res.nerrs;
 }
 */
