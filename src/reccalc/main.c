@@ -10,7 +10,9 @@ int main(void) {
 
 	// Possibly enable parser runtime debugging.
 	yydebug = !!getenv("YYDEBUG");
-	result res = parse_string(function);
+	int* stack;
+	result res = parse_string(function, &stack);
+	printf("%d\n", *stack);
 
 	// Exit on failure if there were errors.
 	return !!res.nerrs;

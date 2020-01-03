@@ -47,6 +47,8 @@ extern int yydebug;
 #line 5 "parse.y"
 
 	#include <complex.h>
+	#include "stack.h"
+	#include "queue.h"
 	typedef double complex cplx;
 	typedef void* yyscan_t;
 	typedef struct {
@@ -57,10 +59,10 @@ extern int yydebug;
 		// Number of errors.
 		int nerrs;
 	} result;
-	result parse_string(const char* str);
+	result parse_string(const char* str, stack* s, queue* q);
 	result parse(void);
 
-#line 64 "parse.h"
+#line 66 "parse.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -132,7 +134,7 @@ union YYSTYPE
   cplx exp;
   /* sexp  */
   cplx sexp;
-#line 136 "parse.h"
+#line 138 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -144,7 +146,7 @@ typedef union YYSTYPE YYSTYPE;
 
 int yyparse (yyscan_t scanner, result *res);
 /* "%code provides" blocks.  */
-#line 22 "parse.y"
+#line 24 "parse.y"
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
@@ -153,6 +155,6 @@ int yyparse (yyscan_t scanner, result *res);
 
 	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 157 "parse.h"
+#line 159 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */

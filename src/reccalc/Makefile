@@ -16,11 +16,15 @@ all: $(BASE)
 %.c %.h: %.l
 	$(FLEX) $(FLEXFLAGS) -o$*.c --header-file=$*.h $<
 
+stack.o: stack.c stack.h
+	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
+queue.o: queue.c queue.h
+	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 scan.o: scan.c parse.h
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 parse.o: parse.c scan.h 
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
-$(BASE): parse.o scan.o main.c
+$(BASE): parse.o scan.o main.c stack.o queue.o
 	$(CC) $(LIBS) $(CFLAGS) -o $@ $^
 
 # $(BASE): parse.o scan.o main.c

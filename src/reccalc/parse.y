@@ -4,6 +4,8 @@
 // Emitted in the header file, before the definition of YYSTYPE.
 %code requires {
 	#include <complex.h>
+	#include "stack.h"
+	#include "queue.h"
 	typedef double complex cplx;
 	typedef void* yyscan_t;
 	typedef struct {
@@ -14,7 +16,7 @@
 		// Number of errors.
 		int nerrs;
 	} result;
-	result parse_string(const char* str);
+	result parse_string(const char* str, stack* s, queue* q);
 	result parse(void);
 }
 
@@ -41,8 +43,8 @@
 }
 
 %code {
-  result parse_string(const char* cp);
-  result parse(void);
+	result parse_string(const char* str, stack* s, queue* q);
+	result parse(void);
 }
 
 %define api.pure full
@@ -217,7 +219,9 @@ exp:
 sexp:
 	STR {
 		/* printf("str\n"); */
-		result r = parse_string($1);
+		stack s = stackInit();
+		queue q = queueInit();
+		result r = parse_string($1, &s, &q);
 		free($1);
 		if (r.nerrs) {
 			res->nerrs += r.nerrs;
@@ -243,7 +247,7 @@ result parse(void) {
 	return res;
 }
 
-result parse_string(const char *str) {
+result parse_string(const char* str, stack* s, queue* q) {
 	/* printf("%s\n", str); */
 	yyscan_t scanner;
 	yylex_init(&scanner);
