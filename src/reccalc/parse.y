@@ -247,6 +247,7 @@ result parse(void) {
 	return res;
 }
 
+//For operators set real() to INT_MAX and imaginary part to op value
 result parse_string(const char* str, stack* s, queue* q) {
 	/* printf("%s\n", str); */
 	yyscan_t scanner;
