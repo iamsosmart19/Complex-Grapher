@@ -229,9 +229,7 @@ exp:
 sexp:
 	STR {
 		/* printf("str\n"); */
-		stack op = stackInit();
-		queue out = queueInit();
-		result r = parse_string($1, &op, &out);
+		result r = parse_string($1, op, out);
 		free($1);
 		if (r.nerrs) {
 			res->nerrs += r.nerrs;

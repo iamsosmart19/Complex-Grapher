@@ -1789,9 +1789,7 @@ yyreduce:
 #line 230 "parse.y"
             {
 		/* printf("str\n"); */
-		stack op = stackInit();
-		queue out = queueInit();
-		result r = parse_string((yyvsp[0].STR), &op, &out);
+		result r = parse_string((yyvsp[0].STR), op, out);
 		free((yyvsp[0].STR));
 		if (r.nerrs) {
 			res->nerrs += r.nerrs;
@@ -1801,11 +1799,11 @@ yyreduce:
 			(yyval.sexp) = r.value;
 		}
 	}
-#line 1805 "parse.c"
+#line 1803 "parse.c"
     break;
 
 
-#line 1809 "parse.c"
+#line 1807 "parse.c"
 
       default: break;
     }
@@ -2037,7 +2035,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 246 "parse.y"
+#line 244 "parse.y"
 
 // Epilogue (C code).
 
