@@ -4,8 +4,8 @@
 /*
 */
 int main(void) {
-	/* FILE* sample = fopen("input.txt", "r"); */
-	FILE* sample = fopen("input2.txt", "r");
+	FILE* sample = fopen("input.txt", "r");
+	/* FILE* sample = fopen("input2.txt", "r"); */
 	char function[1024];
 	fgets(function, 1024, sample);
 	fclose(sample);

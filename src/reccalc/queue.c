@@ -16,16 +16,12 @@ queue queueInit() {
 }
 
 void enqueue(queue q, cplx val) {
-	printf("top: %lf%+lfi\n", creal(front(q)), cimag(front(q)));
-
 	qnode* temp = malloc(sizeof(qnode));
 	temp->val = val;
 	temp->next = q.begin->next;
 	temp->prev = q.begin;
 	q.begin->next->prev = temp;
 	q.begin->next = temp;
-
-	printf("enq: %lf%+lfi\n\n", creal(back(q)), cimag(back(q)));
 }
 
 cplx dequeue(queue q) {
@@ -43,7 +39,6 @@ cplx dequeue(queue q) {
 
 cplx front(queue q) {
 	if(q.begin->next == q.end) {
-		printf("no elems\n");
 		return INT_MIN;
 	}
 	return q.end->prev->val;
@@ -51,7 +46,6 @@ cplx front(queue q) {
 
 cplx back(queue q) {
 	if(q.begin->next == q.end) {
-		printf("no elems\n");
 		return INT_MIN;
 	}
 	return q.begin->next->val;

@@ -157,29 +157,11 @@ z		return LETR;
 \<=		return LTHANEQTO;
 \>=		return GTHANEQTO;
 
-\(		nesting += 1; BEGIN SC_STRING;
-	/* \(		return LBRAC; */
+	/* \(		nesting += 1; BEGIN SC_STRING; */
+\(		return LBRAC;
+\)		return RBRAC;
 
 .		;yyerror(yyscanner, res, "syntax error, invalid character: %c", yytext[0]);
-
-<SC_STRING>
-{
-	\(+	nesting += yyleng; STR_APPEND ();
-	\)		{
-		if (!--nesting) {
-			BEGIN INITIAL;
-			if (str) {
-				str[size] = 0;
-			}
-			yylval->STR = str;
-			return STR;
-		}
-		else {
-			STR_APPEND();
-		}
-	}
-	[^()]+  STR_APPEND();
-}
 
 <<EOF>>  return TOK_EOF;
 %%

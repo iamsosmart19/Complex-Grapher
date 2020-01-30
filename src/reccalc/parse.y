@@ -106,6 +106,9 @@
 	LTHANEQTO		"<="
 	GTHANEQTO		">="
 
+	LBRAC			"("
+	RBRAC			")"
+
 	EOL		"end-of-line"
 	TOK_EOF	0 "end-of-file"
 ;
@@ -117,13 +120,7 @@
 
 %printer { fprintf(yyo, "%lf%+lfi", creal($$), cimag($$)); } <cplx>
 
-%type <cplx> sexp
-
 %type <cplx> eqtn
-
-%token <char*> STR "string"
-%printer { fprintf(yyo, "\"%s\"", $$); } <char*>
-%destructor { free($$); } <char*>
 
 // Precedence (from lowest to highest) and associativity.
 %precedence BINARY
@@ -181,7 +178,7 @@ exp:
 	"pi"			{ $$ = M_PI; enqueue(*out, M_PI); } |
 	"i"	%prec UNARY	{ $$ = I; enqueue(*out, I); } |
 	LETR %prec UNARY { $$ = $1; } |
-	sexp			{ $$ = $1; } |
+	"(" exp ")"			{ $$ = $2; } |
 
 	exp "+" exp		{ $$ = $1 + $3; } | 
 	exp "-" exp		{ $$ = $1 - $3; }	| 
@@ -200,45 +197,30 @@ exp:
 	"+" exp %prec UNARY		{ $$ = + $2; }	| 
 	"-" exp %prec UNARY		{ $$ = - $2; } | 
 
-	"sqrt" sexp %prec UNARY	{ $$ = sqrt($2); } |
-	"root" sexp sexp 	 	{ $$ = pow($3, 1./$2); } |
+	"sqrt" "(" exp ")" %prec UNARY	{ $$ = sqrt($3); } |
+	"root" "(" exp ")" "(" exp ")" 	 	{ $$ = pow($6, 1./$3); } |
 
-	"log" "_" sexp sexp		{ $$ = log($4) / log($3); } |
-	"ln" sexp %prec UNARY	{ $$ = log($2); } |
+	"log" "_" "(" exp ")" "(" exp ")"		{ $$ = log($7) / log($4); } |
+	"ln" "(" exp ")" %prec UNARY	{ $$ = log($3); } |
 
-	"floor" sexp %prec UNARY { $$ = floor((float)$2); } |
-	"ceil" sexp %prec UNARY { $$ = ceil((float)$2); } |
+	"floor" "(" exp ")" %prec UNARY { $$ = floor((float)$3); } |
+	"ceil" "(" exp ")" %prec UNARY { $$ = ceil((float)$3); } |
 
-	"asin" sexp %prec UNARY	{ $$ = asin($2); } |
-	"acos" sexp %prec UNARY	{ $$ = acos($2); } |
-	"atan" sexp %prec UNARY	{ $$ = atan($2); } |
-	"sinh" sexp %prec UNARY	{ $$ = sinh($2); } |
-	"cosh" sexp %prec UNARY	{ $$ = cosh($2); } |
-	"tanh" sexp %prec UNARY	{ $$ = tanh($2); } |
-	"sech" sexp %prec UNARY	{ $$ = 1./cosh($2); } |
-	"csch" sexp %prec UNARY	{ $$ = 1./sinh($2); } |
-	"coth" sexp %prec UNARY	{ $$ = 1./tanh($2); } |
-	"sin" sexp %prec UNARY	{ $$ = sin($2); printf("top: %lf%+lfi\n", creal(front(*out)), cimag(front(*out))); } |
-	"cos" sexp %prec UNARY	{ $$ = cos($2); } |
-	"tan" sexp %prec UNARY	{ $$ = tan($2); } |
-	"sec" sexp %prec UNARY	{ $$ = 1./cos($2); } |
-	"csc" sexp %prec UNARY	{ $$ = 1./sin($2); } |
-	"cot" sexp %prec UNARY	{ $$ = 1./tan($2); } 
-;
-
-sexp:
-	STR {
-		/* printf("str\n"); */
-		result r = parse_string($1, op, out);
-		free($1);
-		if (r.nerrs) {
-			res->nerrs += r.nerrs;
-			YYERROR;
-		}
-		else {
-			$$ = r.value;
-		}
-	}
+	"asin" "(" exp ")" %prec UNARY	{ $$ = asin($3); } |
+	"acos" "(" exp ")" %prec UNARY	{ $$ = acos($3); } |
+	"atan" "(" exp ")" %prec UNARY	{ $$ = atan($3); } |
+	"sinh" "(" exp ")" %prec UNARY	{ $$ = sinh($3); } |
+	"cosh" "(" exp ")" %prec UNARY	{ $$ = cosh($3); } |
+	"tanh" "(" exp ")" %prec UNARY	{ $$ = tanh($3); } |
+	"sech" "(" exp ")" %prec UNARY	{ $$ = 1./cosh($3); } |
+	"csch" "(" exp ")" %prec UNARY	{ $$ = 1./sinh($3); } |
+	"coth" "(" exp ")" %prec UNARY	{ $$ = 1./tanh($3); } |
+	"sin" "(" exp ")" %prec UNARY	{ $$ = sin($3); printf("top: %lf%+lfi\n", creal(front(*out)), cimag(front(*out))); } |
+	"cos" "(" exp ")" %prec UNARY	{ $$ = cos($3); } |
+	"tan" "(" exp ")" %prec UNARY	{ $$ = tan($3); } |
+	"sec" "(" exp ")" %prec UNARY	{ $$ = 1./cos($3); } |
+	"csc" "(" exp ")" %prec UNARY	{ $$ = 1./sin($3); } |
+	"cot" "(" exp ")" %prec UNARY	{ $$ = 1./tan($3); } 
 ;
 
 %%
