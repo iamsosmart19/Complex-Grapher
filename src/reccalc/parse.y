@@ -6,6 +6,7 @@
 	#include <complex.h>
 	#include "stack.h"
 	#include "queue.h"
+
 	typedef double complex cplx;
 	typedef void* yyscan_t;
 	typedef struct {
@@ -55,7 +56,11 @@
  // Scanner and error count are exchanged between main, yyparse and yylex.
 %param {yyscan_t scanner}{result *res}
 
+//custom yyparse paramaters
+%parse-param {stack* op}{queue* out}
+
 %token
+	COMMENT "//"
 	PLUS	"+"
 	MINUS	"-"
 	STAR	"*"
@@ -107,7 +112,9 @@
 
 %token <cplx> NUM "number"
 %token <cplx> LETR "variable" 
+
 %type <cplx> exp
+
 %printer { fprintf(yyo, "%lf%+lfi", creal($$), cimag($$)); } <cplx>
 
 %type <cplx> sexp
@@ -141,6 +148,9 @@ line:
 			printf("\t%.7lf%+.7lfi\n", creal($eqtn), cimag($eqtn));
 		}
     } | 
+	"//" eqtn eol {
+		;
+	} |
 	error eol { /*printf("err\n");*/ yyerrok; }
 ;
 
@@ -166,10 +176,10 @@ eol:
 ;
 
 exp:
-	NUM %prec UNARY	{ $$ = $1; /*printf("%lf%+lfi\n", creal($1), cimag($1)); */} | 
-	"e"				{ $$ = M_E; } |
-	"pi"			{ $$ = M_PI; } |
-	"i"	%prec UNARY	{ $$ = I; } |
+	NUM %prec UNARY	{ $$ = $1; /*printf("%lf%+lfi\n", creal($1), cimag($1));*/ enqueue(*out, $1); } | 
+	"e"				{ $$ = M_E; enqueue(*out, M_E); } |
+	"pi"			{ $$ = M_PI; enqueue(*out, M_PI); } |
+	"i"	%prec UNARY	{ $$ = I; enqueue(*out, I); } |
 	LETR %prec UNARY { $$ = $1; } |
 	sexp			{ $$ = $1; } |
 
@@ -208,7 +218,7 @@ exp:
 	"sech" sexp %prec UNARY	{ $$ = 1./cosh($2); } |
 	"csch" sexp %prec UNARY	{ $$ = 1./sinh($2); } |
 	"coth" sexp %prec UNARY	{ $$ = 1./tanh($2); } |
-	"sin" sexp %prec UNARY	{ $$ = sin($2); } |
+	"sin" sexp %prec UNARY	{ $$ = sin($2); printf("top: %lf%+lfi\n", creal(front(*out)), cimag(front(*out))); } |
 	"cos" sexp %prec UNARY	{ $$ = cos($2); } |
 	"tan" sexp %prec UNARY	{ $$ = tan($2); } |
 	"sec" sexp %prec UNARY	{ $$ = 1./cos($2); } |
@@ -219,9 +229,9 @@ exp:
 sexp:
 	STR {
 		/* printf("str\n"); */
-		stack s = stackInit();
-		queue q = queueInit();
-		result r = parse_string($1, &s, &q);
+		stack op = stackInit();
+		queue out = queueInit();
+		result r = parse_string($1, &op, &out);
 		free($1);
 		if (r.nerrs) {
 			res->nerrs += r.nerrs;
@@ -242,19 +252,23 @@ result parse(void) {
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	result res = {1, 0, 0};
-	yyparse(scanner, &res);
+	stack blank = stackInit();
+	queue blonk = queueInit();
+	stack* op = &blank;
+	queue* out = &blonk;
+	yyparse(scanner, &res, op, out);
 	yylex_destroy(scanner);
 	return res;
 }
 
 //For operators set real() to INT_MAX and imaginary part to op value
-result parse_string(const char* str, stack* s, queue* q) {
+result parse_string(const char* str, stack* op, queue* out) {
 	/* printf("%s\n", str); */
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);
 	result res = {0, 0, 0};
-	yyparse(scanner, &res);
+	yyparse(scanner, &res, op, out);
 	yy_delete_buffer(buf, scanner);
 	yylex_destroy(scanner);
 	return res;

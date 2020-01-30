@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.4.2.  */
+/* A Bison parser, made by GNU Bison 3.5.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -44,20 +44,26 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 6 "parse.y"
+#line 5 "parse.y"
 
-  typedef void* yyscan_t;
-  typedef struct
-  {
-    // Whether to print the intermediate results.
-    int verbose;
-    // Value of the last computation.
-    int value;
-    // Number of errors.
-    int nerrs;
-  } result;
+	#include <complex.h>
+	#include "stack.h"
+	#include "queue.h"
 
-#line 61 "parse.tab.h"
+	typedef double complex cplx;
+	typedef void* yyscan_t;
+	typedef struct {
+		// Whether to print the intermediate results.
+		int verbose;
+		// Value of the last computation.
+		cplx value;
+		// Number of errors.
+		int nerrs;
+	} result;
+	result parse_string(const char* str, stack* s, queue* q);
+	result parse(void);
+
+#line 67 "parse.tab.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -65,14 +71,50 @@ extern int yydebug;
   enum yytokentype
   {
     TOK_EOF = 0,
-    TOK_PLUS = 258,
-    TOK_MINUS = 259,
-    TOK_STAR = 260,
-    TOK_SLASH = 261,
-    TOK_EOL = 262,
-    TOK_NUM = 263,
-    TOK_STR = 264,
-    TOK_UNARY = 265
+    PLUS = 258,
+    MINUS = 259,
+    STAR = 260,
+    SLASH = 261,
+    EXP = 262,
+    UNDERSCORE = 263,
+    SQRT = 264,
+    ROOT = 265,
+    LN = 266,
+    LOG = 267,
+    E = 268,
+    ABS = 269,
+    FLOOR = 270,
+    CEIL = 271,
+    ASIN = 272,
+    ACOS = 273,
+    ATAN = 274,
+    SINH = 275,
+    COSH = 276,
+    TANH = 277,
+    SECH = 278,
+    CSCH = 279,
+    COTH = 280,
+    SIN = 281,
+    COS = 282,
+    TAN = 283,
+    SEC = 284,
+    CSC = 285,
+    COT = 286,
+    PI = 287,
+    MI = 288,
+    Y = 289,
+    FZ = 290,
+    EQUALS = 291,
+    LESSTHAN = 292,
+    GREATERTHAN = 293,
+    LTHANEQTO = 294,
+    GTHANEQTO = 295,
+    EOL = 296,
+    NUM = 297,
+    LETR = 298,
+    STR = 299,
+    BINARY = 300,
+    UNARY = 301
   };
 #endif
 
@@ -82,12 +124,18 @@ union YYSTYPE
 {
 
   /* "string"  */
-  char* TOK_STR;
+  char* STR;
   /* "number"  */
-  int TOK_NUM;
+  cplx NUM;
+  /* "variable"  */
+  cplx LETR;
+  /* eqtn  */
+  cplx eqtn;
   /* exp  */
-  int TOK_exp;
-#line 91 "parse.tab.h"
+  cplx exp;
+  /* sexp  */
+  cplx sexp;
+#line 139 "parse.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -99,16 +147,15 @@ typedef union YYSTYPE YYSTYPE;
 
 int yyparse (yyscan_t scanner, result *res);
 /* "%code provides" blocks.  */
-#line 21 "parse.y"
+#line 25 "parse.y"
 
-  // Tell Flex the expected prototype of yylex.
-  // The scanner argument must be named yyscanner.
-#define YY_DECL                                                         \
-  enum yytokentype yylex (YYSTYPE* yylval, yyscan_t yyscanner, result *res)
-  YY_DECL;
+	// Tell Flex the expected prototype of yylex.
+	// The scanner argument must be named yyscanner.
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res)
+	YY_DECL;
 
-  void yyerror (yyscan_t scanner, result *res, const char *msg, ...);
+	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 113 "parse.tab.h"
+#line 160 "parse.tab.h"
 
 #endif /* !YY_YY_PARSE_TAB_H_INCLUDED  */

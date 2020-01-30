@@ -2,23 +2,34 @@
 #include "scan.h"
 
 /*
+*/
 int main(void) {
-	FILE* sample = fopen("input.txt", "r");
+	/* FILE* sample = fopen("input.txt", "r"); */
+	FILE* sample = fopen("input2.txt", "r");
 	char function[1024];
 	fgets(function, 1024, sample);
 	fclose(sample);
 
 	// Possibly enable parser runtime debugging.
 	yydebug = !!getenv("YYDEBUG");
-	int* stack;
-	result res = parse_string(function, &stack);
-	printf("%d\n", *stack);
+	stack op = stackInit();
+	queue out = queueInit();
+	result res = parse_string(function, &op, &out);
+
+	printf("MAIN: top: %lf%+lfi\n", creal(front(out)), cimag(front(out)));
+
+	while(front(out) != INT_MIN) {
+		printf("%lf%+lfi\n", creal(front(out)), cimag(front(out)));
+		dequeue(out);
+	}
 
 	// Exit on failure if there were errors.
 	return !!res.nerrs;
 }
+/*
 */
 
+/*
 int main(void) {
 	// Possibly enable parser runtime debugging.
 	yydebug = !!getenv("YYDEBUG");
@@ -27,3 +38,4 @@ int main(void) {
 	// Exit on failure if there were errors.
 	return !!res.nerrs;
 }
+*/

@@ -5,29 +5,33 @@ queue queueInit() {
 	temp.begin = malloc(sizeof(qnode));
 	temp.end = malloc(sizeof(qnode));
 
-	temp.begin->val = -1;
+	temp.begin->val = INT_MIN;
 	temp.begin->next = temp.end;
 	temp.begin->prev = NULL;
 
-	temp.end->val = -1;
+	temp.end->val = INT_MIN;
 	temp.end->next = NULL;
 	temp.end->prev = temp.begin;
 	return temp;
 }
 
 void enqueue(queue q, cplx val) {
+	printf("top: %lf%+lfi\n", creal(front(q)), cimag(front(q)));
+
 	qnode* temp = malloc(sizeof(qnode));
 	temp->val = val;
 	temp->next = q.begin->next;
 	temp->prev = q.begin;
 	q.begin->next->prev = temp;
 	q.begin->next = temp;
+
+	printf("enq: %lf%+lfi\n\n", creal(back(q)), cimag(back(q)));
 }
 
 cplx dequeue(queue q) {
 	if(q.begin->next == q.end) {
 		//printf("shining eyes pierce veiled hands\n");
-		return -1;
+		return INT_MIN;
 	}
 	cplx ret = q.end->prev->val;
 	qnode* temp = q.end->prev;
@@ -37,10 +41,18 @@ cplx dequeue(queue q) {
 	return ret;
 }
 
-cplx back(queue q) {
+cplx front(queue q) {
 	if(q.begin->next == q.end) {
-		return -1;
+		printf("no elems\n");
+		return INT_MIN;
 	}
 	return q.end->prev->val;
 }
 
+cplx back(queue q) {
+	if(q.begin->next == q.end) {
+		printf("no elems\n");
+		return INT_MIN;
+	}
+	return q.begin->next->val;
+}

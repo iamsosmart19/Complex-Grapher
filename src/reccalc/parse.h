@@ -49,6 +49,7 @@ extern int yydebug;
 	#include <complex.h>
 	#include "stack.h"
 	#include "queue.h"
+
 	typedef double complex cplx;
 	typedef void* yyscan_t;
 	typedef struct {
@@ -62,7 +63,7 @@ extern int yydebug;
 	result parse_string(const char* str, stack* s, queue* q);
 	result parse(void);
 
-#line 66 "parse.h"
+#line 67 "parse.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -70,50 +71,51 @@ extern int yydebug;
   enum yytokentype
   {
     TOK_EOF = 0,
-    PLUS = 258,
-    MINUS = 259,
-    STAR = 260,
-    SLASH = 261,
-    EXP = 262,
-    UNDERSCORE = 263,
-    SQRT = 264,
-    ROOT = 265,
-    LN = 266,
-    LOG = 267,
-    E = 268,
-    ABS = 269,
-    FLOOR = 270,
-    CEIL = 271,
-    ASIN = 272,
-    ACOS = 273,
-    ATAN = 274,
-    SINH = 275,
-    COSH = 276,
-    TANH = 277,
-    SECH = 278,
-    CSCH = 279,
-    COTH = 280,
-    SIN = 281,
-    COS = 282,
-    TAN = 283,
-    SEC = 284,
-    CSC = 285,
-    COT = 286,
-    PI = 287,
-    MI = 288,
-    Y = 289,
-    FZ = 290,
-    EQUALS = 291,
-    LESSTHAN = 292,
-    GREATERTHAN = 293,
-    LTHANEQTO = 294,
-    GTHANEQTO = 295,
-    EOL = 296,
-    NUM = 297,
-    LETR = 298,
-    STR = 299,
-    BINARY = 300,
-    UNARY = 301
+    COMMENT = 258,
+    PLUS = 259,
+    MINUS = 260,
+    STAR = 261,
+    SLASH = 262,
+    EXP = 263,
+    UNDERSCORE = 264,
+    SQRT = 265,
+    ROOT = 266,
+    LN = 267,
+    LOG = 268,
+    E = 269,
+    ABS = 270,
+    FLOOR = 271,
+    CEIL = 272,
+    ASIN = 273,
+    ACOS = 274,
+    ATAN = 275,
+    SINH = 276,
+    COSH = 277,
+    TANH = 278,
+    SECH = 279,
+    CSCH = 280,
+    COTH = 281,
+    SIN = 282,
+    COS = 283,
+    TAN = 284,
+    SEC = 285,
+    CSC = 286,
+    COT = 287,
+    PI = 288,
+    MI = 289,
+    Y = 290,
+    FZ = 291,
+    EQUALS = 292,
+    LESSTHAN = 293,
+    GREATERTHAN = 294,
+    LTHANEQTO = 295,
+    GTHANEQTO = 296,
+    EOL = 297,
+    NUM = 298,
+    LETR = 299,
+    STR = 300,
+    BINARY = 301,
+    UNARY = 302
   };
 #endif
 
@@ -134,7 +136,7 @@ union YYSTYPE
   cplx exp;
   /* sexp  */
   cplx sexp;
-#line 138 "parse.h"
+#line 140 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -144,9 +146,9 @@ typedef union YYSTYPE YYSTYPE;
 
 
 
-int yyparse (yyscan_t scanner, result *res);
+int yyparse (yyscan_t scanner, result *res, stack* op, queue* out);
 /* "%code provides" blocks.  */
-#line 24 "parse.y"
+#line 25 "parse.y"
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
@@ -155,6 +157,6 @@ int yyparse (yyscan_t scanner, result *res);
 
 	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
 
-#line 159 "parse.h"
+#line 161 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */

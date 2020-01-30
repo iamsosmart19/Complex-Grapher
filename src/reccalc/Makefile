@@ -10,7 +10,7 @@ LIBS=-lm
 
 all: $(BASE)
 
-%.c %.h %.xml %.gv: %.y
+%.c %.h %.xml %.gv: %.y parse.tab.c parse.tab.h
 	$(BISON) $(BISONFLAGS) --defines --xml --graph=$*.gv -o $*.c $<
 
 %.c %.h: %.l

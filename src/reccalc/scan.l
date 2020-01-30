@@ -46,7 +46,7 @@
 	errno = 0;
 	double n = strtod(yytext, NULL);
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
-		yyerror (yyscanner, res, "float is out of range");
+		yyerror(yyscanner, res, "float is out of range");
 	}
 	yylval->NUM = n;
 	return NUM;
@@ -57,7 +57,7 @@
 	errno = 0;
 	long n = strtol(yytext, NULL, 10);
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
-		yyerror (yyscanner, res, "integer is out of range");
+		yyerror(yyscanner, res, "integer is out of range");
 	}
 	yylval->NUM = n;
 	return NUM;
@@ -67,7 +67,7 @@
 	errno = 0;
 	long n = strtol(yytext, NULL, 10);
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
-		yyerror (yyscanner, res, "integer is out of range");
+		yyerror(yyscanner, res, "integer is out of range");
 	}
 	yylval->NUM = n * I;
 	return NUM;
@@ -77,7 +77,7 @@
 	errno = 0;
 	double n = strtod(yytext, NULL);
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
-		yyerror (yyscanner, res, "float is out of range");
+		yyerror(yyscanner, res, "float is out of range");
 	}
 	yylval->NUM = n*I;
 	return NUM;
@@ -87,7 +87,7 @@
 	errno = 0;
 	long n = strtol(yytext, NULL, 10);
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
-		yyerror (yyscanner, res, "integer is out of range");
+		yyerror(yyscanner, res, "integer is out of range");
 	}
 	yylval->LETR = n;
 	return LETR;
@@ -97,11 +97,13 @@
 	errno = 0;
 	double n = strtod(yytext, NULL);
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
-		yyerror (yyscanner, res, "float is out of range");
+		yyerror(yyscanner, res, "float is out of range");
 	}
 	yylval->LETR = n;
 	return LETR;
 }
+
+\/\/	return COMMENT;
 
 \+		return PLUS;
 -		return MINUS;
@@ -156,8 +158,9 @@ z		return LETR;
 \>=		return GTHANEQTO;
 
 \(		nesting += 1; BEGIN SC_STRING;
+	/* \(		return LBRAC; */
 
-.		;yyerror (yyscanner, res, "syntax error, invalid character: %c", yytext[0]);
+.		;yyerror(yyscanner, res, "syntax error, invalid character: %c", yytext[0]);
 
 <SC_STRING>
 {
