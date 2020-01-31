@@ -2,6 +2,7 @@
 #define STACK_H
 
 #include <stdlib.h>
+#include <float.h>
 #include <complex.h>
 
 typedef double complex cplx;

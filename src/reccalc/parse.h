@@ -152,8 +152,11 @@ int yyparse (yyscan_t scanner, result *res, stack* op, queue* out);
 	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res)
 	YY_DECL;
 
-	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
+	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
+	void yyerror(yyscan_t scanner, result *res, stack *op, queue *out, const char *msg, ...);
 
-#line 158 "parse.h"
+	int precValues[32];
+
+#line 161 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */

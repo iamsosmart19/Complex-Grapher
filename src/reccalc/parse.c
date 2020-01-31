@@ -63,7 +63,7 @@
 #define YYPULL 1
 
 /* "%code top" blocks.  */
-#line 35 "parse.y"
+#line 38 "parse.y"
 
 	#include <stdarg.h> // va_list.
 	#include <stdio.h>  // printf.
@@ -228,20 +228,23 @@ int yyparse (yyscan_t scanner, result *res, stack* op, queue* out);
 	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res)
 	YY_DECL;
 
-	void yyerror(yyscan_t scanner, result *res, const char *msg, ...);
+	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
+	void yyerror(yyscan_t scanner, result *res, stack *op, queue *out, const char *msg, ...);
 
-#line 234 "parse.c"
+	int precValues[32];
+
+#line 237 "parse.c"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */
 
 
 /* Unqualified %code blocks.  */
-#line 46 "parse.y"
+#line 49 "parse.y"
 
 	result parse_string(const char* str, stack* s, queue* q);
 	result parse(void);
 
-#line 245 "parse.c"
+#line 248 "parse.c"
 
 #ifdef short
 # undef short
@@ -606,12 +609,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   136,   136,   137,   138,   142,   148,   151,   155,   159,
-     160,   164,   165,   166,   167,   168,   172,   172,   176,   177,
-     178,   179,   180,   181,   183,   184,   185,   186,   195,   197,
-     198,   200,   201,   203,   204,   206,   207,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223
+       0,   139,   139,   140,   141,   145,   151,   154,   158,   162,
+     163,   167,   168,   169,   170,   171,   175,   175,   179,   180,
+     181,   182,   183,   184,   186,   187,   188,   189,   198,   200,
+     201,   203,   204,   206,   207,   209,   210,   212,   213,   214,
+     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226
 };
 #endif
 
@@ -928,27 +931,27 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yy
   switch (yytype)
     {
     case 45: /* "number"  */
-#line 121 "parse.y"
+#line 124 "parse.y"
          { fprintf(yyo, "%lf%+lfi", creal(((*yyvaluep).NUM)), cimag(((*yyvaluep).NUM))); }
-#line 934 "parse.c"
+#line 937 "parse.c"
         break;
 
     case 46: /* "variable"  */
-#line 121 "parse.y"
+#line 124 "parse.y"
          { fprintf(yyo, "%lf%+lfi", creal(((*yyvaluep).LETR)), cimag(((*yyvaluep).LETR))); }
-#line 940 "parse.c"
+#line 943 "parse.c"
         break;
 
     case 52: /* eqtn  */
-#line 121 "parse.y"
+#line 124 "parse.y"
          { fprintf(yyo, "%lf%+lfi", creal(((*yyvaluep).eqtn)), cimag(((*yyvaluep).eqtn))); }
-#line 946 "parse.c"
+#line 949 "parse.c"
         break;
 
     case 56: /* exp  */
-#line 121 "parse.y"
+#line 124 "parse.y"
          { fprintf(yyo, "%lf%+lfi", creal(((*yyvaluep).exp)), cimag(((*yyvaluep).exp))); }
-#line 952 "parse.c"
+#line 955 "parse.c"
         break;
 
       default:
@@ -1570,256 +1573,256 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 136 "parse.y"
+#line 139 "parse.y"
                                 { res->value = (yyvsp[0].exp); /*printf("\t%.7lf%+.7lfi\n", creal($exp), cimag($exp)); */}
-#line 1576 "parse.c"
+#line 1579 "parse.c"
     break;
 
   case 5:
-#line 142 "parse.y"
+#line 145 "parse.y"
                  {
 		res->value = (yyvsp[-1].eqtn);
 		if (res->verbose) {
 			printf("\t%.7lf%+.7lfi\n", creal((yyvsp[-1].eqtn)), cimag((yyvsp[-1].eqtn)));
 		}
     }
-#line 1587 "parse.c"
+#line 1590 "parse.c"
     break;
 
   case 6:
-#line 148 "parse.y"
+#line 151 "parse.y"
                       {
 		;
 	}
-#line 1595 "parse.c"
+#line 1598 "parse.c"
     break;
 
   case 7:
-#line 151 "parse.y"
+#line 154 "parse.y"
                   { /*printf("err\n");*/ yyerrok; }
-#line 1601 "parse.c"
+#line 1604 "parse.c"
     break;
 
   case 8:
-#line 155 "parse.y"
+#line 158 "parse.y"
                           { (yyval.eqtn) = (yyvsp[0].exp); }
-#line 1607 "parse.c"
+#line 1610 "parse.c"
     break;
 
   case 18:
-#line 176 "parse.y"
+#line 179 "parse.y"
                         { (yyval.exp) = (yyvsp[0].NUM); /*printf("%lf%+lfi\n", creal($1), cimag($1));*/ enqueue(*out, (yyvsp[0].NUM)); }
-#line 1613 "parse.c"
+#line 1616 "parse.c"
     break;
 
   case 19:
-#line 177 "parse.y"
+#line 180 "parse.y"
                                         { (yyval.exp) = M_E; enqueue(*out, M_E); }
-#line 1619 "parse.c"
+#line 1622 "parse.c"
     break;
 
   case 20:
-#line 178 "parse.y"
+#line 181 "parse.y"
                                 { (yyval.exp) = M_PI; enqueue(*out, M_PI); }
-#line 1625 "parse.c"
+#line 1628 "parse.c"
     break;
 
   case 21:
-#line 179 "parse.y"
+#line 182 "parse.y"
                                 { (yyval.exp) = I; enqueue(*out, I); }
-#line 1631 "parse.c"
+#line 1634 "parse.c"
     break;
 
   case 22:
-#line 180 "parse.y"
+#line 183 "parse.y"
                          { (yyval.exp) = (yyvsp[0].LETR); }
-#line 1637 "parse.c"
+#line 1640 "parse.c"
     break;
 
   case 23:
-#line 181 "parse.y"
+#line 184 "parse.y"
                                         { (yyval.exp) = (yyvsp[-1].exp); }
-#line 1643 "parse.c"
+#line 1646 "parse.c"
     break;
 
   case 24:
-#line 183 "parse.y"
+#line 186 "parse.y"
                                 { (yyval.exp) = (yyvsp[-2].exp) + (yyvsp[0].exp); }
-#line 1649 "parse.c"
+#line 1652 "parse.c"
     break;
 
   case 25:
-#line 184 "parse.y"
+#line 187 "parse.y"
                                 { (yyval.exp) = (yyvsp[-2].exp) - (yyvsp[0].exp); }
-#line 1655 "parse.c"
+#line 1658 "parse.c"
     break;
 
   case 26:
-#line 185 "parse.y"
+#line 188 "parse.y"
                                 { (yyval.exp) = (yyvsp[-2].exp) * (yyvsp[0].exp); }
-#line 1661 "parse.c"
+#line 1664 "parse.c"
     break;
 
   case 27:
-#line 186 "parse.y"
+#line 189 "parse.y"
                                 {
 		if ((yyvsp[0].exp) == 0) {
-			yyerror(scanner, res, "invalid division by zero");
+			yyerror(scanner, res, op, out, "invalid division by zero");
 			YYERROR;
 		}
 		else {
 			(yyval.exp) = (yyvsp[-2].exp) / (yyvsp[0].exp);
 		}
 	}
-#line 1675 "parse.c"
+#line 1678 "parse.c"
     break;
 
   case 28:
-#line 195 "parse.y"
+#line 198 "parse.y"
                                 { (yyval.exp) = pow((yyvsp[-2].exp), (yyvsp[0].exp)); }
-#line 1681 "parse.c"
+#line 1684 "parse.c"
     break;
 
   case 29:
-#line 197 "parse.y"
+#line 200 "parse.y"
                                         { (yyval.exp) = + (yyvsp[0].exp); }
-#line 1687 "parse.c"
+#line 1690 "parse.c"
     break;
 
   case 30:
-#line 198 "parse.y"
+#line 201 "parse.y"
                                         { (yyval.exp) = - (yyvsp[0].exp); }
-#line 1693 "parse.c"
+#line 1696 "parse.c"
     break;
 
   case 31:
-#line 200 "parse.y"
-                                        { (yyval.exp) = sqrt((yyvsp[-1].exp)); }
-#line 1699 "parse.c"
+#line 203 "parse.y"
+                                        { (yyval.exp) = sqrt((yyvsp[-1].exp)); push(*op, 6 + DBL_MAX * I); }
+#line 1702 "parse.c"
     break;
 
   case 32:
-#line 201 "parse.y"
-                                                { (yyval.exp) = pow((yyvsp[-1].exp), 1./(yyvsp[-4].exp)); }
-#line 1705 "parse.c"
+#line 204 "parse.y"
+                                                { (yyval.exp) = pow((yyvsp[-1].exp), 1./(yyvsp[-4].exp)); push(*op, 7 + DBL_MAX * I); }
+#line 1708 "parse.c"
     break;
 
   case 33:
-#line 203 "parse.y"
-                                                        { (yyval.exp) = log((yyvsp[-1].exp)) / log((yyvsp[-4].exp)); }
-#line 1711 "parse.c"
+#line 206 "parse.y"
+                                                        { (yyval.exp) = log((yyvsp[-1].exp)) / log((yyvsp[-4].exp)); push(*op, 8 + DBL_MAX * I); }
+#line 1714 "parse.c"
     break;
 
   case 34:
-#line 204 "parse.y"
-                                        { (yyval.exp) = log((yyvsp[-1].exp)); }
-#line 1717 "parse.c"
+#line 207 "parse.y"
+                                        { (yyval.exp) = log((yyvsp[-1].exp)); push(*op, 9 + DBL_MAX * I); }
+#line 1720 "parse.c"
     break;
 
   case 35:
-#line 206 "parse.y"
-                                        { (yyval.exp) = floor((float)(yyvsp[-1].exp)); }
-#line 1723 "parse.c"
+#line 209 "parse.y"
+                                        { (yyval.exp) = floor((float)(yyvsp[-1].exp)); push(*op, 10 + DBL_MAX * I); }
+#line 1726 "parse.c"
     break;
 
   case 36:
-#line 207 "parse.y"
-                                       { (yyval.exp) = ceil((float)(yyvsp[-1].exp)); }
-#line 1729 "parse.c"
+#line 210 "parse.y"
+                                       { (yyval.exp) = ceil((float)(yyvsp[-1].exp)); push(*op, 11 + DBL_MAX * I); }
+#line 1732 "parse.c"
     break;
 
   case 37:
-#line 209 "parse.y"
-                                        { (yyval.exp) = asin((yyvsp[-1].exp)); }
-#line 1735 "parse.c"
+#line 212 "parse.y"
+                                        { (yyval.exp) = asin((yyvsp[-1].exp)); push(*op, 13 + DBL_MAX * I); }
+#line 1738 "parse.c"
     break;
 
   case 38:
-#line 210 "parse.y"
-                                        { (yyval.exp) = acos((yyvsp[-1].exp)); }
-#line 1741 "parse.c"
+#line 213 "parse.y"
+                                        { (yyval.exp) = acos((yyvsp[-1].exp)); push(*op, 14 + DBL_MAX * I); }
+#line 1744 "parse.c"
     break;
 
   case 39:
-#line 211 "parse.y"
-                                        { (yyval.exp) = atan((yyvsp[-1].exp)); }
-#line 1747 "parse.c"
+#line 214 "parse.y"
+                                        { (yyval.exp) = atan((yyvsp[-1].exp)); push(*op, 15 + DBL_MAX * I); }
+#line 1750 "parse.c"
     break;
 
   case 40:
-#line 212 "parse.y"
-                                        { (yyval.exp) = sinh((yyvsp[-1].exp)); }
-#line 1753 "parse.c"
+#line 215 "parse.y"
+                                        { (yyval.exp) = sinh((yyvsp[-1].exp)); push(*op, 16 + DBL_MAX * I); }
+#line 1756 "parse.c"
     break;
 
   case 41:
-#line 213 "parse.y"
-                                        { (yyval.exp) = cosh((yyvsp[-1].exp)); }
-#line 1759 "parse.c"
+#line 216 "parse.y"
+                                        { (yyval.exp) = cosh((yyvsp[-1].exp)); push(*op, 17 + DBL_MAX * I); }
+#line 1762 "parse.c"
     break;
 
   case 42:
-#line 214 "parse.y"
-                                        { (yyval.exp) = tanh((yyvsp[-1].exp)); }
-#line 1765 "parse.c"
+#line 217 "parse.y"
+                                        { (yyval.exp) = tanh((yyvsp[-1].exp)); push(*op, 18 + DBL_MAX * I); }
+#line 1768 "parse.c"
     break;
 
   case 43:
-#line 215 "parse.y"
-                                        { (yyval.exp) = 1./cosh((yyvsp[-1].exp)); }
-#line 1771 "parse.c"
+#line 218 "parse.y"
+                                        { (yyval.exp) = 1./cosh((yyvsp[-1].exp)); push(*op, 19 + DBL_MAX * I); }
+#line 1774 "parse.c"
     break;
 
   case 44:
-#line 216 "parse.y"
-                                        { (yyval.exp) = 1./sinh((yyvsp[-1].exp)); }
-#line 1777 "parse.c"
+#line 219 "parse.y"
+                                        { (yyval.exp) = 1./sinh((yyvsp[-1].exp)); push(*op, 20 + DBL_MAX * I); }
+#line 1780 "parse.c"
     break;
 
   case 45:
-#line 217 "parse.y"
-                                        { (yyval.exp) = 1./tanh((yyvsp[-1].exp)); }
-#line 1783 "parse.c"
+#line 220 "parse.y"
+                                        { (yyval.exp) = 1./tanh((yyvsp[-1].exp)); push(*op, 21 + DBL_MAX * I); }
+#line 1786 "parse.c"
     break;
 
   case 46:
-#line 218 "parse.y"
-                                        { (yyval.exp) = sin((yyvsp[-1].exp)); printf("top: %lf%+lfi\n", creal(front(*out)), cimag(front(*out))); }
-#line 1789 "parse.c"
+#line 221 "parse.y"
+                                        { (yyval.exp) = sin((yyvsp[-1].exp)); push(*op, 22 + DBL_MAX * I); }
+#line 1792 "parse.c"
     break;
 
   case 47:
-#line 219 "parse.y"
-                                        { (yyval.exp) = cos((yyvsp[-1].exp)); }
-#line 1795 "parse.c"
+#line 222 "parse.y"
+                                        { (yyval.exp) = cos((yyvsp[-1].exp)); push(*op, 23 + DBL_MAX * I); }
+#line 1798 "parse.c"
     break;
 
   case 48:
-#line 220 "parse.y"
-                                        { (yyval.exp) = tan((yyvsp[-1].exp)); }
-#line 1801 "parse.c"
+#line 223 "parse.y"
+                                        { (yyval.exp) = tan((yyvsp[-1].exp)); push(*op, 24 + DBL_MAX * I); }
+#line 1804 "parse.c"
     break;
 
   case 49:
-#line 221 "parse.y"
-                                        { (yyval.exp) = 1./cos((yyvsp[-1].exp)); }
-#line 1807 "parse.c"
+#line 224 "parse.y"
+                                        { (yyval.exp) = 1./cos((yyvsp[-1].exp)); push(*op, 25 + DBL_MAX * I); }
+#line 1810 "parse.c"
     break;
 
   case 50:
-#line 222 "parse.y"
-                                        { (yyval.exp) = 1./sin((yyvsp[-1].exp)); }
-#line 1813 "parse.c"
+#line 225 "parse.y"
+                                        { (yyval.exp) = 1./sin((yyvsp[-1].exp)); push(*op, 26 + DBL_MAX * I); }
+#line 1816 "parse.c"
     break;
 
   case 51:
-#line 223 "parse.y"
-                                        { (yyval.exp) = 1./tan((yyvsp[-1].exp)); }
-#line 1819 "parse.c"
+#line 226 "parse.y"
+                                        { (yyval.exp) = 1./tan((yyvsp[-1].exp)); push(*op, 27 + DBL_MAX * I); }
+#line 1822 "parse.c"
     break;
 
 
-#line 1823 "parse.c"
+#line 1826 "parse.c"
 
       default: break;
     }
@@ -2051,7 +2054,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 226 "parse.y"
+#line 229 "parse.y"
 
 // Epilogue (C code).
 
@@ -2083,7 +2086,7 @@ result parse_string(const char* str, stack* op, queue* out) {
 	return res;
 }
 
-void yyerror(yyscan_t scanner, result *res, const char *msg, ...) {
+void yyerror(yyscan_t scanner, result *res, stack *op, queue *out, const char *msg, ...) {
 	(void) scanner;
 	va_list args;
 	va_start(args, msg);

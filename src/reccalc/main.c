@@ -23,6 +23,12 @@ int main(void) {
 		dequeue(out);
 	}
 
+	printf("STACK\n");
+	while(top(op) != DBL_MIN + DBL_MIN * I) {
+		printf("%lf\n", creal(top(op)));
+		pop(op);
+	}
+
 	// Exit on failure if there were errors.
 	return !!res.nerrs;
 }
