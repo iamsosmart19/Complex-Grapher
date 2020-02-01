@@ -229,7 +229,16 @@
           <symbol>&quot;)&quot;</symbol>
         </rhs>
       </rule>
-      <rule number="32" usefulness="useful">
+      <rule number="32" usefulness="useful" percent_prec="UNARY">
+        <lhs>exp</lhs>
+        <rhs>
+          <symbol>&quot;ln&quot;</symbol>
+          <symbol>&quot;(&quot;</symbol>
+          <symbol>exp</symbol>
+          <symbol>&quot;)&quot;</symbol>
+        </rhs>
+      </rule>
+      <rule number="33" usefulness="useful">
         <lhs>exp</lhs>
         <rhs>
           <symbol>&quot;log&quot;</symbol>
@@ -237,15 +246,6 @@
           <symbol>&quot;(&quot;</symbol>
           <symbol>exp</symbol>
           <symbol>&quot;)&quot;</symbol>
-          <symbol>&quot;(&quot;</symbol>
-          <symbol>exp</symbol>
-          <symbol>&quot;)&quot;</symbol>
-        </rhs>
-      </rule>
-      <rule number="33" usefulness="useful" percent_prec="UNARY">
-        <lhs>exp</lhs>
-        <rhs>
-          <symbol>&quot;ln&quot;</symbol>
           <symbol>&quot;(&quot;</symbol>
           <symbol>exp</symbol>
           <symbol>&quot;)&quot;</symbol>
@@ -800,7 +800,7 @@
 
     <state number="7">
       <itemset>
-        <item rule-number="33" point="1"/>
+        <item rule-number="32" point="1"/>
       </itemset>
       <actions>
         <transitions>
@@ -814,7 +814,7 @@
 
     <state number="8">
       <itemset>
-        <item rule-number="32" point="1"/>
+        <item rule-number="33" point="1"/>
       </itemset>
       <actions>
         <transitions>
@@ -1688,8 +1688,8 @@
         <item rule-number="30" point="0"/>
         <item rule-number="31" point="0"/>
         <item rule-number="32" point="0"/>
+        <item rule-number="32" point="2"/>
         <item rule-number="33" point="0"/>
-        <item rule-number="33" point="2"/>
         <item rule-number="34" point="0"/>
         <item rule-number="35" point="0"/>
         <item rule-number="36" point="0"/>
@@ -1751,7 +1751,7 @@
 
     <state number="49">
       <itemset>
-        <item rule-number="32" point="2"/>
+        <item rule-number="33" point="2"/>
       </itemset>
       <actions>
         <transitions>
@@ -3864,7 +3864,7 @@
         <item rule-number="25" point="1"/>
         <item rule-number="26" point="1"/>
         <item rule-number="27" point="1"/>
-        <item rule-number="33" point="3"/>
+        <item rule-number="32" point="3"/>
       </itemset>
       <actions>
         <transitions>
@@ -3899,8 +3899,8 @@
         <item rule-number="30" point="0"/>
         <item rule-number="31" point="0"/>
         <item rule-number="32" point="0"/>
-        <item rule-number="32" point="3"/>
         <item rule-number="33" point="0"/>
+        <item rule-number="33" point="3"/>
         <item rule-number="34" point="0"/>
         <item rule-number="35" point="0"/>
         <item rule-number="36" point="0"/>
@@ -4671,13 +4671,13 @@
 
     <state number="115">
       <itemset>
-        <item rule-number="33" point="4"/>
+        <item rule-number="32" point="4"/>
       </itemset>
       <actions>
         <transitions/>
         <errors/>
         <reductions>
-          <reduction symbol="$default" rule="33" enabled="true"/>
+          <reduction symbol="$default" rule="32" enabled="true"/>
         </reductions>
       </actions>
       <solved-conflicts/>
@@ -4690,7 +4690,7 @@
         <item rule-number="25" point="1"/>
         <item rule-number="26" point="1"/>
         <item rule-number="27" point="1"/>
-        <item rule-number="32" point="4"/>
+        <item rule-number="33" point="4"/>
       </itemset>
       <actions>
         <transitions>
@@ -5040,7 +5040,7 @@
 
     <state number="136">
       <itemset>
-        <item rule-number="32" point="5"/>
+        <item rule-number="33" point="5"/>
       </itemset>
       <actions>
         <transitions>
@@ -5094,8 +5094,8 @@
         <item rule-number="30" point="0"/>
         <item rule-number="31" point="0"/>
         <item rule-number="32" point="0"/>
-        <item rule-number="32" point="6"/>
         <item rule-number="33" point="0"/>
+        <item rule-number="33" point="6"/>
         <item rule-number="34" point="0"/>
         <item rule-number="35" point="0"/>
         <item rule-number="36" point="0"/>
@@ -5176,7 +5176,7 @@
         <item rule-number="25" point="1"/>
         <item rule-number="26" point="1"/>
         <item rule-number="27" point="1"/>
-        <item rule-number="32" point="7"/>
+        <item rule-number="33" point="7"/>
       </itemset>
       <actions>
         <transitions>
@@ -5195,13 +5195,13 @@
 
     <state number="141">
       <itemset>
-        <item rule-number="32" point="8"/>
+        <item rule-number="33" point="8"/>
       </itemset>
       <actions>
         <transitions/>
         <errors/>
         <reductions>
-          <reduction symbol="$default" rule="32" enabled="true"/>
+          <reduction symbol="$default" rule="33" enabled="true"/>
         </reductions>
       </actions>
       <solved-conflicts/>

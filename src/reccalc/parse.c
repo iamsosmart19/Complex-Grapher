@@ -602,14 +602,14 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
        0,   132,   132,   133,   134,   138,   143,   146,   150,   154,
      155,   159,   160,   161,   162,   163,   167,   167,   171,   172,
-     173,   174,   175,   176,   178,   179,   180,   181,   182,   184,
-     185,   187,   188,   190,   191,   193,   194,   195,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211
+     173,   174,   175,   176,   178,   189,   200,   211,   222,   234,
+     235,   237,   238,   240,   241,   243,   244,   245,   247,   248,
+     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
+     259,   260,   261
 };
 #endif
 
@@ -690,10 +690,10 @@ static const yytype_int8 yydefact[] =
        0,     0,     0,     6,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,    23,     8,    24,    25,
-      26,    27,    28,    31,     0,    34,     0,    35,    36,    37,
+      26,    27,    28,    31,     0,    33,     0,    35,    36,    37,
       38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
       48,    49,    50,    51,    52,     0,     0,     0,     0,    32,
-       0,    33
+       0,    34
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -835,7 +835,7 @@ static const yytype_int8 yyr2[] =
        0,     2,     1,     1,     2,     2,     3,     2,     3,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     3,     3,     3,     3,     3,     3,     2,
-       2,     4,     7,     8,     4,     4,     4,     4,     4,     4,
+       2,     4,     7,     4,     8,     4,     4,     4,     4,     4,
        4,     4,     4,     4,     4,     4,     4,     4,     4,     4,
        4,     4,     4
 };
@@ -1547,7 +1547,7 @@ yyreduce:
   case 5:
 #line 138 "parse.y"
                   {
-		while(top(*op) != DBL_MIN + DBL_MIN * I) {
+		while(top(*op) != -DBL_MAX - DBL_MAX * I) {
 			enqueue(*out, pop(*op));
 		}
 	}
@@ -1570,7 +1570,7 @@ yyreduce:
 
   case 18:
 #line 171 "parse.y"
-                        { /*printf("%lf%+lfi\n", creal($1), cimag($1));*/ enqueue(*out, (yyvsp[0].NUM)); }
+                        { printf("%lf%+lfi\n", creal((yyvsp[0].NUM)), cimag((yyvsp[0].NUM))); enqueue(*out, (yyvsp[0].NUM)); }
 #line 1575 "parse.c"
     break;
 
@@ -1606,180 +1606,230 @@ yyreduce:
 
   case 24:
 #line 178 "parse.y"
-                                { }
-#line 1611 "parse.c"
+                                {
+		if( top(*op) == -DBL_MAX - DBL_MAX * I ) {
+			goto skipAddLoop;
+		}
+		while( (cimag(top(*op)) == DBL_MAX) ||
+			 ( cimag(top(*op)) == -DBL_MAX) && precValues[(int)creal(top(*op))] > precValues[0] ) {
+			enqueue(*out, pop(*op));
+		}
+			skipAddLoop:
+		push(*op, 0 - DBL_MAX * I);
+	}
+#line 1621 "parse.c"
     break;
 
   case 25:
-#line 179 "parse.y"
-                                { }
-#line 1617 "parse.c"
+#line 189 "parse.y"
+                                { 
+		if( top(*op) == -DBL_MAX - DBL_MAX * I ) {
+			goto skipSubLoop;
+		}
+		while( (cimag(top(*op)) == DBL_MAX) ||
+			 ( cimag(top(*op)) == -DBL_MAX) && precValues[(int)creal(top(*op))] > precValues[1] ) {
+			enqueue(*out, pop(*op));
+		}
+			skipSubLoop:
+		push(*op, 1 - DBL_MAX * I);
+	}
+#line 1637 "parse.c"
     break;
 
   case 26:
-#line 180 "parse.y"
-                                { }
-#line 1623 "parse.c"
-    break;
-
-  case 27:
-#line 181 "parse.y"
-                                { }
-#line 1629 "parse.c"
-    break;
-
-  case 28:
-#line 182 "parse.y"
-                                { }
-#line 1635 "parse.c"
-    break;
-
-  case 29:
-#line 184 "parse.y"
-                                        { }
-#line 1641 "parse.c"
-    break;
-
-  case 30:
-#line 185 "parse.y"
-                                        { }
-#line 1647 "parse.c"
-    break;
-
-  case 31:
-#line 187 "parse.y"
-                                        { push(*op, 1 + DBL_MAX * I); }
+#line 200 "parse.y"
+                                {
+		if( top(*op) == -DBL_MAX - DBL_MAX * I ) {
+			goto skipAstLoop;
+		}
+		while( (cimag(top(*op)) == DBL_MAX) ||
+			 ( cimag(top(*op)) == -DBL_MAX) && precValues[(int)creal(top(*op))] > precValues[2] ) {
+			enqueue(*out, pop(*op));
+		}
+			skipAstLoop:
+		push(*op, 2 - DBL_MAX * I);
+	}
 #line 1653 "parse.c"
     break;
 
+  case 27:
+#line 211 "parse.y"
+                                {
+		if( top(*op) == -DBL_MAX - DBL_MAX * I ) {
+			goto skipDivLoop;
+		}
+		while( (cimag(top(*op)) == DBL_MAX) ||
+			 ( cimag(top(*op)) == -DBL_MAX) && precValues[(int)creal(top(*op))] > precValues[3] ) {
+			enqueue(*out, pop(*op));
+		}
+			skipDivLoop:
+		push(*op, 3 - DBL_MAX * I);
+	}
+#line 1669 "parse.c"
+    break;
+
+  case 28:
+#line 222 "parse.y"
+                                {
+		if( top(*op) == -DBL_MAX - DBL_MAX * I ) {
+			goto skipExpLoop;
+		}
+		while( (cimag(top(*op)) == DBL_MAX) ||
+			 ( cimag(top(*op)) == -DBL_MAX) && precValues[(int)creal(top(*op))] > precValues[4] ) {
+			enqueue(*out, pop(*op));
+		}
+			skipExpLoop:
+		push(*op, 4 - DBL_MAX * I);
+	}
+#line 1685 "parse.c"
+    break;
+
+  case 29:
+#line 234 "parse.y"
+                                        { }
+#line 1691 "parse.c"
+    break;
+
+  case 30:
+#line 235 "parse.y"
+                                        { }
+#line 1697 "parse.c"
+    break;
+
+  case 31:
+#line 237 "parse.y"
+                                        { push(*op, 0 + DBL_MAX * I); }
+#line 1703 "parse.c"
+    break;
+
   case 32:
-#line 188 "parse.y"
-                                        { push(*op, 2 + DBL_MAX * I); }
-#line 1659 "parse.c"
+#line 238 "parse.y"
+                                        { push(*op, 1 + DBL_MAX * I); }
+#line 1709 "parse.c"
     break;
 
   case 33:
-#line 190 "parse.y"
-                                                        { push(*op, 3 + DBL_MAX * I); }
-#line 1665 "parse.c"
+#line 240 "parse.y"
+                                        { push(*op, 2 + DBL_MAX * I); }
+#line 1715 "parse.c"
     break;
 
   case 34:
-#line 191 "parse.y"
-                                        { push(*op, 4 + DBL_MAX * I); }
-#line 1671 "parse.c"
+#line 241 "parse.y"
+                                                        { push(*op, 3 + DBL_MAX * I); }
+#line 1721 "parse.c"
     break;
 
   case 35:
-#line 193 "parse.y"
-                                        { push(*op, 5 + DBL_MAX * I); }
-#line 1677 "parse.c"
+#line 243 "parse.y"
+                                        { push(*op, 4 + DBL_MAX * I); }
+#line 1727 "parse.c"
     break;
 
   case 36:
-#line 194 "parse.y"
-                                        { push(*op, 6 + DBL_MAX * I); }
-#line 1683 "parse.c"
+#line 244 "parse.y"
+                                        { push(*op, 5 + DBL_MAX * I); }
+#line 1733 "parse.c"
     break;
 
   case 37:
-#line 195 "parse.y"
-                                        { push(*op, 7 + DBL_MAX * I); }
-#line 1689 "parse.c"
+#line 245 "parse.y"
+                                        { push(*op, 6 + DBL_MAX * I); }
+#line 1739 "parse.c"
     break;
 
   case 38:
-#line 197 "parse.y"
-                                        { push(*op, 8 + DBL_MAX * I); }
-#line 1695 "parse.c"
+#line 247 "parse.y"
+                                        { push(*op, 7 + DBL_MAX * I); }
+#line 1745 "parse.c"
     break;
 
   case 39:
-#line 198 "parse.y"
-                                        { push(*op, 9 + DBL_MAX * I); }
-#line 1701 "parse.c"
+#line 248 "parse.y"
+                                        { push(*op, 8 + DBL_MAX * I); }
+#line 1751 "parse.c"
     break;
 
   case 40:
-#line 199 "parse.y"
-                                        { push(*op, 10 + DBL_MAX * I); }
-#line 1707 "parse.c"
+#line 249 "parse.y"
+                                        { push(*op, 9 + DBL_MAX * I); }
+#line 1757 "parse.c"
     break;
 
   case 41:
-#line 200 "parse.y"
-                                        { push(*op, 11 + DBL_MAX * I); }
-#line 1713 "parse.c"
+#line 250 "parse.y"
+                                        { push(*op, 10 + DBL_MAX * I); }
+#line 1763 "parse.c"
     break;
 
   case 42:
-#line 201 "parse.y"
-                                        { push(*op, 12 + DBL_MAX * I); }
-#line 1719 "parse.c"
+#line 251 "parse.y"
+                                        { push(*op, 11 + DBL_MAX * I); }
+#line 1769 "parse.c"
     break;
 
   case 43:
-#line 202 "parse.y"
-                                        { push(*op, 13 + DBL_MAX * I); }
-#line 1725 "parse.c"
+#line 252 "parse.y"
+                                        { push(*op, 12 + DBL_MAX * I); }
+#line 1775 "parse.c"
     break;
 
   case 44:
-#line 203 "parse.y"
-                                        { push(*op, 14 + DBL_MAX * I); }
-#line 1731 "parse.c"
+#line 253 "parse.y"
+                                        { push(*op, 13 + DBL_MAX * I); }
+#line 1781 "parse.c"
     break;
 
   case 45:
-#line 204 "parse.y"
-                                        { push(*op, 15 + DBL_MAX * I); }
-#line 1737 "parse.c"
+#line 254 "parse.y"
+                                        { push(*op, 14 + DBL_MAX * I); }
+#line 1787 "parse.c"
     break;
 
   case 46:
-#line 205 "parse.y"
-                                        { push(*op, 16 + DBL_MAX * I); }
-#line 1743 "parse.c"
+#line 255 "parse.y"
+                                        { push(*op, 15 + DBL_MAX * I); }
+#line 1793 "parse.c"
     break;
 
   case 47:
-#line 206 "parse.y"
-                                        { push(*op, 17 + DBL_MAX * I); }
-#line 1749 "parse.c"
+#line 256 "parse.y"
+                                        { push(*op, 16 + DBL_MAX * I); }
+#line 1799 "parse.c"
     break;
 
   case 48:
-#line 207 "parse.y"
-                                        { push(*op, 18 + DBL_MAX * I); }
-#line 1755 "parse.c"
+#line 257 "parse.y"
+                                        { push(*op, 17 + DBL_MAX * I); }
+#line 1805 "parse.c"
     break;
 
   case 49:
-#line 208 "parse.y"
-                                        { push(*op, 19 + DBL_MAX * I); }
-#line 1761 "parse.c"
+#line 258 "parse.y"
+                                        { push(*op, 18 + DBL_MAX * I); }
+#line 1811 "parse.c"
     break;
 
   case 50:
-#line 209 "parse.y"
-                                        { push(*op, 20 + DBL_MAX * I); }
-#line 1767 "parse.c"
+#line 259 "parse.y"
+                                        { push(*op, 19 + DBL_MAX * I); }
+#line 1817 "parse.c"
     break;
 
   case 51:
-#line 210 "parse.y"
-                                        { push(*op, 21 + DBL_MAX * I); }
-#line 1773 "parse.c"
+#line 260 "parse.y"
+                                        { push(*op, 20 + DBL_MAX * I); }
+#line 1823 "parse.c"
     break;
 
   case 52:
-#line 211 "parse.y"
-                                        { push(*op, 22 + DBL_MAX * I); }
-#line 1779 "parse.c"
+#line 261 "parse.y"
+                                        { push(*op, 21 + DBL_MAX * I); }
+#line 1829 "parse.c"
     break;
 
 
-#line 1783 "parse.c"
+#line 1833 "parse.c"
 
       default: break;
     }
@@ -2011,7 +2061,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 214 "parse.y"
+#line 264 "parse.y"
 
 // Epilogue (C code).
 

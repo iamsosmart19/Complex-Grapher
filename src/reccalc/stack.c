@@ -17,7 +17,7 @@ void push(stack s, cplx val) {
 
 cplx pop(stack s) {
 	if(s.begin->next == NULL) {
-		return DBL_MIN + DBL_MIN * I;
+		return -DBL_MAX - DBL_MAX * I;
 	}
 	cplx ret = s.begin->next->val;
 	snode* temp = s.begin->next;
@@ -28,7 +28,7 @@ cplx pop(stack s) {
 
 cplx top(stack s) {
 	if(s.begin->next == NULL) {
-		return DBL_MIN + DBL_MIN * I;
+		return -DBL_MAX - DBL_MAX * I;
 	}
 	return s.begin->next->val;
 }

@@ -3,6 +3,31 @@
 
 /*
 */
+char lookuptable[22][5] = {
+	"SQRT", 
+	"ROOT", 
+	"LN", 
+	"LOG", 
+	"ABS", 
+	"FLOOR", 
+	"CEIL", 
+	"ASIN", 
+	"ACOS", 
+	"ATAN", 
+	"SINH", 
+	"COSH", 
+	"TANH", 
+	"SECH", 
+	"CSCH", 
+	"COTH", 
+	"SIN", 
+	"COS", 
+	"TAN", 
+	"SEC", 
+	"CSC", 
+	"COT"
+};
+
 int main(void) {
 	FILE* sample = fopen("input.txt", "r");
 	/* FILE* sample = fopen("input2.txt", "r"); */
@@ -16,15 +41,24 @@ int main(void) {
 	queue out = queueInit();
 	result res = parse_string(function, &op, &out);
 
-	printf("MAIN: top: %lf%+lfi\n", creal(front(out)), cimag(front(out)));
+	printf("\nMAIN:\n"); 
 
 	while(front(out) != INT_MIN) {
-		printf("%lf%+lfi\n", creal(front(out)), cimag(front(out)));
+		if(cimag(front(out)) != -DBL_MAX && cimag(front(out)) != DBL_MAX) {
+			printf("%lf%+lfi\n", creal(front(out)), cimag(front(out)));
+		}
+		else if(cimag(front(out)) == -DBL_MAX) {
+			char table[5] = {'+', '-', '*', '/', '^'};
+			printf("OP: %c\n", table[(int)creal(front(out))]);
+		}
+		else {
+			printf("FUNC: %s\n", lookuptable[(int)creal(front(out))]);
+		}
 		dequeue(out);
 	}
 
 	printf("STACK\n");
-	while(top(op) != DBL_MIN + DBL_MIN * I) {
+	while(top(op) != -DBL_MAX - DBL_MAX * I) {
 		printf("%lf\n", creal(top(op)));
 		pop(op);
 	}
