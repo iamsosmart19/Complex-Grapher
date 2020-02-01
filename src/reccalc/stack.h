@@ -18,10 +18,10 @@ typedef struct {
 
 stack stackInit();
 
-void push(stack s, cplx val);
+void s_push(stack s, cplx val);
 
-cplx pop(stack s);
+cplx s_pop(stack s);
 
-cplx top(stack s);
+cplx s_top(stack s);
 
 #endif /* STACK_H */
