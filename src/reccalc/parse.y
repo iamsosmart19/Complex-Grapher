@@ -30,8 +30,6 @@
 
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
 	void yyerror(yyscan_t scanner, result *res, stack *op, queue *out, const char *msg, ...);
-
-	int precValues[32];
 }
 
 // Emitted on top of the implementation file.
@@ -49,6 +47,7 @@
 %code {
 	result parse_string(const char* str, stack* s, queue* q);
 	result parse(void);
+	int precValues[5] = {2, 2, 3, 3, 4};
 }
 
 %define api.pure full
@@ -116,14 +115,8 @@
 	TOK_EOF	0 "end-of-file"
 ;
 
-%token <cplx> NUM "number"
+%token <cplx> NUM "number" 
 %token <cplx> LETR "variable" 
-
-%type <cplx> exp
-
-%printer { fprintf(yyo, "%lf%+lfi", creal($$), cimag($$)); } <cplx>
-
-%type <cplx> eqtn
 
 // Precedence (from lowest to highest) and associativity.
 %precedence BINARY
@@ -136,18 +129,17 @@
 %%
 // Rules.
 input:
-	exp %prec BINARY	{ res->value = $exp; /*printf("\t%.7lf%+.7lfi\n", creal($exp), cimag($exp)); */} | 
+	exp %prec BINARY | 
 	line |
 	input line
 ;
 
 line:
-	eqtn eol {
-		res->value = $eqtn;
-		if (res->verbose) {
-			printf("\t%.7lf%+.7lfi\n", creal($eqtn), cimag($eqtn));
+	eqtn eol  {
+		while(top(*op) != DBL_MIN + DBL_MIN * I) {
+			enqueue(*out, pop(*op));
 		}
-    } | 
+	} | 
 	"//" eqtn eol {
 		;
 	} |
@@ -155,7 +147,7 @@ line:
 ;
 
 eqtn:
-	linestart mid exp { $$ = $exp; }
+	linestart mid exp
 ; 
 
 linestart:
@@ -176,54 +168,47 @@ eol:
 ;
 
 exp:
-	NUM %prec UNARY	{ $$ = $1; /*printf("%lf%+lfi\n", creal($1), cimag($1));*/ enqueue(*out, $1); } | 
-	"e"				{ $$ = M_E; enqueue(*out, M_E); } |
-	"pi"			{ $$ = M_PI; enqueue(*out, M_PI); } |
-	"i"	%prec UNARY	{ $$ = I; enqueue(*out, I); } |
-	LETR %prec UNARY { $$ = $1; } |
-	"(" exp ")"			{ $$ = $2; } |
+	NUM %prec UNARY	{ /*printf("%lf%+lfi\n", creal($1), cimag($1));*/ enqueue(*out, $1); } | 
+	"e"				{ enqueue(*out, M_E); } |
+	"pi"			{ enqueue(*out, M_PI); } |
+	"i"	%prec UNARY	{ enqueue(*out, I); } |
+	LETR %prec UNARY { enqueue(*out, DBL_MAX + DBL_MAX * I); } |
+	"(" exp ")"		{ } |
 
-	exp "+" exp		{ $$ = $1 + $3; } | 
-	exp "-" exp		{ $$ = $1 - $3; }	| 
-	exp "*" exp		{ $$ = $1 * $3; }	|
-	exp "/" exp		{
-		if ($3 == 0) {
-			yyerror(scanner, res, op, out, "invalid division by zero");
-			YYERROR;
-		}
-		else {
-			$$ = $1 / $3;
-		}
-	} | 
-	exp "^" exp		{ $$ = pow($1, $3); } | 
+	exp "+" exp		{ } | 
+	exp "-" exp		{ }	| 
+	exp "*" exp		{ }	|
+	exp "/" exp		{ } | 
+	exp "^" exp		{ } | 
 
-	"+" exp %prec UNARY		{ $$ = + $2; }	| 
-	"-" exp %prec UNARY		{ $$ = - $2; } | 
+	"+" exp %prec UNARY		{ }	| 
+	"-" exp %prec UNARY		{ } | 
 
-	"sqrt" "(" exp ")" %prec UNARY	{ $$ = sqrt($3); push(*op, 6 + DBL_MAX * I); } |
-	"root" "(" exp ")" "(" exp ")" 	 	{ $$ = pow($6, 1./$3); push(*op, 7 + DBL_MAX * I); } |
+	"sqrt" "(" exp ")" %prec UNARY	{ push(*op, 1 + DBL_MAX * I); } |
+	"root" "(" exp ")" "(" exp ")"	{ push(*op, 2 + DBL_MAX * I); } |
 
-	"log" "_" "(" exp ")" "(" exp ")"		{ $$ = log($7) / log($4); push(*op, 8 + DBL_MAX * I); } |
-	"ln" "(" exp ")" %prec UNARY	{ $$ = log($3); push(*op, 9 + DBL_MAX * I); } |
+	"log" "_" "(" exp ")" "(" exp ")"		{ push(*op, 3 + DBL_MAX * I); } |
+	"ln" "(" exp ")" %prec UNARY	{ push(*op, 4 + DBL_MAX * I); } |
 
-	"floor" "(" exp ")" %prec UNARY { $$ = floor((float)$3); push(*op, 10 + DBL_MAX * I); } |
-	"ceil" "(" exp ")" %prec UNARY { $$ = ceil((float)$3); push(*op, 11 + DBL_MAX * I); } |
+	"abs" "(" exp ")" %prec UNARY	{ push(*op, 5 + DBL_MAX * I); } |
+	"floor" "(" exp ")" %prec UNARY { push(*op, 6 + DBL_MAX * I); } |
+	"ceil" "(" exp ")" %prec UNARY	{ push(*op, 7 + DBL_MAX * I); } |
 
-	"asin" "(" exp ")" %prec UNARY	{ $$ = asin($3); push(*op, 13 + DBL_MAX * I); } |
-	"acos" "(" exp ")" %prec UNARY	{ $$ = acos($3); push(*op, 14 + DBL_MAX * I); } |
-	"atan" "(" exp ")" %prec UNARY	{ $$ = atan($3); push(*op, 15 + DBL_MAX * I); } |
-	"sinh" "(" exp ")" %prec UNARY	{ $$ = sinh($3); push(*op, 16 + DBL_MAX * I); } |
-	"cosh" "(" exp ")" %prec UNARY	{ $$ = cosh($3); push(*op, 17 + DBL_MAX * I); } |
-	"tanh" "(" exp ")" %prec UNARY	{ $$ = tanh($3); push(*op, 18 + DBL_MAX * I); } |
-	"sech" "(" exp ")" %prec UNARY	{ $$ = 1./cosh($3); push(*op, 19 + DBL_MAX * I); } |
-	"csch" "(" exp ")" %prec UNARY	{ $$ = 1./sinh($3); push(*op, 20 + DBL_MAX * I); } |
-	"coth" "(" exp ")" %prec UNARY	{ $$ = 1./tanh($3); push(*op, 21 + DBL_MAX * I); } |
-	"sin" "(" exp ")" %prec UNARY	{ $$ = sin($3); push(*op, 22 + DBL_MAX * I); } |
-	"cos" "(" exp ")" %prec UNARY	{ $$ = cos($3); push(*op, 23 + DBL_MAX * I); } |
-	"tan" "(" exp ")" %prec UNARY	{ $$ = tan($3); push(*op, 24 + DBL_MAX * I); } |
-	"sec" "(" exp ")" %prec UNARY	{ $$ = 1./cos($3); push(*op, 25 + DBL_MAX * I); } |
-	"csc" "(" exp ")" %prec UNARY	{ $$ = 1./sin($3); push(*op, 26 + DBL_MAX * I); } |
-	"cot" "(" exp ")" %prec UNARY	{ $$ = 1./tan($3); push(*op, 27 + DBL_MAX * I); } 
+	"asin" "(" exp ")" %prec UNARY	{ push(*op, 8 + DBL_MAX * I); } |
+	"acos" "(" exp ")" %prec UNARY	{ push(*op, 9 + DBL_MAX * I); } |
+	"atan" "(" exp ")" %prec UNARY	{ push(*op, 10 + DBL_MAX * I); } |
+	"sinh" "(" exp ")" %prec UNARY	{ push(*op, 11 + DBL_MAX * I); } |
+	"cosh" "(" exp ")" %prec UNARY	{ push(*op, 12 + DBL_MAX * I); } |
+	"tanh" "(" exp ")" %prec UNARY	{ push(*op, 13 + DBL_MAX * I); } |
+	"sech" "(" exp ")" %prec UNARY	{ push(*op, 14 + DBL_MAX * I); } |
+	"csch" "(" exp ")" %prec UNARY	{ push(*op, 15 + DBL_MAX * I); } |
+	"coth" "(" exp ")" %prec UNARY	{ push(*op, 16 + DBL_MAX * I); } |
+	"sin" "(" exp ")" %prec UNARY	{ push(*op, 17 + DBL_MAX * I); } |
+	"cos" "(" exp ")" %prec UNARY	{ push(*op, 18 + DBL_MAX * I); } |
+	"tan" "(" exp ")" %prec UNARY	{ push(*op, 19 + DBL_MAX * I); } |
+	"sec" "(" exp ")" %prec UNARY	{ push(*op, 20 + DBL_MAX * I); } |
+	"csc" "(" exp ")" %prec UNARY	{ push(*op, 21 + DBL_MAX * I); } |
+	"cot" "(" exp ")" %prec UNARY	{ push(*op, 22 + DBL_MAX * I); } 
 ;
 
 %%

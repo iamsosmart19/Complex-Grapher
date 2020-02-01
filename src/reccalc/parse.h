@@ -129,11 +129,7 @@ union YYSTYPE
   cplx NUM;
   /* "variable"  */
   cplx LETR;
-  /* eqtn  */
-  cplx eqtn;
-  /* exp  */
-  cplx exp;
-#line 137 "parse.h"
+#line 133 "parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -155,8 +151,6 @@ int yyparse (yyscan_t scanner, result *res, stack* op, queue* out);
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
 	void yyerror(yyscan_t scanner, result *res, stack *op, queue *out, const char *msg, ...);
 
-	int precValues[32];
-
-#line 161 "parse.h"
+#line 155 "parse.h"
 
 #endif /* !YY_YY_PARSE_H_INCLUDED  */
