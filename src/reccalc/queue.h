@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <complex.h>
 #include <stdio.h>
+#include <float.h>
 #include <limits.h>
 
 typedef double complex cplx;

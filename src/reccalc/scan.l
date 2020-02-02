@@ -138,14 +138,8 @@ z		{ enqueue(out, DBL_MAX + DBL_MAX * I); return LETR; }
 \<=		{ return  LTHANEQTO; }
 \>=		{ return  GTHANEQTO; }
 
-\(		{ s_push(op, -1 + DBL_MAX * I); return LBRAC;}
-\)		{
-			while(s_top(*op) != -1 + DBL_MAX * I) {
-				enqueue(out, s_pop(op));
-			}
-			s_pop(op);
-			return RBRAC;
-		}
+\(		{ return LBRAC;}
+\)		{ return RBRAC; }
 
 .		;yyerror(yyscanner, res, NULL, NULL, "syntax error, invalid character: %c", yytext[0]);
 

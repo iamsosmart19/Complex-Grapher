@@ -37,9 +37,8 @@ int main(void) {
 
 	// Possibly enable parser runtime debugging.
 	yydebug = !!getenv("YYDEBUG");
-	stack op = stackInit();
 	queue out = queueInit();
-	result res = parse_string(function, &op, &out);
+	result res = parse_string(function, &out);
 
 	printf("\nMAIN:\n"); 
 
@@ -48,7 +47,7 @@ int main(void) {
 			printf("%lf%+lfi\n", creal(front(out)), cimag(front(out)));
 		}
 		else if(cimag(front(out)) == -DBL_MAX) {
-			char table[5] = {'+', '-', '*', '/', '^'};
+			char table[6] = {'+', '-', '*', '/', '^', '_'};
 			printf("OP: %c\n", table[(int)creal(front(out))]);
 		}
 		else {
@@ -57,11 +56,6 @@ int main(void) {
 		dequeue(&out);
 	}
 
-	printf("STACK\n");
-	while(s_top(op) != -DBL_MAX - DBL_MAX * I) {
-		printf("%lf\n", creal(s_top(op)));
-		s_pop(&op);
-	}
 
 	// Exit on failure if there were errors.
 	return !!res.nerrs;
