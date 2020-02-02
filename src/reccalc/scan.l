@@ -12,6 +12,7 @@
 	#include <stdlib.h> /* strtol */
 
 	#include <complex.h>
+	#include <math.h>
 	#include "parse.h"
 %}
 
@@ -48,7 +49,7 @@
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "float is out of range");
 	}
-	yylval->NUM = n;
+	enqueue(out, n); 
 	return NUM;
 }
 
@@ -59,7 +60,7 @@
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "integer is out of range");
 	}
-	yylval->NUM = n;
+	enqueue(out, n); 
 	return NUM;
 }
 
@@ -69,7 +70,7 @@
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "integer is out of range");
 	}
-	yylval->NUM = n * I;
+	enqueue(out, n * I); 
 	return NUM;
 }
 
@@ -79,87 +80,67 @@
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "float is out of range");
 	}
-	yylval->NUM = n*I;
+	enqueue(out, n * I); 
 	return NUM;
-}
-
-[0-9]+z		{
-	errno = 0;
-	long n = strtol(yytext, NULL, 10);
-	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
-		yyerror(yyscanner, res, NULL, NULL, "integer is out of range");
-	}
-	yylval->LETR = n;
-	return LETR;
-}
-
-[0-9]+\.[0-9]+z	{
-	errno = 0;
-	double n = strtod(yytext, NULL);
-	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
-		yyerror(yyscanner, res, NULL, NULL, "float is out of range");
-	}
-	yylval->LETR = n;
-	return LETR;
 }
 
 \/\/	return COMMENT;
 
-\+		return PLUS;
--		return MINUS;
-\*		return STAR;
-\/		return SLASH;
-\^		return EXP;
-_		return UNDERSCORE;
+\+		{ return  PLUS; }
+-		{ return  MINUS; }
+\*		{ return  STAR; }
+\/		{ return  SLASH; }
+\^		{ return  EXP; }
+_		{ return  UNDERSCORE; }
 
-sqrt 	return SQRT;
-root	return ROOT;
+sqrt 	{ s_push(op, 0 + DBL_MAX * I); return  SQRT; }
+root	{ s_push(op, 1 + DBL_MAX * I); return  ROOT; }
 
-ln		return LN;
-log		return LOG;
-e		return E;
+ln		{ s_push(op, 2 + DBL_MAX * I); return  LN; }
+log		{ s_push(op, 3 + DBL_MAX * I); return  LOG; }
+e		{ enqueue(out, M_E); return  E; }
 
-abs		return ABS;
-floor	return FLOOR;
-ceil	return CEIL;
+abs		{ s_push(op, 4 + DBL_MAX * I); return  ABS; }
+floor	{ s_push(op, 5 + DBL_MAX * I); return  FLOOR; }
+ceil	{ s_push(op, 6 + DBL_MAX * I); return  CEIL; }
 
-arcsin	return ASIN;
-arccos	return ACOS;
-arctan	return ATAN;
-sinh	return SINH;
-cosh	return COSH;
-tanh	return TANH;
-sech	return SECH;
-csch	return CSCH;
-coth	return COTH;
-sin		return SIN;
-cos		return COS;
-tan		return TAN;
-sec		return SEC;
-csc		return CSC;
-cot		return COT;
-pi		return PI;
+arcsin	{ s_push(op, 7 + DBL_MAX * I); return  ASIN; }
+arccos	{ s_push(op, 8 + DBL_MAX * I); return  ACOS; }
+arctan	{ s_push(op, 9 + DBL_MAX * I); return  ATAN; }
+sinh	{ s_push(op, 10 + DBL_MAX * I); return  SINH; }
+cosh	{ s_push(op, 11 + DBL_MAX * I); return  COSH; }
+tanh	{ s_push(op, 12 + DBL_MAX * I); return  TANH; }
+sech	{ s_push(op, 13 + DBL_MAX * I); return  SECH; }
+csch	{ s_push(op, 14 + DBL_MAX * I); return  CSCH; }
+coth	{ s_push(op, 15 + DBL_MAX * I); return  COTH; }
+sin		{ s_push(op, 16 + DBL_MAX * I); return  SIN; }
+cos		{ s_push(op, 17 + DBL_MAX * I); return  COS; }
+tan		{ s_push(op, 18 + DBL_MAX * I); return  TAN; }
+sec		{ s_push(op, 19 + DBL_MAX * I); return  SEC; }
+csc		{ s_push(op, 20 + DBL_MAX * I); return  CSC; }
+cot		{ s_push(op, 21 + DBL_MAX * I); return  COT; }
+pi		{ enqueue(out, M_PI); return  PI; }
 
-i		return MI;
+i		{ enqueue(out, I); return  MI; }
 
  /* Ignore white spaces. */
 [ \t]+	continue;
 
-[\n\r]	return EOL;
+[\n\r]	{ return  EOL; }
 
-y		return Y;
-f\(z\)	return FZ;
+y		{ return  Y; }
+f\(z\)	{ return  FZ; }
 
-z		return LETR;
-=		return EQUALS;
-\<		return LESSTHAN;
-\>		return GREATERTHAN;
-\<=		return LTHANEQTO;
-\>=		return GTHANEQTO;
+z		{ enqueue(out, DBL_MAX + DBL_MAX * I); return LETR; }
+=		{ return  EQUALS; }
+\<		{ return  LESSTHAN; }
+\>		{ return  GREATERTHAN; }
+\<=		{ return  LTHANEQTO; }
+\>=		{ return  GTHANEQTO; }
 
 	/* \(		nesting += 1; BEGIN SC_STRING; */
-\(		return LBRAC;
-\)		return RBRAC;
+\(		{ s_push(op, 0); return LBRAC; }
+\)		{ s_push(op, 0); return RBRAC; }
 
 .		;yyerror(yyscanner, res, NULL, NULL, "syntax error, invalid character: %c", yytext[0]);
 

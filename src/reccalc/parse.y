@@ -108,6 +108,8 @@
 	LTHANEQTO		"<="
 	GTHANEQTO		">="
 
+	LETR			"z"
+
 	LBRAC			"("
 	RBRAC			")"
 
@@ -115,8 +117,7 @@
 	TOK_EOF	0 "end-of-file"
 ;
 
-%token <cplx> NUM "number" 
-%token <cplx> LETR "variable" 
+%token <cplx> NUM "number"
 
 // Precedence (from lowest to highest) and associativity.
 %precedence BINARY
@@ -168,11 +169,11 @@ eol:
 ;
 
 exp:
-	NUM %prec UNARY	{ /* printf("%lf%+lfi\n", creal($1), cimag($1)); */ enqueue(out, $1); } | 
-	"e"				{ enqueue(out, M_E); } |
-	"pi"			{ enqueue(out, M_PI); } |
-	"i"	%prec UNARY	{ enqueue(out, I); } |
-	LETR %prec UNARY { enqueue(out, DBL_MAX + DBL_MAX * I); } |
+	NUM %prec UNARY	{ } | 
+	"e"				{ } |
+	"pi"			{ } |
+	"i"	%prec UNARY	{ } |
+	"z" %prec UNARY { } |
 	"(" exp ")"		{ } |
 
 	exp "+" exp		{
@@ -239,31 +240,31 @@ exp:
 	"+" exp %prec UNARY		{ }	| 
 	"-" exp %prec UNARY		{ } | 
 
-	"sqrt" "(" exp ")" %prec UNARY	{ s_push(op, 0 + DBL_MAX * I); } |
-	"root" "(" exp ")" "(" exp ")"	{ s_push(op, 1 + DBL_MAX * I); } |
+	"sqrt" "(" exp ")" %prec UNARY	{ } |
+	"root" "(" exp ")" "(" exp ")"	{ } |
 
-	"ln" "(" exp ")" %prec UNARY	{ s_push(op, 2 + DBL_MAX * I); } |
-	"log" "_" "(" exp ")" "(" exp ")"		{ s_push(op, 3 + DBL_MAX * I); } |
+	"ln" "(" exp ")" %prec UNARY	{ } |
+	"log" "_" "(" exp ")" "(" exp ")"		{ } |
 
-	"abs" "(" exp ")" %prec UNARY	{ s_push(op, 4 + DBL_MAX * I); } |
-	"floor" "(" exp ")" %prec UNARY { s_push(op, 5 + DBL_MAX * I); } |
-	"ceil" "(" exp ")" %prec UNARY	{ s_push(op, 6 + DBL_MAX * I); } |
+	"abs" "(" exp ")" %prec UNARY	{ } |
+	"floor" "(" exp ")" %prec UNARY { } |
+	"ceil" "(" exp ")" %prec UNARY	{ } |
 
-	"asin" "(" exp ")" %prec UNARY	{ s_push(op, 7 + DBL_MAX * I); } |
-	"acos" "(" exp ")" %prec UNARY	{ s_push(op, 8 + DBL_MAX * I); } |
-	"atan" "(" exp ")" %prec UNARY	{ s_push(op, 9 + DBL_MAX * I); } |
-	"sinh" "(" exp ")" %prec UNARY	{ s_push(op, 10 + DBL_MAX * I); } |
-	"cosh" "(" exp ")" %prec UNARY	{ s_push(op, 11 + DBL_MAX * I); } |
-	"tanh" "(" exp ")" %prec UNARY	{ s_push(op, 12 + DBL_MAX * I); } |
-	"sech" "(" exp ")" %prec UNARY	{ s_push(op, 13 + DBL_MAX * I); } |
-	"csch" "(" exp ")" %prec UNARY	{ s_push(op, 14 + DBL_MAX * I); } |
-	"coth" "(" exp ")" %prec UNARY	{ s_push(op, 15 + DBL_MAX * I); } |
-	"sin" "(" exp ")" %prec UNARY	{ s_push(op, 16 + DBL_MAX * I); } |
-	"cos" "(" exp ")" %prec UNARY	{ s_push(op, 17 + DBL_MAX * I); } |
-	"tan" "(" exp ")" %prec UNARY	{ s_push(op, 18 + DBL_MAX * I); } |
-	"sec" "(" exp ")" %prec UNARY	{ s_push(op, 19 + DBL_MAX * I); } |
-	"csc" "(" exp ")" %prec UNARY	{ s_push(op, 20 + DBL_MAX * I); } |
-	"cot" "(" exp ")" %prec UNARY	{ s_push(op, 21 + DBL_MAX * I); } 
+	"asin" "(" exp ")" %prec UNARY	{ } |
+	"acos" "(" exp ")" %prec UNARY	{ } |
+	"atan" "(" exp ")" %prec UNARY	{ } |
+	"sinh" "(" exp ")" %prec UNARY	{ } |
+	"cosh" "(" exp ")" %prec UNARY	{ } |
+	"tanh" "(" exp ")" %prec UNARY	{ } |
+	"sech" "(" exp ")" %prec UNARY	{ } |
+	"csch" "(" exp ")" %prec UNARY	{ } |
+	"coth" "(" exp ")" %prec UNARY	{ } |
+	"sin" "(" exp ")" %prec UNARY	{ } |
+	"cos" "(" exp ")" %prec UNARY	{ } |
+	"tan" "(" exp ")" %prec UNARY	{ } |
+	"sec" "(" exp ")" %prec UNARY	{ } |
+	"csc" "(" exp ")" %prec UNARY	{ } |
+	"cot" "(" exp ")" %prec UNARY	{ } 
 ;
 
 

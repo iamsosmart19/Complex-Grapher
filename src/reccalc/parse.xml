@@ -143,7 +143,7 @@
       <rule number="21" usefulness="useful" percent_prec="UNARY">
         <lhs>exp</lhs>
         <rhs>
-          <symbol>&quot;variable&quot;</symbol>
+          <symbol>&quot;z&quot;</symbol>
         </rhs>
       </rule>
       <rule number="22" usefulness="useful">
@@ -456,11 +456,11 @@
       <terminal symbol-number="39" token-number="294" name="&quot;&gt;&quot;" usefulness="useful"/>
       <terminal symbol-number="40" token-number="295" name="&quot;&lt;=&quot;" usefulness="useful"/>
       <terminal symbol-number="41" token-number="296" name="&quot;&gt;=&quot;" usefulness="useful"/>
-      <terminal symbol-number="42" token-number="297" name="&quot;(&quot;" usefulness="useful"/>
-      <terminal symbol-number="43" token-number="298" name="&quot;)&quot;" usefulness="useful"/>
-      <terminal symbol-number="44" token-number="299" name="&quot;end-of-line&quot;" usefulness="useful"/>
-      <terminal symbol-number="45" token-number="300" name="&quot;number&quot;" usefulness="useful"/>
-      <terminal symbol-number="46" token-number="301" name="&quot;variable&quot;" usefulness="useful"/>
+      <terminal symbol-number="42" token-number="297" name="&quot;z&quot;" usefulness="useful"/>
+      <terminal symbol-number="43" token-number="298" name="&quot;(&quot;" usefulness="useful"/>
+      <terminal symbol-number="44" token-number="299" name="&quot;)&quot;" usefulness="useful"/>
+      <terminal symbol-number="45" token-number="300" name="&quot;end-of-line&quot;" usefulness="useful"/>
+      <terminal symbol-number="46" token-number="301" name="&quot;number&quot;" usefulness="useful"/>
       <terminal symbol-number="47" token-number="302" name="BINARY" usefulness="useful" prec="1" assoc="precedence"/>
       <terminal symbol-number="48" token-number="303" name="UNARY" usefulness="useful" prec="6" assoc="precedence"/>
     </terminals>
@@ -559,9 +559,9 @@
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
           <transition type="shift" symbol="&quot;y&quot;" state="30"/>
           <transition type="shift" symbol="&quot;f(z)&quot;" state="31"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="input" state="35"/>
           <transition type="goto" symbol="line" state="36"/>
           <transition type="goto" symbol="eqtn" state="37"/>
@@ -680,9 +680,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="44"/>
         </transitions>
         <errors/>
@@ -759,9 +759,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="45"/>
         </transitions>
         <errors/>
@@ -1150,6 +1150,20 @@
 
     <state number="32">
       <itemset>
+        <item rule-number="21" point="1"/>
+      </itemset>
+      <actions>
+        <transitions/>
+        <errors/>
+        <reductions>
+          <reduction symbol="$default" rule="21" enabled="true"/>
+        </reductions>
+      </actions>
+      <solved-conflicts/>
+    </state>
+
+    <state number="33">
+      <itemset>
         <item rule-number="17" point="0"/>
         <item rule-number="18" point="0"/>
         <item rule-number="19" point="0"/>
@@ -1216,9 +1230,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="68"/>
         </transitions>
         <errors/>
@@ -1227,7 +1241,7 @@
       <solved-conflicts/>
     </state>
 
-    <state number="33">
+    <state number="34">
       <itemset>
         <item rule-number="17" point="1"/>
       </itemset>
@@ -1236,20 +1250,6 @@
         <errors/>
         <reductions>
           <reduction symbol="$default" rule="17" enabled="true"/>
-        </reductions>
-      </actions>
-      <solved-conflicts/>
-    </state>
-
-    <state number="34">
-      <itemset>
-        <item rule-number="21" point="1"/>
-      </itemset>
-      <actions>
-        <transitions/>
-        <errors/>
-        <reductions>
-          <reduction symbol="$default" rule="21" enabled="true"/>
         </reductions>
       </actions>
       <solved-conflicts/>
@@ -1580,9 +1580,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="84"/>
         </transitions>
         <errors/>
@@ -1659,9 +1659,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="85"/>
         </transitions>
         <errors/>
@@ -1738,9 +1738,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="86"/>
         </transitions>
         <errors/>
@@ -1831,9 +1831,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="88"/>
         </transitions>
         <errors/>
@@ -1910,9 +1910,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="89"/>
         </transitions>
         <errors/>
@@ -1989,9 +1989,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="90"/>
         </transitions>
         <errors/>
@@ -2068,9 +2068,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="91"/>
         </transitions>
         <errors/>
@@ -2147,9 +2147,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="92"/>
         </transitions>
         <errors/>
@@ -2226,9 +2226,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="93"/>
         </transitions>
         <errors/>
@@ -2305,9 +2305,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="94"/>
         </transitions>
         <errors/>
@@ -2384,9 +2384,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="95"/>
         </transitions>
         <errors/>
@@ -2463,9 +2463,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="96"/>
         </transitions>
         <errors/>
@@ -2542,9 +2542,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="97"/>
         </transitions>
         <errors/>
@@ -2621,9 +2621,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="98"/>
         </transitions>
         <errors/>
@@ -2700,9 +2700,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="99"/>
         </transitions>
         <errors/>
@@ -2779,9 +2779,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="100"/>
         </transitions>
         <errors/>
@@ -2858,9 +2858,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="101"/>
         </transitions>
         <errors/>
@@ -2937,9 +2937,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="102"/>
         </transitions>
         <errors/>
@@ -3016,9 +3016,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="103"/>
         </transitions>
         <errors/>
@@ -3095,9 +3095,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="104"/>
         </transitions>
         <errors/>
@@ -3174,9 +3174,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="105"/>
         </transitions>
         <errors/>
@@ -3389,9 +3389,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="107"/>
         </transitions>
         <errors/>
@@ -3468,9 +3468,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="108"/>
         </transitions>
         <errors/>
@@ -3547,9 +3547,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="109"/>
         </transitions>
         <errors/>
@@ -3626,9 +3626,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="110"/>
         </transitions>
         <errors/>
@@ -3705,9 +3705,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="111"/>
         </transitions>
         <errors/>
@@ -3784,9 +3784,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="112"/>
         </transitions>
         <errors/>
@@ -3949,9 +3949,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="116"/>
         </transitions>
         <errors/>
@@ -5027,9 +5027,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="137"/>
         </transitions>
         <errors/>
@@ -5144,9 +5144,9 @@
           <transition type="shift" symbol="&quot;cot&quot;" state="27"/>
           <transition type="shift" symbol="&quot;pi&quot;" state="28"/>
           <transition type="shift" symbol="&quot;i&quot;" state="29"/>
-          <transition type="shift" symbol="&quot;(&quot;" state="32"/>
-          <transition type="shift" symbol="&quot;number&quot;" state="33"/>
-          <transition type="shift" symbol="&quot;variable&quot;" state="34"/>
+          <transition type="shift" symbol="&quot;z&quot;" state="32"/>
+          <transition type="shift" symbol="&quot;(&quot;" state="33"/>
+          <transition type="shift" symbol="&quot;number&quot;" state="34"/>
           <transition type="goto" symbol="exp" state="140"/>
         </transitions>
         <errors/>
