@@ -1548,7 +1548,7 @@ yyreduce:
 #line 138 "parse.y"
                   {
 		while(s_top(*op) != -DBL_MAX - DBL_MAX * I) {
-			enqueue(*out, s_pop(*op));
+			enqueue(*out, s_pop(op));
 		}
 	}
 #line 1555 "parse.c"
@@ -1612,11 +1612,11 @@ yyreduce:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[0] ) {
-			printf("ADD: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("ADD: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipAddLoop:
-		s_push(*op, 0 - DBL_MAX * I);
+		s_push(op, 0 - DBL_MAX * I);
 	}
 #line 1622 "parse.c"
     break;
@@ -1629,11 +1629,11 @@ yyreduce:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[1] ) {
-			printf("SUB: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("SUB: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipSubLoop:
-		s_push(*op, 1 - DBL_MAX * I);
+		s_push(op, 1 - DBL_MAX * I);
 	}
 #line 1639 "parse.c"
     break;
@@ -1646,11 +1646,11 @@ yyreduce:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[2] ) {
-			printf("AST: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("AST: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipAstLoop:
-		s_push(*op, 2 - DBL_MAX * I);
+		s_push(op, 2 - DBL_MAX * I);
 	}
 #line 1656 "parse.c"
     break;
@@ -1663,11 +1663,11 @@ yyreduce:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[3] ) {
-			printf("DIV: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("DIV: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipDivLoop:
-		s_push(*op, 3 - DBL_MAX * I);
+		s_push(op, 3 - DBL_MAX * I);
 	}
 #line 1673 "parse.c"
     break;
@@ -1680,11 +1680,11 @@ yyreduce:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[4] ) {
-			printf("EXP: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("EXP: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipExpLoop:
-		s_push(*op, 4 - DBL_MAX * I);
+		s_push(op, 4 - DBL_MAX * I);
 	}
 #line 1690 "parse.c"
     break;
@@ -1703,133 +1703,133 @@ yyreduce:
 
   case 31:
 #line 242 "parse.y"
-                                        { s_push(*op, 0 + DBL_MAX * I); }
+                                        { s_push(op, 0 + DBL_MAX * I); }
 #line 1708 "parse.c"
     break;
 
   case 32:
 #line 243 "parse.y"
-                                        { s_push(*op, 1 + DBL_MAX * I); }
+                                        { s_push(op, 1 + DBL_MAX * I); }
 #line 1714 "parse.c"
     break;
 
   case 33:
 #line 245 "parse.y"
-                                        { s_push(*op, 2 + DBL_MAX * I); }
+                                        { s_push(op, 2 + DBL_MAX * I); }
 #line 1720 "parse.c"
     break;
 
   case 34:
 #line 246 "parse.y"
-                                                        { s_push(*op, 3 + DBL_MAX * I); }
+                                                        { s_push(op, 3 + DBL_MAX * I); }
 #line 1726 "parse.c"
     break;
 
   case 35:
 #line 248 "parse.y"
-                                        { s_push(*op, 4 + DBL_MAX * I); }
+                                        { s_push(op, 4 + DBL_MAX * I); }
 #line 1732 "parse.c"
     break;
 
   case 36:
 #line 249 "parse.y"
-                                        { s_push(*op, 5 + DBL_MAX * I); }
+                                        { s_push(op, 5 + DBL_MAX * I); }
 #line 1738 "parse.c"
     break;
 
   case 37:
 #line 250 "parse.y"
-                                        { s_push(*op, 6 + DBL_MAX * I); }
+                                        { s_push(op, 6 + DBL_MAX * I); }
 #line 1744 "parse.c"
     break;
 
   case 38:
 #line 252 "parse.y"
-                                        { s_push(*op, 7 + DBL_MAX * I); }
+                                        { s_push(op, 7 + DBL_MAX * I); }
 #line 1750 "parse.c"
     break;
 
   case 39:
 #line 253 "parse.y"
-                                        { s_push(*op, 8 + DBL_MAX * I); }
+                                        { s_push(op, 8 + DBL_MAX * I); }
 #line 1756 "parse.c"
     break;
 
   case 40:
 #line 254 "parse.y"
-                                        { s_push(*op, 9 + DBL_MAX * I); }
+                                        { s_push(op, 9 + DBL_MAX * I); }
 #line 1762 "parse.c"
     break;
 
   case 41:
 #line 255 "parse.y"
-                                        { s_push(*op, 10 + DBL_MAX * I); }
+                                        { s_push(op, 10 + DBL_MAX * I); }
 #line 1768 "parse.c"
     break;
 
   case 42:
 #line 256 "parse.y"
-                                        { s_push(*op, 11 + DBL_MAX * I); }
+                                        { s_push(op, 11 + DBL_MAX * I); }
 #line 1774 "parse.c"
     break;
 
   case 43:
 #line 257 "parse.y"
-                                        { s_push(*op, 12 + DBL_MAX * I); }
+                                        { s_push(op, 12 + DBL_MAX * I); }
 #line 1780 "parse.c"
     break;
 
   case 44:
 #line 258 "parse.y"
-                                        { s_push(*op, 13 + DBL_MAX * I); }
+                                        { s_push(op, 13 + DBL_MAX * I); }
 #line 1786 "parse.c"
     break;
 
   case 45:
 #line 259 "parse.y"
-                                        { s_push(*op, 14 + DBL_MAX * I); }
+                                        { s_push(op, 14 + DBL_MAX * I); }
 #line 1792 "parse.c"
     break;
 
   case 46:
 #line 260 "parse.y"
-                                        { s_push(*op, 15 + DBL_MAX * I); }
+                                        { s_push(op, 15 + DBL_MAX * I); }
 #line 1798 "parse.c"
     break;
 
   case 47:
 #line 261 "parse.y"
-                                        { s_push(*op, 16 + DBL_MAX * I); }
+                                        { s_push(op, 16 + DBL_MAX * I); }
 #line 1804 "parse.c"
     break;
 
   case 48:
 #line 262 "parse.y"
-                                        { s_push(*op, 17 + DBL_MAX * I); }
+                                        { s_push(op, 17 + DBL_MAX * I); }
 #line 1810 "parse.c"
     break;
 
   case 49:
 #line 263 "parse.y"
-                                        { s_push(*op, 18 + DBL_MAX * I); }
+                                        { s_push(op, 18 + DBL_MAX * I); }
 #line 1816 "parse.c"
     break;
 
   case 50:
 #line 264 "parse.y"
-                                        { s_push(*op, 19 + DBL_MAX * I); }
+                                        { s_push(op, 19 + DBL_MAX * I); }
 #line 1822 "parse.c"
     break;
 
   case 51:
 #line 265 "parse.y"
-                                        { s_push(*op, 20 + DBL_MAX * I); }
+                                        { s_push(op, 20 + DBL_MAX * I); }
 #line 1828 "parse.c"
     break;
 
   case 52:
 #line 266 "parse.y"
-                                        { s_push(*op, 21 + DBL_MAX * I); }
+                                        { s_push(op, 21 + DBL_MAX * I); }
 #line 1834 "parse.c"
     break;
 

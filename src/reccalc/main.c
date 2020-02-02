@@ -60,7 +60,7 @@ int main(void) {
 	printf("STACK\n");
 	while(s_top(op) != -DBL_MAX - DBL_MAX * I) {
 		printf("%lf\n", creal(s_top(op)));
-		s_pop(op);
+		s_pop(&op);
 	}
 
 	// Exit on failure if there were errors.

@@ -18,9 +18,9 @@ typedef struct {
 
 stack stackInit();
 
-void s_push(stack s, cplx val);
+void s_push(stack *s, cplx val);
 
-cplx s_pop(stack s);
+cplx s_pop(stack *s);
 
 cplx s_top(stack s);
 

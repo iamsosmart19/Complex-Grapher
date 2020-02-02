@@ -137,7 +137,7 @@ input:
 line:
 	eqtn eol  {
 		while(s_top(*op) != -DBL_MAX - DBL_MAX * I) {
-			enqueue(*out, s_pop(*op));
+			enqueue(*out, s_pop(op));
 		}
 	} | 
 	"//" eqtn eol {
@@ -181,11 +181,11 @@ exp:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[0] ) {
-			printf("ADD: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("ADD: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipAddLoop:
-		s_push(*op, 0 - DBL_MAX * I);
+		s_push(op, 0 - DBL_MAX * I);
 	} | 
 	exp "-" exp		{ 
 		if( s_top(*op) == -DBL_MAX - DBL_MAX * I ) {
@@ -193,11 +193,11 @@ exp:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[1] ) {
-			printf("SUB: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("SUB: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipSubLoop:
-		s_push(*op, 1 - DBL_MAX * I);
+		s_push(op, 1 - DBL_MAX * I);
 	}	| 
 	exp "*" exp		{
 		if( s_top(*op) == -DBL_MAX - DBL_MAX * I ) {
@@ -205,11 +205,11 @@ exp:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[2] ) {
-			printf("AST: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("AST: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipAstLoop:
-		s_push(*op, 2 - DBL_MAX * I);
+		s_push(op, 2 - DBL_MAX * I);
 	}	|
 	exp "/" exp		{
 		if( s_top(*op) == -DBL_MAX - DBL_MAX * I ) {
@@ -217,11 +217,11 @@ exp:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[3] ) {
-			printf("DIV: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("DIV: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipDivLoop:
-		s_push(*op, 3 - DBL_MAX * I);
+		s_push(op, 3 - DBL_MAX * I);
 	} | 
 	exp "^" exp		{
 		if( s_top(*op) == -DBL_MAX - DBL_MAX * I ) {
@@ -229,41 +229,41 @@ exp:
 		}
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[4] ) {
-			printf("EXP: %lf%+lfi\n", creal(s_top(*op)), cimag(s_top(*op)));
-			enqueue(*out, s_pop(*op));
+			printf("EXP: %lf\n", creal(s_top(*op)));
+			enqueue(*out, s_pop(op));
 		}
 			skipExpLoop:
-		s_push(*op, 4 - DBL_MAX * I);
+		s_push(op, 4 - DBL_MAX * I);
 	} | 
 
 	"+" exp %prec UNARY		{ }	| 
 	"-" exp %prec UNARY		{ } | 
 
-	"sqrt" "(" exp ")" %prec UNARY	{ s_push(*op, 0 + DBL_MAX * I); } |
-	"root" "(" exp ")" "(" exp ")"	{ s_push(*op, 1 + DBL_MAX * I); } |
+	"sqrt" "(" exp ")" %prec UNARY	{ s_push(op, 0 + DBL_MAX * I); } |
+	"root" "(" exp ")" "(" exp ")"	{ s_push(op, 1 + DBL_MAX * I); } |
 
-	"ln" "(" exp ")" %prec UNARY	{ s_push(*op, 2 + DBL_MAX * I); } |
-	"log" "_" "(" exp ")" "(" exp ")"		{ s_push(*op, 3 + DBL_MAX * I); } |
+	"ln" "(" exp ")" %prec UNARY	{ s_push(op, 2 + DBL_MAX * I); } |
+	"log" "_" "(" exp ")" "(" exp ")"		{ s_push(op, 3 + DBL_MAX * I); } |
 
-	"abs" "(" exp ")" %prec UNARY	{ s_push(*op, 4 + DBL_MAX * I); } |
-	"floor" "(" exp ")" %prec UNARY { s_push(*op, 5 + DBL_MAX * I); } |
-	"ceil" "(" exp ")" %prec UNARY	{ s_push(*op, 6 + DBL_MAX * I); } |
+	"abs" "(" exp ")" %prec UNARY	{ s_push(op, 4 + DBL_MAX * I); } |
+	"floor" "(" exp ")" %prec UNARY { s_push(op, 5 + DBL_MAX * I); } |
+	"ceil" "(" exp ")" %prec UNARY	{ s_push(op, 6 + DBL_MAX * I); } |
 
-	"asin" "(" exp ")" %prec UNARY	{ s_push(*op, 7 + DBL_MAX * I); } |
-	"acos" "(" exp ")" %prec UNARY	{ s_push(*op, 8 + DBL_MAX * I); } |
-	"atan" "(" exp ")" %prec UNARY	{ s_push(*op, 9 + DBL_MAX * I); } |
-	"sinh" "(" exp ")" %prec UNARY	{ s_push(*op, 10 + DBL_MAX * I); } |
-	"cosh" "(" exp ")" %prec UNARY	{ s_push(*op, 11 + DBL_MAX * I); } |
-	"tanh" "(" exp ")" %prec UNARY	{ s_push(*op, 12 + DBL_MAX * I); } |
-	"sech" "(" exp ")" %prec UNARY	{ s_push(*op, 13 + DBL_MAX * I); } |
-	"csch" "(" exp ")" %prec UNARY	{ s_push(*op, 14 + DBL_MAX * I); } |
-	"coth" "(" exp ")" %prec UNARY	{ s_push(*op, 15 + DBL_MAX * I); } |
-	"sin" "(" exp ")" %prec UNARY	{ s_push(*op, 16 + DBL_MAX * I); } |
-	"cos" "(" exp ")" %prec UNARY	{ s_push(*op, 17 + DBL_MAX * I); } |
-	"tan" "(" exp ")" %prec UNARY	{ s_push(*op, 18 + DBL_MAX * I); } |
-	"sec" "(" exp ")" %prec UNARY	{ s_push(*op, 19 + DBL_MAX * I); } |
-	"csc" "(" exp ")" %prec UNARY	{ s_push(*op, 20 + DBL_MAX * I); } |
-	"cot" "(" exp ")" %prec UNARY	{ s_push(*op, 21 + DBL_MAX * I); } 
+	"asin" "(" exp ")" %prec UNARY	{ s_push(op, 7 + DBL_MAX * I); } |
+	"acos" "(" exp ")" %prec UNARY	{ s_push(op, 8 + DBL_MAX * I); } |
+	"atan" "(" exp ")" %prec UNARY	{ s_push(op, 9 + DBL_MAX * I); } |
+	"sinh" "(" exp ")" %prec UNARY	{ s_push(op, 10 + DBL_MAX * I); } |
+	"cosh" "(" exp ")" %prec UNARY	{ s_push(op, 11 + DBL_MAX * I); } |
+	"tanh" "(" exp ")" %prec UNARY	{ s_push(op, 12 + DBL_MAX * I); } |
+	"sech" "(" exp ")" %prec UNARY	{ s_push(op, 13 + DBL_MAX * I); } |
+	"csch" "(" exp ")" %prec UNARY	{ s_push(op, 14 + DBL_MAX * I); } |
+	"coth" "(" exp ")" %prec UNARY	{ s_push(op, 15 + DBL_MAX * I); } |
+	"sin" "(" exp ")" %prec UNARY	{ s_push(op, 16 + DBL_MAX * I); } |
+	"cos" "(" exp ")" %prec UNARY	{ s_push(op, 17 + DBL_MAX * I); } |
+	"tan" "(" exp ")" %prec UNARY	{ s_push(op, 18 + DBL_MAX * I); } |
+	"sec" "(" exp ")" %prec UNARY	{ s_push(op, 19 + DBL_MAX * I); } |
+	"csc" "(" exp ")" %prec UNARY	{ s_push(op, 20 + DBL_MAX * I); } |
+	"cot" "(" exp ")" %prec UNARY	{ s_push(op, 21 + DBL_MAX * I); } 
 ;
 
 %%
