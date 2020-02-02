@@ -7,6 +7,7 @@ VERSION 0.1: reading things from Asciimath:
 			0.0.5: Miscellaneous: maaaaybe step functions, ceiling and floor(read; just use C division), abs
 			0.0.6: Allow variable definitions
 			0.0.7: Error messages (Ranging from unclosed bracket at _pos_ to undefined variable)
+			HERE
 			0.0.8: Reading multiple lines/functions
 
 VERSION 0.2: displaying the functions with only real numbers
