@@ -25,7 +25,7 @@
 %code provides {
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
-	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res)
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, stack *op, queue *out)
 	YY_DECL;
 
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
@@ -59,7 +59,7 @@
 %param {yyscan_t scanner}{result *res}
 
 //custom yyparse paramaters
-%parse-param {stack* op}{queue* out}
+%param {stack* op}{queue* out}
 
 %token
 	COMMENT "//"
@@ -137,7 +137,7 @@ input:
 line:
 	eqtn eol  {
 		while(s_top(*op) != -DBL_MAX - DBL_MAX * I) {
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 	} | 
 	"//" eqtn eol {
@@ -168,11 +168,11 @@ eol:
 ;
 
 exp:
-	NUM %prec UNARY	{ /* printf("%lf%+lfi\n", creal($1), cimag($1)); */ enqueue(*out, $1); } | 
-	"e"				{ enqueue(*out, M_E); } |
-	"pi"			{ enqueue(*out, M_PI); } |
-	"i"	%prec UNARY	{ enqueue(*out, I); } |
-	LETR %prec UNARY { enqueue(*out, DBL_MAX + DBL_MAX * I); } |
+	NUM %prec UNARY	{ /* printf("%lf%+lfi\n", creal($1), cimag($1)); */ enqueue(out, $1); } | 
+	"e"				{ enqueue(out, M_E); } |
+	"pi"			{ enqueue(out, M_PI); } |
+	"i"	%prec UNARY	{ enqueue(out, I); } |
+	LETR %prec UNARY { enqueue(out, DBL_MAX + DBL_MAX * I); } |
 	"(" exp ")"		{ } |
 
 	exp "+" exp		{
@@ -182,7 +182,7 @@ exp:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[0] ) {
 			printf("ADD: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipAddLoop:
 		s_push(op, 0 - DBL_MAX * I);
@@ -194,7 +194,7 @@ exp:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[1] ) {
 			printf("SUB: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipSubLoop:
 		s_push(op, 1 - DBL_MAX * I);
@@ -206,7 +206,7 @@ exp:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[2] ) {
 			printf("AST: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipAstLoop:
 		s_push(op, 2 - DBL_MAX * I);
@@ -218,7 +218,7 @@ exp:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[3] ) {
 			printf("DIV: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipDivLoop:
 		s_push(op, 3 - DBL_MAX * I);
@@ -230,7 +230,7 @@ exp:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[4] ) {
 			printf("EXP: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipExpLoop:
 		s_push(op, 4 - DBL_MAX * I);
@@ -265,6 +265,7 @@ exp:
 	"csc" "(" exp ")" %prec UNARY	{ s_push(op, 20 + DBL_MAX * I); } |
 	"cot" "(" exp ")" %prec UNARY	{ s_push(op, 21 + DBL_MAX * I); } 
 ;
+
 
 %%
 // Epilogue (C code).

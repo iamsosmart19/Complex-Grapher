@@ -15,24 +15,24 @@ queue queueInit() {
 	return temp;
 }
 
-void enqueue(queue q, cplx val) {
+void enqueue(queue *q, cplx val) {
 	qnode* temp = malloc(sizeof(qnode));
 	temp->val = val;
-	temp->next = q.begin->next;
-	temp->prev = q.begin;
-	q.begin->next->prev = temp;
-	q.begin->next = temp;
+	temp->next = (*q).begin->next;
+	temp->prev = (*q).begin;
+	(*q).begin->next->prev = temp;
+	(*q).begin->next = temp;
 }
 
-cplx dequeue(queue q) {
-	if(q.begin->next == q.end) {
+cplx dequeue(queue* q) {
+	if((*q).begin->next == (*q).end) {
 		//printf("shining eyes pierce veiled hands\n");
 		return INT_MIN;
 	}
-	cplx ret = q.end->prev->val;
-	qnode* temp = q.end->prev;
-	q.end->prev = q.end->prev->prev;
-	q.end->prev->next = q.end;
+	cplx ret = (*q).end->prev->val;
+	qnode* temp = (*q).end->prev;
+	(*q).end->prev = (*q).end->prev->prev;
+	(*q).end->prev->next = (*q).end;
 	free(temp);
 	return ret;
 }

@@ -54,7 +54,7 @@ int main(void) {
 		else {
 			printf("FUNC: %s\n", lookuptable[(int)creal(front(out))]);
 		}
-		dequeue(out);
+		dequeue(&out);
 	}
 
 	printf("STACK\n");

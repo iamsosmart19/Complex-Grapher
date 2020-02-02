@@ -221,7 +221,7 @@ int yyparse (yyscan_t scanner, result *res, stack* op, queue* out);
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
-	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res)
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, stack *op, queue *out)
 	YY_DECL;
 
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
@@ -1468,7 +1468,7 @@ yybackup:
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
-      yychar = yylex (&yylval, scanner, res);
+      yychar = yylex (&yylval, scanner, res, op, out);
     }
 
   if (yychar <= YYEOF)
@@ -1548,7 +1548,7 @@ yyreduce:
 #line 138 "parse.y"
                   {
 		while(s_top(*op) != -DBL_MAX - DBL_MAX * I) {
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 	}
 #line 1555 "parse.c"
@@ -1570,31 +1570,31 @@ yyreduce:
 
   case 18:
 #line 171 "parse.y"
-                        { /* printf("%lf%+lfi\n", creal($1), cimag($1)); */ enqueue(*out, (yyvsp[0].NUM)); }
+                        { /* printf("%lf%+lfi\n", creal($1), cimag($1)); */ enqueue(out, (yyvsp[0].NUM)); }
 #line 1575 "parse.c"
     break;
 
   case 19:
 #line 172 "parse.y"
-                                        { enqueue(*out, M_E); }
+                                        { enqueue(out, M_E); }
 #line 1581 "parse.c"
     break;
 
   case 20:
 #line 173 "parse.y"
-                                { enqueue(*out, M_PI); }
+                                { enqueue(out, M_PI); }
 #line 1587 "parse.c"
     break;
 
   case 21:
 #line 174 "parse.y"
-                                { enqueue(*out, I); }
+                                { enqueue(out, I); }
 #line 1593 "parse.c"
     break;
 
   case 22:
 #line 175 "parse.y"
-                         { enqueue(*out, DBL_MAX + DBL_MAX * I); }
+                         { enqueue(out, DBL_MAX + DBL_MAX * I); }
 #line 1599 "parse.c"
     break;
 
@@ -1613,7 +1613,7 @@ yyreduce:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[0] ) {
 			printf("ADD: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipAddLoop:
 		s_push(op, 0 - DBL_MAX * I);
@@ -1630,7 +1630,7 @@ yyreduce:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[1] ) {
 			printf("SUB: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipSubLoop:
 		s_push(op, 1 - DBL_MAX * I);
@@ -1647,7 +1647,7 @@ yyreduce:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[2] ) {
 			printf("AST: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipAstLoop:
 		s_push(op, 2 - DBL_MAX * I);
@@ -1664,7 +1664,7 @@ yyreduce:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[3] ) {
 			printf("DIV: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipDivLoop:
 		s_push(op, 3 - DBL_MAX * I);
@@ -1681,7 +1681,7 @@ yyreduce:
 		while( (cimag(s_top(*op)) == DBL_MAX) ||
 			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[4] ) {
 			printf("EXP: %lf\n", creal(s_top(*op)));
-			enqueue(*out, s_pop(op));
+			enqueue(out, s_pop(op));
 		}
 			skipExpLoop:
 		s_push(op, 4 - DBL_MAX * I);
@@ -2066,7 +2066,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 269 "parse.y"
+#line 270 "parse.y"
 
 // Epilogue (C code).
 

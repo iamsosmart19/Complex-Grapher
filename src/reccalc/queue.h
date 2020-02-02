@@ -21,9 +21,9 @@ typedef struct {
 
 queue queueInit();
 
-void enqueue(queue q, cplx val);
+void enqueue(queue* q, cplx val);
 
-cplx dequeue(queue q);
+cplx dequeue(queue* q);
 
 cplx front(queue q);
 
