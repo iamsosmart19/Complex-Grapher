@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.4.2.  */
+/* A Bison parser, made by GNU Bison 3.5.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -34,109 +34,88 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_PARSER_TAB_H_INCLUDED
-# define YY_YY_PARSER_TAB_H_INCLUDED
+#ifndef YY_YY_SRC_PARSE_H_INCLUDED
+# define YY_YY_SRC_PARSE_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 5 "src/parse.y"
+
+	#include <complex.h>
+	#include "queue.h"
+
+	typedef double complex cplx;
+	typedef void* yyscan_t;
+	typedef struct {
+		// Whether to print the intermediate results.
+		int verbose;
+		// Value of the last computation.
+		cplx value;
+		// Number of errors.
+		int nerrs;
+	} result;
+	result parse_string(const char* str, queue* out, int* tknCnt);
+	result parse(void);
+
+#line 66 "src/parse.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INT = 258,
-    FLOAT = 259,
-    LINESTART = 260,
-    EQUALS = 261,
-    LESSTHAN = 262,
-    GREATERTHAN = 263,
-    LTHANEQTO = 264,
-    GTHANEQTO = 265,
-    ALPHA = 266,
-    BETA = 267,
-    GAMMA = 268,
-    GAMMACAP = 269,
-    DELTA = 270,
-    DELTACAP = 271,
-    EPSILON = 272,
-    VAREPSILON = 273,
-    ZETA = 274,
-    ETA = 275,
-    THETA = 276,
-    THETACAP = 277,
-    VARTHETA = 278,
-    IOTA = 279,
-    KAPPA = 280,
-    LAMBDA = 281,
-    LAMBDACAP = 282,
-    MU = 283,
-    NU = 284,
-    XI = 285,
-    XICAP = 286,
-    PI = 287,
-    PICAP = 288,
-    SIGMA = 289,
-    SIGMACAP = 290,
-    TAU = 291,
-    UPSILON = 292,
-    PHI = 293,
-    PHICAP = 294,
-    VARPHI = 295,
-    CHI = 296,
-    PSI = 297,
-    PSICAP = 298,
-    OMEGA = 299,
-    E = 300,
-    INFINITY = 301,
-    SQRT = 302,
-    LOG = 303,
-    LN = 304,
-    ABS = 305,
-    FLOOR = 306,
-    CEIL = 307,
-    ASIN = 308,
-    ACOS = 309,
-    ATAN = 310,
-    SINH = 311,
-    COSH = 312,
-    TANH = 313,
-    SECH = 314,
-    CSCH = 315,
-    COTH = 316,
-    SIN = 317,
-    COS = 318,
-    TAN = 319,
-    SEC = 320,
-    CSC = 321,
-    COT = 322,
-    TEXT = 323,
-    BB = 324,
-    HAT = 325,
-    FRAC = 326,
-    ROOT = 327,
-    ADD = 328,
-    SUB = 329,
-    MUL = 330,
-    DIV = 331,
-    NEG = 332,
-    BRACK = 333,
-    EXP = 334,
-    LBRAC = 335,
-    LSBRAC = 336,
-    LCBRAC = 337,
-    LANGLE = 338,
-    LABRAC = 339,
-    RBRAC = 340,
-    RSBRAC = 341,
-    RCBRAC = 342,
-    RANGLE = 343,
-    RABRAC = 344,
-    ENDL = 345
+    TOK_EOF = 0,
+    COMMENT = 258,
+    PLUS = 259,
+    MINUS = 260,
+    STAR = 261,
+    SLASH = 262,
+    EXP = 263,
+    UNDERSCORE = 264,
+    SQRT = 265,
+    ROOT = 266,
+    LN = 267,
+    LOG = 268,
+    E = 269,
+    ABS = 270,
+    FLOOR = 271,
+    CEIL = 272,
+    ASIN = 273,
+    ACOS = 274,
+    ATAN = 275,
+    SINH = 276,
+    COSH = 277,
+    TANH = 278,
+    SECH = 279,
+    CSCH = 280,
+    COTH = 281,
+    SIN = 282,
+    COS = 283,
+    TAN = 284,
+    SEC = 285,
+    CSC = 286,
+    COT = 287,
+    PI = 288,
+    MI = 289,
+    Y = 290,
+    FZ = 291,
+    EQUALS = 292,
+    LESSTHAN = 293,
+    GREATERTHAN = 294,
+    LTHANEQTO = 295,
+    GTHANEQTO = 296,
+    LETR = 297,
+    LBRAC = 298,
+    RBRAC = 299,
+    EOL = 300,
+    NUM = 301,
+    BINARY = 302,
+    UNARY = 303
   };
 #endif
 
@@ -144,12 +123,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 12 "parser.y"
 
-	int ival;
-	float fval;
-
-#line 153 "parser.tab.h"
+  /* "number"  */
+  cplx NUM;
+#line 130 "src/parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -158,8 +135,19 @@ typedef union YYSTYPE YYSTYPE;
 #endif
 
 
-extern YYSTYPE yylval;
 
-int yyparse (void);
+int yyparse (yyscan_t scanner, result *res, queue* out, int* tknCnt);
+/* "%code provides" blocks.  */
+#line 24 "src/parse.y"
 
-#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
+	// Tell Flex the expected prototype of yylex.
+	// The scanner argument must be named yyscanner.
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, queue *out, int* tknCnt)
+	YY_DECL;
+
+	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
+	void yyerror(yyscan_t scanner, result *res, queue *out, int* tknCnt, const char *msg, ...);
+
+#line 152 "src/parse.h"
+
+#endif /* !YY_YY_SRC_PARSE_H_INCLUDED  */
