@@ -135,7 +135,7 @@ extern int yydebug;
 		// Number of errors.
 		int nerrs;
 	} result;
-	result parse_string(const char* str, queue* out);
+	result parse_string(const char* str, queue* out, int* tknCnt);
 	result parse(void);
 
 #line 142 "parse.c"
@@ -212,17 +212,17 @@ typedef union YYSTYPE YYSTYPE;
 
 
 
-int yyparse (yyscan_t scanner, result *res, queue* out);
+int yyparse (yyscan_t scanner, result *res, queue* out, int* tknCnt);
 /* "%code provides" blocks.  */
 #line 24 "parse.y"
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
-	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, queue *out)
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, queue *out, int* tknCnt)
 	YY_DECL;
 
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
-	void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...);
+	void yyerror(yyscan_t scanner, result *res, queue *out, int* tknCnt, const char *msg, ...);
 
 #line 228 "parse.c"
 
@@ -232,7 +232,7 @@ int yyparse (yyscan_t scanner, result *res, queue* out);
 /* Unqualified %code blocks.  */
 #line 46 "parse.y"
 
-	result parse_string(const char* str, queue* out);
+	result parse_string(const char* str, queue* out, int* tknCnt);
 	result parse(void);
 	int precValues[5] = {2, 2, 3, 3, 4};
 
@@ -864,7 +864,7 @@ static const yytype_int8 yyr2[] =
       }                                                           \
     else                                                          \
       {                                                           \
-        yyerror (scanner, res, out, YY_("syntax error: cannot back up")); \
+        yyerror (scanner, res, out, tknCnt, YY_("syntax error: cannot back up")); \
         YYERROR;                                                  \
       }                                                           \
   while (0)
@@ -901,7 +901,7 @@ do {                                                                      \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value, scanner, res, out); \
+                  Type, Value, scanner, res, out, tknCnt); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -912,13 +912,14 @@ do {                                                                      \
 `-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yyscan_t scanner, result *res, queue* out)
+yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yyscan_t scanner, result *res, queue* out, int* tknCnt)
 {
   FILE *yyoutput = yyo;
   YYUSE (yyoutput);
   YYUSE (scanner);
   YYUSE (res);
   YYUSE (out);
+  YYUSE (tknCnt);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
@@ -936,12 +937,12 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yy
 `---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yyscan_t scanner, result *res, queue* out)
+yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yyscan_t scanner, result *res, queue* out, int* tknCnt)
 {
   YYFPRINTF (yyo, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print (yyo, yytype, yyvaluep, scanner, res, out);
+  yy_symbol_value_print (yyo, yytype, yyvaluep, scanner, res, out, tknCnt);
   YYFPRINTF (yyo, ")");
 }
 
@@ -974,7 +975,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, yyscan_t scanner, result *res, queue* out)
+yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, yyscan_t scanner, result *res, queue* out, int* tknCnt)
 {
   int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -988,7 +989,7 @@ yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, yyscan_t scanner
       yy_symbol_print (stderr,
                        yystos[yyssp[yyi + 1 - yynrhs]],
                        &yyvsp[(yyi + 1) - (yynrhs)]
-                                              , scanner, res, out);
+                                              , scanner, res, out, tknCnt);
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -996,7 +997,7 @@ yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, yyscan_t scanner
 # define YY_REDUCE_PRINT(Rule)          \
 do {                                    \
   if (yydebug)                          \
-    yy_reduce_print (yyssp, yyvsp, Rule, scanner, res, out); \
+    yy_reduce_print (yyssp, yyvsp, Rule, scanner, res, out, tknCnt); \
 } while (0)
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
@@ -1264,12 +1265,13 @@ yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t scanner, result *res, queue* out)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t scanner, result *res, queue* out, int* tknCnt)
 {
   YYUSE (yyvaluep);
   YYUSE (scanner);
   YYUSE (res);
   YYUSE (out);
+  YYUSE (tknCnt);
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
@@ -1287,7 +1289,7 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t scanner, 
 `----------*/
 
 int
-yyparse (yyscan_t scanner, result *res, queue* out)
+yyparse (yyscan_t scanner, result *res, queue* out, int* tknCnt)
 {
 /* The lookahead symbol.  */
 int yychar;
@@ -1465,7 +1467,7 @@ yybackup:
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
-      yychar = yylex (&yylval, scanner, res, out);
+      yychar = yylex (&yylval, scanner, res, out, tknCnt);
     }
 
   if (yychar <= YYEOF)
@@ -1544,7 +1546,7 @@ yyreduce:
   case 5:
 #line 138 "parse.y"
                   { }
-#line 1548 "parse.c"
+#line 1550 "parse.c"
     break;
 
   case 6:
@@ -1552,49 +1554,49 @@ yyreduce:
                       {
 		;
 	}
-#line 1556 "parse.c"
+#line 1558 "parse.c"
     break;
 
   case 7:
 #line 142 "parse.y"
                   { /*printf("err\n");*/ yyerrok; }
-#line 1562 "parse.c"
+#line 1564 "parse.c"
     break;
 
   case 18:
 #line 167 "parse.y"
                         { }
-#line 1568 "parse.c"
+#line 1570 "parse.c"
     break;
 
   case 19:
 #line 168 "parse.y"
                                         { }
-#line 1574 "parse.c"
+#line 1576 "parse.c"
     break;
 
   case 20:
 #line 169 "parse.y"
                                 { }
-#line 1580 "parse.c"
+#line 1582 "parse.c"
     break;
 
   case 21:
 #line 170 "parse.y"
                                 { }
-#line 1586 "parse.c"
+#line 1588 "parse.c"
     break;
 
   case 22:
 #line 171 "parse.y"
                         { }
-#line 1592 "parse.c"
+#line 1594 "parse.c"
     break;
 
   case 23:
 #line 172 "parse.y"
                                 { }
-#line 1598 "parse.c"
+#line 1600 "parse.c"
     break;
 
   case 24:
@@ -1602,7 +1604,7 @@ yyreduce:
                                 {
 		enqueue(out, 0 - DBL_MAX * I);
 	}
-#line 1606 "parse.c"
+#line 1608 "parse.c"
     break;
 
   case 25:
@@ -1610,7 +1612,7 @@ yyreduce:
                                 { 
 		enqueue(out, 1 - DBL_MAX * I);
 	}
-#line 1614 "parse.c"
+#line 1616 "parse.c"
     break;
 
   case 26:
@@ -1618,7 +1620,7 @@ yyreduce:
                                 {
 		enqueue(out, 2 - DBL_MAX * I);
 	}
-#line 1622 "parse.c"
+#line 1624 "parse.c"
     break;
 
   case 27:
@@ -1626,7 +1628,7 @@ yyreduce:
                                 {
 		enqueue(out, 3 - DBL_MAX * I);
 	}
-#line 1630 "parse.c"
+#line 1632 "parse.c"
     break;
 
   case 28:
@@ -1634,155 +1636,155 @@ yyreduce:
                                 {
 		enqueue(out, 4 - DBL_MAX * I);
 	}
-#line 1638 "parse.c"
+#line 1640 "parse.c"
     break;
 
   case 29:
 #line 190 "parse.y"
                                         { }
-#line 1644 "parse.c"
+#line 1646 "parse.c"
     break;
 
   case 30:
 #line 191 "parse.y"
                                         { enqueue(out, 5 - DBL_MAX * I); }
-#line 1650 "parse.c"
+#line 1652 "parse.c"
     break;
 
   case 31:
 #line 193 "parse.y"
                                         { enqueue(out, 0 + DBL_MAX * I); }
-#line 1656 "parse.c"
+#line 1658 "parse.c"
     break;
 
   case 32:
 #line 194 "parse.y"
                                         { enqueue(out, 1 + DBL_MAX * I); }
-#line 1662 "parse.c"
+#line 1664 "parse.c"
     break;
 
   case 33:
 #line 196 "parse.y"
                                         { enqueue(out, 2 + DBL_MAX * I); }
-#line 1668 "parse.c"
+#line 1670 "parse.c"
     break;
 
   case 34:
 #line 197 "parse.y"
                                                         { enqueue(out, 3 + DBL_MAX * I); }
-#line 1674 "parse.c"
+#line 1676 "parse.c"
     break;
 
   case 35:
 #line 199 "parse.y"
                                         { enqueue(out, 4 + DBL_MAX * I); }
-#line 1680 "parse.c"
+#line 1682 "parse.c"
     break;
 
   case 36:
 #line 200 "parse.y"
                                         { enqueue(out, 5 + DBL_MAX * I); }
-#line 1686 "parse.c"
+#line 1688 "parse.c"
     break;
 
   case 37:
 #line 201 "parse.y"
                                         { enqueue(out, 6 + DBL_MAX * I); }
-#line 1692 "parse.c"
+#line 1694 "parse.c"
     break;
 
   case 38:
 #line 203 "parse.y"
                                         { enqueue(out, 7 + DBL_MAX * I); }
-#line 1698 "parse.c"
+#line 1700 "parse.c"
     break;
 
   case 39:
 #line 204 "parse.y"
                                         { enqueue(out, 8 + DBL_MAX * I); }
-#line 1704 "parse.c"
+#line 1706 "parse.c"
     break;
 
   case 40:
 #line 205 "parse.y"
                                         { enqueue(out, 9 + DBL_MAX * I); }
-#line 1710 "parse.c"
+#line 1712 "parse.c"
     break;
 
   case 41:
 #line 206 "parse.y"
                                         { enqueue(out, 10 + DBL_MAX * I); }
-#line 1716 "parse.c"
+#line 1718 "parse.c"
     break;
 
   case 42:
 #line 207 "parse.y"
                                         { enqueue(out, 11 + DBL_MAX * I); }
-#line 1722 "parse.c"
+#line 1724 "parse.c"
     break;
 
   case 43:
 #line 208 "parse.y"
                                         { enqueue(out, 12 + DBL_MAX * I); }
-#line 1728 "parse.c"
+#line 1730 "parse.c"
     break;
 
   case 44:
 #line 209 "parse.y"
                                         { enqueue(out, 13 + DBL_MAX * I); }
-#line 1734 "parse.c"
+#line 1736 "parse.c"
     break;
 
   case 45:
 #line 210 "parse.y"
                                         { enqueue(out, 14 + DBL_MAX * I); }
-#line 1740 "parse.c"
+#line 1742 "parse.c"
     break;
 
   case 46:
 #line 211 "parse.y"
                                         { enqueue(out, 15 + DBL_MAX * I); }
-#line 1746 "parse.c"
+#line 1748 "parse.c"
     break;
 
   case 47:
 #line 212 "parse.y"
                                         { enqueue(out, 16 + DBL_MAX * I); }
-#line 1752 "parse.c"
+#line 1754 "parse.c"
     break;
 
   case 48:
 #line 213 "parse.y"
                                         { enqueue(out, 17 + DBL_MAX * I); }
-#line 1758 "parse.c"
+#line 1760 "parse.c"
     break;
 
   case 49:
 #line 214 "parse.y"
                                         { enqueue(out, 18 + DBL_MAX * I); }
-#line 1764 "parse.c"
+#line 1766 "parse.c"
     break;
 
   case 50:
 #line 215 "parse.y"
                                         { enqueue(out, 19 + DBL_MAX * I); }
-#line 1770 "parse.c"
+#line 1772 "parse.c"
     break;
 
   case 51:
 #line 216 "parse.y"
                                         { enqueue(out, 20 + DBL_MAX * I); }
-#line 1776 "parse.c"
+#line 1778 "parse.c"
     break;
 
   case 52:
 #line 217 "parse.y"
                                         { enqueue(out, 21 + DBL_MAX * I); }
-#line 1782 "parse.c"
+#line 1784 "parse.c"
     break;
 
 
-#line 1786 "parse.c"
+#line 1788 "parse.c"
 
       default: break;
     }
@@ -1832,7 +1834,7 @@ yyerrlab:
     {
       ++yynerrs;
 #if ! YYERROR_VERBOSE
-      yyerror (scanner, res, out, YY_("syntax error"));
+      yyerror (scanner, res, out, tknCnt, YY_("syntax error"));
 #else
 # define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
                                         yyssp, yytoken)
@@ -1859,7 +1861,7 @@ yyerrlab:
                 yymsgp = yymsg;
               }
           }
-        yyerror (scanner, res, out, yymsgp);
+        yyerror (scanner, res, out, tknCnt, yymsgp);
         if (yysyntax_error_status == 2)
           goto yyexhaustedlab;
       }
@@ -1883,7 +1885,7 @@ yyerrlab:
       else
         {
           yydestruct ("Error: discarding",
-                      yytoken, &yylval, scanner, res, out);
+                      yytoken, &yylval, scanner, res, out, tknCnt);
           yychar = YYEMPTY;
         }
     }
@@ -1937,7 +1939,7 @@ yyerrlab1:
 
 
       yydestruct ("Error: popping",
-                  yystos[yystate], yyvsp, scanner, res, out);
+                  yystos[yystate], yyvsp, scanner, res, out, tknCnt);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -1976,7 +1978,7 @@ yyabortlab:
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
 yyexhaustedlab:
-  yyerror (scanner, res, out, YY_("memory exhausted"));
+  yyerror (scanner, res, out, tknCnt, YY_("memory exhausted"));
   yyresult = 2;
   /* Fall through.  */
 #endif
@@ -1992,7 +1994,7 @@ yyreturn:
          user semantic actions for why this is necessary.  */
       yytoken = YYTRANSLATE (yychar);
       yydestruct ("Cleanup: discarding lookahead",
-                  yytoken, &yylval, scanner, res, out);
+                  yytoken, &yylval, scanner, res, out, tknCnt);
     }
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYABORT or YYACCEPT.  */
@@ -2001,7 +2003,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[*yyssp], yyvsp, scanner, res, out);
+                  yystos[*yyssp], yyvsp, scanner, res, out, tknCnt);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -2024,27 +2026,26 @@ result parse(void) {
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	result res = {1, 0, 0};
-	queue blonk = queueInit();
-	queue* out = &blonk;
-	yyparse(scanner, &res, out);
+	yyparse(scanner, &res, NULL, NULL);
 	yylex_destroy(scanner);
 	return res;
 }
 
 //For operators set real() to INT_MAX and imaginary part to op value
-result parse_string(const char* str, queue* out) {
+result parse_string(const char* str, queue* out, int* tknCnt) {
+	*tknCnt = 0;
 	/* printf("%s\n", str); */
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);
 	result res = {0, 0, 0};
-	yyparse(scanner, &res, out);
+	yyparse(scanner, &res, out, tknCnt);
 	yy_delete_buffer(buf, scanner);
 	yylex_destroy(scanner);
 	return res;
 }
 
-void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...) {
+void yyerror(yyscan_t scanner, result *res, queue *out, int* tknCnt, const char *msg, ...) {
 	(void) scanner;
 	va_list args;
 	va_start(args, msg);

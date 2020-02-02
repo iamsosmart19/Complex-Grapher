@@ -16,7 +16,7 @@
 		// Number of errors.
 		int nerrs;
 	} result;
-	result parse_string(const char* str, queue* out);
+	result parse_string(const char* str, queue* out, int* tknCnt);
 	result parse(void);
 }
 
@@ -24,11 +24,11 @@
 %code provides {
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
-	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, queue *out)
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, queue *out, int* tknCnt)
 	YY_DECL;
 
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
-	void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...);
+	void yyerror(yyscan_t scanner, result *res, queue *out, int* tknCnt, const char *msg, ...);
 }
 
 // Emitted on top of the implementation file.
@@ -44,7 +44,7 @@
 }
 
 %code {
-	result parse_string(const char* str, queue* out);
+	result parse_string(const char* str, queue* out, int* tknCnt);
 	result parse(void);
 	int precValues[5] = {2, 2, 3, 3, 4};
 }
@@ -58,7 +58,7 @@
 %param {yyscan_t scanner}{result *res}
 
 //custom yyparse paramaters
-%param {queue* out}
+%param {queue* out}{int* tknCnt}
 
 %token
 	COMMENT "//"
@@ -226,27 +226,26 @@ result parse(void) {
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	result res = {1, 0, 0};
-	queue blonk = queueInit();
-	queue* out = &blonk;
-	yyparse(scanner, &res, out);
+	yyparse(scanner, &res, NULL, NULL);
 	yylex_destroy(scanner);
 	return res;
 }
 
 //For operators set real() to INT_MAX and imaginary part to op value
-result parse_string(const char* str, queue* out) {
+result parse_string(const char* str, queue* out, int* tknCnt) {
+	*tknCnt = 0;
 	/* printf("%s\n", str); */
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);
 	result res = {0, 0, 0};
-	yyparse(scanner, &res, out);
+	yyparse(scanner, &res, out, tknCnt);
 	yy_delete_buffer(buf, scanner);
 	yylex_destroy(scanner);
 	return res;
 }
 
-void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...) {
+void yyerror(yyscan_t scanner, result *res, queue *out, int* tknCnt, const char *msg, ...) {
 	(void) scanner;
 	va_list args;
 	va_start(args, msg);

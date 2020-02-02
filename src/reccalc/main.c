@@ -37,8 +37,9 @@ int main(void) {
 
 	// Possibly enable parser runtime debugging.
 	yydebug = !!getenv("YYDEBUG");
+	int count = 0;
 	queue out = queueInit();
-	result res = parse_string(function, &out);
+	result res = parse_string(function, &out, &count);
 
 	printf("\nMAIN:\n"); 
 
@@ -55,7 +56,7 @@ int main(void) {
 		}
 		dequeue(&out);
 	}
-
+	printf("tknCnt: %d\n", count);
 
 	// Exit on failure if there were errors.
 	return !!res.nerrs;
