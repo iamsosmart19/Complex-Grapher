@@ -600,14 +600,14 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int16 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
        0,   133,   133,   134,   135,   139,   144,   147,   151,   155,
      156,   160,   161,   162,   163,   164,   168,   168,   172,   173,
-     174,   175,   176,   177,   179,   191,   203,   215,   227,   240,
-     241,   243,   244,   246,   247,   249,   250,   251,   253,   254,
-     255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267
+     174,   175,   176,   177,   179,   182,   185,   188,   191,   195,
+     196,   198,   199,   201,   202,   204,   205,   206,   208,   209,
+     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
+     220,   221,   222
 };
 #endif
 
@@ -1607,234 +1607,189 @@ yyreduce:
   case 24:
 #line 179 "parse.y"
                                 {
-		if( s_top(*op) == -DBL_MAX - DBL_MAX * I ) {
-			goto skipAddLoop;
-		}
-		while( (cimag(s_top(*op)) == DBL_MAX) ||
-			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[0] ) {
-			printf("ADD: %lf\n", creal(s_top(*op)));
-			enqueue(out, s_pop(op));
-		}
-			skipAddLoop:
-		s_push(op, 0 - DBL_MAX * I);
+		enqueue(out, 0 - DBL_MAX * I);
 	}
-#line 1622 "parse.c"
+#line 1613 "parse.c"
     break;
 
   case 25:
-#line 191 "parse.y"
+#line 182 "parse.y"
                                 { 
-		if( s_top(*op) == -DBL_MAX - DBL_MAX * I ) {
-			goto skipSubLoop;
-		}
-		while( (cimag(s_top(*op)) == DBL_MAX) ||
-			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[1] ) {
-			printf("SUB: %lf\n", creal(s_top(*op)));
-			enqueue(out, s_pop(op));
-		}
-			skipSubLoop:
-		s_push(op, 1 - DBL_MAX * I);
+		enqueue(out, 1 - DBL_MAX * I);
 	}
-#line 1639 "parse.c"
+#line 1621 "parse.c"
     break;
 
   case 26:
-#line 203 "parse.y"
+#line 185 "parse.y"
                                 {
-		if( s_top(*op) == -DBL_MAX - DBL_MAX * I ) {
-			goto skipAstLoop;
-		}
-		while( (cimag(s_top(*op)) == DBL_MAX) ||
-			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[2] ) {
-			printf("AST: %lf\n", creal(s_top(*op)));
-			enqueue(out, s_pop(op));
-		}
-			skipAstLoop:
-		s_push(op, 2 - DBL_MAX * I);
+		enqueue(out, 2 - DBL_MAX * I);
 	}
-#line 1656 "parse.c"
+#line 1629 "parse.c"
     break;
 
   case 27:
-#line 215 "parse.y"
+#line 188 "parse.y"
                                 {
-		if( s_top(*op) == -DBL_MAX - DBL_MAX * I ) {
-			goto skipDivLoop;
-		}
-		while( (cimag(s_top(*op)) == DBL_MAX) ||
-			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[3] ) {
-			printf("DIV: %lf\n", creal(s_top(*op)));
-			enqueue(out, s_pop(op));
-		}
-			skipDivLoop:
-		s_push(op, 3 - DBL_MAX * I);
+		enqueue(out, 3 - DBL_MAX * I);
 	}
-#line 1673 "parse.c"
+#line 1637 "parse.c"
     break;
 
   case 28:
-#line 227 "parse.y"
+#line 191 "parse.y"
                                 {
-		if( s_top(*op) == -DBL_MAX - DBL_MAX * I ) {
-			goto skipExpLoop;
-		}
-		while( (cimag(s_top(*op)) == DBL_MAX) ||
-			 ( cimag(s_top(*op)) == -DBL_MAX) && precValues[(int)creal(s_top(*op))] > precValues[4] ) {
-			printf("EXP: %lf\n", creal(s_top(*op)));
-			enqueue(out, s_pop(op));
-		}
-			skipExpLoop:
-		s_push(op, 4 - DBL_MAX * I);
+		enqueue(out, 4 - DBL_MAX * I);
 	}
-#line 1690 "parse.c"
+#line 1645 "parse.c"
     break;
 
   case 29:
-#line 240 "parse.y"
+#line 195 "parse.y"
                                         { }
-#line 1696 "parse.c"
+#line 1651 "parse.c"
     break;
 
   case 30:
-#line 241 "parse.y"
+#line 196 "parse.y"
                                         { }
-#line 1702 "parse.c"
+#line 1657 "parse.c"
     break;
 
   case 31:
-#line 243 "parse.y"
-                                        { }
-#line 1708 "parse.c"
+#line 198 "parse.y"
+                                        { enqueue(out, 0 + DBL_MAX * I); }
+#line 1663 "parse.c"
     break;
 
   case 32:
-#line 244 "parse.y"
-                                        { }
-#line 1714 "parse.c"
+#line 199 "parse.y"
+                                        { enqueue(out, 1 + DBL_MAX * I); }
+#line 1669 "parse.c"
     break;
 
   case 33:
-#line 246 "parse.y"
-                                        { }
-#line 1720 "parse.c"
+#line 201 "parse.y"
+                                        { enqueue(out, 2 + DBL_MAX * I); }
+#line 1675 "parse.c"
     break;
 
   case 34:
-#line 247 "parse.y"
-                                                        { }
-#line 1726 "parse.c"
+#line 202 "parse.y"
+                                                        { enqueue(out, 3 + DBL_MAX * I); }
+#line 1681 "parse.c"
     break;
 
   case 35:
-#line 249 "parse.y"
-                                        { }
-#line 1732 "parse.c"
+#line 204 "parse.y"
+                                        { enqueue(out, 4 + DBL_MAX * I); }
+#line 1687 "parse.c"
     break;
 
   case 36:
-#line 250 "parse.y"
-                                        { }
-#line 1738 "parse.c"
+#line 205 "parse.y"
+                                        { enqueue(out, 5 + DBL_MAX * I); }
+#line 1693 "parse.c"
     break;
 
   case 37:
-#line 251 "parse.y"
-                                        { }
-#line 1744 "parse.c"
+#line 206 "parse.y"
+                                        { enqueue(out, 6 + DBL_MAX * I); }
+#line 1699 "parse.c"
     break;
 
   case 38:
-#line 253 "parse.y"
-                                        { }
-#line 1750 "parse.c"
+#line 208 "parse.y"
+                                        { enqueue(out, 7 + DBL_MAX * I); }
+#line 1705 "parse.c"
     break;
 
   case 39:
-#line 254 "parse.y"
-                                        { }
-#line 1756 "parse.c"
+#line 209 "parse.y"
+                                        { enqueue(out, 8 + DBL_MAX * I); }
+#line 1711 "parse.c"
     break;
 
   case 40:
-#line 255 "parse.y"
-                                        { }
-#line 1762 "parse.c"
+#line 210 "parse.y"
+                                        { enqueue(out, 9 + DBL_MAX * I); }
+#line 1717 "parse.c"
     break;
 
   case 41:
-#line 256 "parse.y"
-                                        { }
-#line 1768 "parse.c"
+#line 211 "parse.y"
+                                        { enqueue(out, 10 + DBL_MAX * I); }
+#line 1723 "parse.c"
     break;
 
   case 42:
-#line 257 "parse.y"
-                                        { }
-#line 1774 "parse.c"
+#line 212 "parse.y"
+                                        { enqueue(out, 11 + DBL_MAX * I); }
+#line 1729 "parse.c"
     break;
 
   case 43:
-#line 258 "parse.y"
-                                        { }
-#line 1780 "parse.c"
+#line 213 "parse.y"
+                                        { enqueue(out, 12 + DBL_MAX * I); }
+#line 1735 "parse.c"
     break;
 
   case 44:
-#line 259 "parse.y"
-                                        { }
-#line 1786 "parse.c"
+#line 214 "parse.y"
+                                        { enqueue(out, 13 + DBL_MAX * I); }
+#line 1741 "parse.c"
     break;
 
   case 45:
-#line 260 "parse.y"
-                                        { }
-#line 1792 "parse.c"
+#line 215 "parse.y"
+                                        { enqueue(out, 14 + DBL_MAX * I); }
+#line 1747 "parse.c"
     break;
 
   case 46:
-#line 261 "parse.y"
-                                        { }
-#line 1798 "parse.c"
+#line 216 "parse.y"
+                                        { enqueue(out, 15 + DBL_MAX * I); }
+#line 1753 "parse.c"
     break;
 
   case 47:
-#line 262 "parse.y"
-                                        { }
-#line 1804 "parse.c"
+#line 217 "parse.y"
+                                        { enqueue(out, 16 + DBL_MAX * I); }
+#line 1759 "parse.c"
     break;
 
   case 48:
-#line 263 "parse.y"
-                                        { }
-#line 1810 "parse.c"
+#line 218 "parse.y"
+                                        { enqueue(out, 17 + DBL_MAX * I); }
+#line 1765 "parse.c"
     break;
 
   case 49:
-#line 264 "parse.y"
-                                        { }
-#line 1816 "parse.c"
+#line 219 "parse.y"
+                                        { enqueue(out, 18 + DBL_MAX * I); }
+#line 1771 "parse.c"
     break;
 
   case 50:
-#line 265 "parse.y"
-                                        { }
-#line 1822 "parse.c"
+#line 220 "parse.y"
+                                        { enqueue(out, 19 + DBL_MAX * I); }
+#line 1777 "parse.c"
     break;
 
   case 51:
-#line 266 "parse.y"
-                                        { }
-#line 1828 "parse.c"
+#line 221 "parse.y"
+                                        { enqueue(out, 20 + DBL_MAX * I); }
+#line 1783 "parse.c"
     break;
 
   case 52:
-#line 267 "parse.y"
-                                        { }
-#line 1834 "parse.c"
+#line 222 "parse.y"
+                                        { enqueue(out, 21 + DBL_MAX * I); }
+#line 1789 "parse.c"
     break;
 
 
-#line 1838 "parse.c"
+#line 1793 "parse.c"
 
       default: break;
     }
@@ -2066,7 +2021,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 271 "parse.y"
+#line 225 "parse.y"
 
 // Epilogue (C code).
 

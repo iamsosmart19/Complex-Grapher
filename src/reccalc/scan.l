@@ -93,32 +93,32 @@
 \^		{ return  EXP; }
 _		{ return  UNDERSCORE; }
 
-sqrt 	{ s_push(op, 0 + DBL_MAX * I); return  SQRT; }
-root	{ s_push(op, 1 + DBL_MAX * I); return  ROOT; }
+sqrt 	{ return  SQRT; }
+root	{ return  ROOT; }
 
-ln		{ s_push(op, 2 + DBL_MAX * I); return  LN; }
-log		{ s_push(op, 3 + DBL_MAX * I); return  LOG; }
+ln		{ return  LN; }
+log		{ return  LOG; }
 e		{ enqueue(out, M_E); return  E; }
 
-abs		{ s_push(op, 4 + DBL_MAX * I); return  ABS; }
-floor	{ s_push(op, 5 + DBL_MAX * I); return  FLOOR; }
-ceil	{ s_push(op, 6 + DBL_MAX * I); return  CEIL; }
+abs		{ return  ABS; }
+floor	{ return  FLOOR; }
+ceil	{ return  CEIL; }
 
-arcsin	{ s_push(op, 7 + DBL_MAX * I); return  ASIN; }
-arccos	{ s_push(op, 8 + DBL_MAX * I); return  ACOS; }
-arctan	{ s_push(op, 9 + DBL_MAX * I); return  ATAN; }
-sinh	{ s_push(op, 10 + DBL_MAX * I); return  SINH; }
-cosh	{ s_push(op, 11 + DBL_MAX * I); return  COSH; }
-tanh	{ s_push(op, 12 + DBL_MAX * I); return  TANH; }
-sech	{ s_push(op, 13 + DBL_MAX * I); return  SECH; }
-csch	{ s_push(op, 14 + DBL_MAX * I); return  CSCH; }
-coth	{ s_push(op, 15 + DBL_MAX * I); return  COTH; }
-sin		{ s_push(op, 16 + DBL_MAX * I); return  SIN; }
-cos		{ s_push(op, 17 + DBL_MAX * I); return  COS; }
-tan		{ s_push(op, 18 + DBL_MAX * I); return  TAN; }
-sec		{ s_push(op, 19 + DBL_MAX * I); return  SEC; }
-csc		{ s_push(op, 20 + DBL_MAX * I); return  CSC; }
-cot		{ s_push(op, 21 + DBL_MAX * I); return  COT; }
+arcsin	{ return  ASIN; }
+arccos	{ return  ACOS; }
+arctan	{ return  ATAN; }
+sinh	{ return  SINH; }
+cosh	{ return  COSH; }
+tanh	{ return  TANH; }
+sech	{ return  SECH; }
+csch	{ return  CSCH; }
+coth	{ return  COTH; }
+sin		{ return  SIN; }
+cos		{ return  COS; }
+tan		{ return  TAN; }
+sec		{ return  SEC; }
+csc		{ return  CSC; }
+cot		{ return  COT; }
 pi		{ enqueue(out, M_PI); return  PI; }
 
 i		{ enqueue(out, I); return  MI; }
@@ -138,9 +138,14 @@ z		{ enqueue(out, DBL_MAX + DBL_MAX * I); return LETR; }
 \<=		{ return  LTHANEQTO; }
 \>=		{ return  GTHANEQTO; }
 
-	/* \(		nesting += 1; BEGIN SC_STRING; */
-\(		{ s_push(op, 0); return LBRAC; }
-\)		{ s_push(op, 0); return RBRAC; }
+\(		{ s_push(op, -1 + DBL_MAX * I); return LBRAC;}
+\)		{
+			while(s_top(*op) != -1 + DBL_MAX * I) {
+				enqueue(out, s_pop(op));
+			}
+			s_pop(op);
+			return RBRAC;
+		}
 
 .		;yyerror(yyscanner, res, NULL, NULL, "syntax error, invalid character: %c", yytext[0]);
 
