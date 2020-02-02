@@ -2,26 +2,32 @@
 #define QUEUE_H
 
 #include <stdlib.h>
+#include <complex.h>
+#include <stdio.h>
+#include <float.h>
+#include <limits.h>
+
+typedef double complex cplx;
 
 typedef struct queueNodeStruct {
-	int val;
+	cplx val;
 	struct queueNodeStruct* next;
 	struct queueNodeStruct* prev;
 } qnode;
 
-typedef struct queueStruct {
+typedef struct {
 	qnode* begin;
 	qnode* end;
 } queue;
 
 queue queueInit();
 
-void enqueue(queue q, int val);
+void enqueue(queue* q, cplx val);
 
-int dequeue(queue q);
+cplx dequeue(queue* q);
 
-int front(queue q);
+cplx front(queue q);
 
-int back(queue q);
+cplx back(queue q);
 
 #endif /* QUEUE_H */

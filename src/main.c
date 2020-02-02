@@ -1,8 +1,5 @@
-#include "parse.h"
-#include "scan.h"
+#include "main.h"
 
-/*
-*/
 char lookuptable[22][5] = {
 	"SQRT", 
 	"ROOT", 

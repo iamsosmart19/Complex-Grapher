@@ -2,23 +2,26 @@
 #define STACK_H
 
 #include <stdlib.h>
-#include <stdio.h>
+#include <float.h>
+#include <complex.h>
+
+typedef double complex cplx;
 
 typedef struct stackNodeStruct {
-	char val;
+	cplx val;
 	struct stackNodeStruct* next;
 } snode;
 
-typedef struct stackStruct {
+typedef struct {
 	snode* begin;
 } stack;
 
 stack stackInit();
 
-void push(stack s, char val);
+void s_push(stack *s, cplx val);
 
-int pop(stack s);
+cplx s_pop(stack *s);
 
-int top(stack s);
+cplx s_top(stack s);
 
 #endif /* STACK_H */

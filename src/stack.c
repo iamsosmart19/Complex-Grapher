@@ -8,27 +8,27 @@ stack stackInit() {
 	return temp;
 }
 
-void push(stack s, char val) {
+void s_push(stack *s, cplx val) {
 	snode* temp = malloc(sizeof(snode));
 	temp->val = val;
-	temp->next = s.begin->next;
-	s.begin->next = temp;
+	temp->next = (*s).begin->next;
+	(*s).begin->next = temp;
 }
 
-int pop(stack s) {
-	if(s.begin->next == NULL) {
-		return -1;
+cplx s_pop(stack *s) {
+	if((*s).begin->next == NULL) {
+		return -DBL_MAX - DBL_MAX * I;
 	}
-	int ret = s.begin->next->val;
-	snode* temp = s.begin->next;
-	s.begin->next = s.begin->next->next;
+	cplx ret = (*s).begin->next->val;
+	snode* temp = (*s).begin->next;
+	(*s).begin->next = (*s).begin->next->next;
 	free(temp);
 	return ret;
 }
 
-int top(stack s) {
+cplx s_top(stack s) {
 	if(s.begin->next == NULL) {
-		return -1;
+		return -DBL_MAX - DBL_MAX * I;
 	}
 	return s.begin->next->val;
 }

@@ -1,6 +1,5 @@
-#line 1 "src/scan.c"
 
-#line 3 "src/scan.c"
+#line 2 "<stdout>"
 
 #define  YY_INT_ALIGNED short int
 
@@ -491,9 +490,9 @@ static const flex_int16_t yy_chk[138] =
 	#include <complex.h>
 	#include <math.h>
 	#include "parse.h"
-#line 494 "src/scan.c"
+#line 493 "<stdout>"
 
-#line 496 "src/scan.c"
+#line 495 "<stdout>"
 
 #define INITIAL 0
 #define SC_STRING 1
@@ -779,7 +778,7 @@ YY_DECL
 	/* Rules. */
 
 	/* Scan a float. */
-#line 782 "src/scan.c"
+#line 781 "<stdout>"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1130,7 +1129,7 @@ YY_RULE_SETUP
 #line 152 "src/scan.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1133 "src/scan.c"
+#line 1132 "<stdout>"
 
 	case YY_END_OF_BUFFER:
 		{
