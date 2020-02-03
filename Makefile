@@ -25,10 +25,10 @@ _OBJ = stack.o queue.o scan.o parse.o eval.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 parse: $(IDIR)/parse.y
-	$(BISON) $(BISONFLAGS) --defines -o $(IDIR)/$*.c $<
+	$(BISON) $(BISONFLAGS) --defines -o $(IDIR)/parse.c $<
 
 scan: $(IDIR)/scan.l
-	$(FLEX) $(FLEXFLAGS) -o $(IDIR)/$*.c --header-file=$(IDIR)/$*.h $<
+	$(FLEX) $(FLEXFLAGS) -o $(IDIR)/scan.c --header-file=$(IDIR)/scan.h $<
 
 $(ODIR)/%.o: $(IDIR)/%.c $(DEPS)
 		@mkdir -p $(ODIR)

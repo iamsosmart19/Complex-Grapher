@@ -70,6 +70,9 @@ cplx evalFunc(cplx* arr, int tknCnt, cplx val) {
 
 	for(int i = 0; i < tknCnt; i++) {
 		if(cimag(arr[i]) == DBL_MAX) {
+			if(creal(arr[i]) == DBL_MAX) {
+				s_push(&s, val);
+			}
 			funcTable[(int)creal(arr[i])](&s);
 		}
 		else if(cimag(arr[i]) == -DBL_MAX) {

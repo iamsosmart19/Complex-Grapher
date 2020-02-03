@@ -112,6 +112,8 @@
 	LBRAC			"("
 	RBRAC			")"
 
+	COMMA			","
+
 	EOL		"end-of-line"
 	TOK_EOF	0 "end-of-file"
 ;
@@ -191,7 +193,7 @@ exp:
 	"-" exp %prec UNARY		{ enqueue(out, 5 - DBL_MAX * I); } | 
 
 	"sqrt" "(" exp ")" %prec UNARY	{ enqueue(out, 0 + DBL_MAX * I); } |
-	"root" "(" exp ")" "(" exp ")"	{ enqueue(out, 1 + DBL_MAX * I); } |
+	"root" "(" exp "," exp ")"		{ enqueue(out, 1 + DBL_MAX * I); } |
 
 	"ln" "(" exp ")" %prec UNARY	{ enqueue(out, 2 + DBL_MAX * I); } |
 	"log" "_" "(" exp ")" "(" exp ")"		{ enqueue(out, 3 + DBL_MAX * I); } |

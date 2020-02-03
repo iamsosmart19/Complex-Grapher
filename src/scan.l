@@ -95,7 +95,7 @@
 \*		{ (*tknCnt)++; return  STAR; }
 \/		{ (*tknCnt)++; return  SLASH; }
 \^		{ (*tknCnt)++; return  EXP; }
-_		{ (*tknCnt)++; return  UNDERSCORE; }
+_		{ return  UNDERSCORE; }
 
 sqrt 	{ (*tknCnt)++; return  SQRT; }
 root	{ (*tknCnt)++; return  ROOT; }
@@ -142,8 +142,10 @@ z		{ (*tknCnt)++; enqueue(out, DBL_MAX + DBL_MAX * I); return LETR; }
 \<=		{ return  LTHANEQTO; }
 \>=		{ return  GTHANEQTO; }
 
-\(		{ return LBRAC;}
+\(		{ return LBRAC; }
 \)		{ return RBRAC; }
+
+,		{ return COMMA; }
 
 .		;yyerror(yyscanner, res, NULL, NULL, "syntax error, invalid character: %c", yytext[0]);
 
