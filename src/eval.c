@@ -54,18 +54,18 @@ cplx evalFunc(cplx* arr, int tknCnt, cplx val) {
 	
 
 	cplx ret = 0;
-	for(int i = 0; i < tknCnt; i++) {
-		if(cimag(arr[i]) == DBL_MAX) {
-			printf("FUNC: %s\n", lookuptable[(int)creal(arr[i])]);
-		}
-		else if(cimag(arr[i]) == -DBL_MAX) {
-			char table[6] = {'+', '-', '*', '/', '^', '_'};
-			printf("OP: %c\n", table[(int)creal(arr[i])]);
-		}
-		else {
-			printf("%lf%+lfi\n", creal(arr[i]), cimag(arr[i]));
-		}
-	}
+	/* for(int i = 0; i < tknCnt; i++) { */
+	/* 	if(cimag(arr[i]) == DBL_MAX) { */
+	/* 		printf("FUNC: %s\n", lookuptable[(int)creal(arr[i])]); */
+	/* 	} */
+	/* 	else if(cimag(arr[i]) == -DBL_MAX) { */
+	/* 		char table[6] = {'+', '-', '*', '/', '^', '_'}; */
+	/* 		printf("OP: %c\n", table[(int)creal(arr[i])]); */
+	/* 	} */
+	/* 	else { */
+	/* 		printf("%lf%+lfi\n", creal(arr[i]), cimag(arr[i])); */
+	/* 	} */
+	/* } */
 	stack s = stackInit();
 
 	for(int i = 0; i < tknCnt; i++) {
@@ -73,7 +73,9 @@ cplx evalFunc(cplx* arr, int tknCnt, cplx val) {
 			if(creal(arr[i]) == DBL_MAX) {
 				s_push(&s, val);
 			}
-			funcTable[(int)creal(arr[i])](&s);
+			else {
+				funcTable[(int)creal(arr[i])](&s);
+			}
 		}
 		else if(cimag(arr[i]) == -DBL_MAX) {
 			/* {'+', '-', '*', '/', '^', '_'}; */

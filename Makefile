@@ -1,6 +1,6 @@
 #C
 CC = gcc
-CFLAGS = -O3 -Wincompatible-pointer-types
+CFLAGS = -O3 -Wincompatible-pointer-types -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
 BISON=bison
 FLEX=flex
@@ -36,7 +36,8 @@ $(ODIR)/%.o: $(IDIR)/%.c $(DEPS)
 
 cplxgraph: parse scan $(OBJ)
 		@mkdir -p $(BDIR)
-		$(CC) $(LIBS) -o $(BDIR)/$@ $(OBJ) $(CFLAGS) $(LIBS)
+		# $(CC) $(LIBS) -o $(BDIR)/$@ $(OBJ) $(CFLAGS) $(LIBS)
+		$(CC) $(LIBS) -o $(BDIR)/$@ $(OBJ) $(IDIR)/glad/glad.c $(CFLAGS) $(LIBS)
 
 run: cplxgraph
 	./bin/cplxgraph
