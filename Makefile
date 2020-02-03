@@ -36,7 +36,6 @@ $(ODIR)/%.o: $(IDIR)/%.c $(DEPS)
 
 cplxgraph: parse scan $(OBJ)
 		@mkdir -p $(BDIR)
-		# $(CC) $(LIBS) -o $(BDIR)/$@ $(OBJ) $(CFLAGS) $(LIBS)
 		$(CC) $(LIBS) -o $(BDIR)/$@ $(OBJ) $(IDIR)/glad/glad.c $(CFLAGS) $(LIBS)
 
 run: cplxgraph
