@@ -16,12 +16,12 @@ BDIR=bin
 
 #Dependencies
 IDIR=src
-_DEPS = stack.h queue.h scan.h parse.h main.h 
+_DEPS = stack.h queue.h scan.h parse.h eval.h main.h 
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Object files
 ODIR=obj
-_OBJ = stack.o queue.o scan.o parse.o main.o 
+_OBJ = stack.o queue.o scan.o parse.o eval.o main.o 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 parse: $(IDIR)/parse.y
