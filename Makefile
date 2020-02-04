@@ -1,6 +1,6 @@
 #C
 CC = gcc
-CFLAGS = -O3 -Wincompatible-pointer-types -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl
+CFLAGS = -O3 -Wextra -Wall -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
 BISON=bison
 FLEX=flex

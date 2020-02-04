@@ -7,3 +7,4 @@
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 
+char* filetobuf(char *file);
