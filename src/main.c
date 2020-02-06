@@ -38,6 +38,9 @@ int main(void) {
 	}
 	glfwMakeContextCurrent(window);
 
+	GLFWwindow* display = glfwCreateWindow(600, 600, "Display", NULL, NULL);
+	glfwMakeContextCurrent(display);
+
 	// tell GLFW to capture our mouse
     /* glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); */
 
@@ -87,9 +90,10 @@ int main(void) {
 	GLuint triangleVBO;
 	float* posData;
 	GLfloat* colors;
-	int width = 10;
-	int height = 10;
-	double interval = 0.1;
+	int width = 1600;
+	/* int width = 2000; */
+	int height = 2000;
+	double interval = 0.001;
 	glPointSize(interval * 500);
 
 	posData = malloc(sizeof(float) * 2 * width * height);
@@ -97,24 +101,29 @@ int main(void) {
 
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*2; j+=2) {
-			posData[i*height*2+j] = -0.5 + i*interval;
-			posData[i*height*2+j+1] = -0.5 + (j/2)*interval;
+			posData[i*height*2+j] = -1.0 + i*interval;
+			posData[i*height*2+j+1] = -1.0 + (j/2)*interval;
 		}
 	}
+
 	for(int i = 0; i < width; i++) {
-		for(int j = 0; j < 10*2; j+=2) {
+		for(int j = 0; j < height*2; j+=2) {
 			/* printf("%1.2f, %1.2f  ", posData[i*height+j], posData[i*height+j+1]); */
-			printf("%1.3f, ", posData[i*height+j]);
-			printf("%1.3f,   ", posData[i*height+j+1]);
+			/* printf("%1.3f,   ", posData[i*height*2+j]); */
+			/* printf("%1.3f,   ", posData[i*height*2+j+1]); */
 		}
-		printf("\n");
+		/* printf("\n"); */
+	}
+
+	for(int i = 0; i < width * 4; i++) {
+		printf("(%d) %1.3f\n", i, posData[i]);
 	}
 
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*3; j+=3) {
-				colors[i*height*3+j] = 1.0;
-				colors[i*height*3+j+1] = 1.0;
-				colors[i*height*3+j+2] = 1.0;
+			colors[i*height*3+j] = 0.1;
+			colors[i*height*3+j+1] = 0.1;
+			colors[i*height*3+j+2] = 0.1;
 		}
 	}
 
@@ -148,8 +157,7 @@ int main(void) {
 
 	/* glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); */
 
-	while(!glfwWindowShouldClose(window))
-	{
+	while(!glfwWindowShouldClose(window) && !glfwWindowShouldClose(display)) {
 		//input
 		glfwPollEvents();
 
@@ -164,6 +172,7 @@ int main(void) {
 		
 		//Events
 		glfwSwapBuffers(window);
+		glfwSwapBuffers(display);
 	}
 
 	glfwTerminate();
