@@ -49,71 +49,117 @@ int main(void) {
 	glViewport(0, 0, 800, 600);
 
 	//VBO
-	GLuint triangleVBO;	
 	GLuint shaderProgram;
-	GLchar *vboVertSource, *vboFragSource;
 	GLuint vboVert, vboFrag;
-	const unsigned int shaderAttribute = 0;
+	char *vertSource, *fragSource;
 
-	float vboPoints[3][3] = {
-		{0.0, 1.0, 0.0},
-		{-1.0, -1.0, 0.0},
-		{1.0,  -1.0, 0.0}
-	};
-
-	glGenBuffers(1, &triangleVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vboPoints), vboPoints, GL_STATIC_DRAW);
-	glVertexAttribPointer(shaderAttribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(shaderAttribute);
-	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-
-	vboVertSource = filetobuf("vertShad.vert");
-	vboFragSource = filetobuf("fragShad.frag");
-
+	vertSource = filetobuf("vertShad.vert");
 	vboVert = glCreateShader(GL_VERTEX_SHADER);
-	vboFrag = glCreateShader(GL_FRAGMENT_SHADER);
-
-	glShaderSource(vboVert, 1, (const GLchar**)&vboVertSource, 0);
-	glShaderSource(vboFrag, 1, (const GLchar**)&vboFragSource, 0);
-
-	free(vboVertSource);
-	free(vboFragSource);
-
+	glShaderSource(vboVert, 1, (const GLchar**)&vertSource, 0);
 	glCompileShader(vboVert);
+
+	GLint vertSuccess;
+	glGetShaderiv(vboVert, GL_COMPILE_STATUS, &vertSuccess);
+	if(vertSuccess != GL_TRUE) {
+		printf("Error: compile error for shader vboVert\n");
+	}
+
+	fragSource = filetobuf("fragShad.frag");
+	vboFrag = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(vboFrag, 1, (const GLchar**)&fragSource, 0);
 	glCompileShader(vboFrag);
 
 	shaderProgram = glCreateProgram();
-	
 	glAttachShader(shaderProgram, vboVert);
 	glAttachShader(shaderProgram, vboFrag);
 
-	glBindAttribLocation(shaderProgram, shaderAttribute, "in_Position");
 	glLinkProgram(shaderProgram);
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &vertSuccess);
+	if(vertSuccess != GL_TRUE) {
+		printf("Error: compile error for program shaderProgram\n");
+	}
+	glUseProgram(shaderProgram);
 
+	GLuint vao;
+	GLuint triangleVBO;
+	float* data;
+	int width = 100;
+	int height = 100;
+	double interval = 0.01;
+	data = malloc(sizeof(float) * 2 * width * height);
+	for(int i = 0; i < width; i++) {
+		for(int j = 0; j < height*2; j+=2) {
+			data[i*height*2+j] = -0.5 + (width-i)*interval;
+			data[i*height*2+j+1] = -0.5 + (height-(j/2))*interval;
+		}
+	}
+	for(int i = 0; i < width; i++) {
+		for(int j = 0; j < 10*2; j+=2) {
+			/* printf("%1.2f, %1.2f  ", data[i*height+j], data[i*height+j+1]); */
+			printf("%1.3f, ", data[i*height+j]);
+			printf("%1.3f,   ", data[i*height+j+1]);
+		}
+		printf("\n");
+	}
+	/* float data[12][2] = { */
+	/* 	{0.0, 0.0}, */
+	/* 	{0.5, 0.0}, */
+	/* 	{0.5, 0.5}, */
+
+	/* 	{0.0, 0.0}, */
+	/* 	{0.0, 0.5}, */
+	/* 	{-0.5, 0.5}, */
+
+	/* 	{0.0, 0.0}, */
+	/* 	{-0.5, 0.0}, */
+	/* 	{-0.5, -0.5}, */
+
+	/* 	{0.0, 0.0}, */
+	/* 	{0.0, -0.5}, */
+	/* 	{0.5, -0.5} */
+	/* }; */
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glGenBuffers(1, &triangleVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height, data, GL_DYNAMIC_DRAW);
+
+	printf("sizeof(float) * 2 * width * height: %ld\n", sizeof(float) * 2 * width * height);
+
+	GLint posAttrb = glGetAttribLocation(shaderProgram, "position");
+
+	glVertexAttribPointer(posAttrb, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glEnableVertexAttribArray(posAttrb);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+	glPointSize(interval * 500);
+	
 	/* glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); */
 
 	while(!glfwWindowShouldClose(window))
 	{
 		//input
+		glfwPollEvents();
 
 		//render
-		glUseProgram(shaderProgram);
 		/* glClearColor(0.2f, 0.68f, 0.08f, 1.0f); */
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawArrays(GL_TRIANGLES, 0, (sizeof(vboPoints) / 3) / (sizeof(GLfloat)));
+		//draw VBO
+		glBindVertexArray(vao);
+		glDrawArrays(GL_POINTS, 0, width * height);
 		
 		//Events
 		glfwSwapBuffers(window);
-		glfwPollEvents();
 	}
 
 	glfwTerminate();
 
 	// Exit on failure if there were errors.
-	return !!res.nerrs;
+	return 0;
 }
 
 char* filetobuf(char *file) {

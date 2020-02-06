@@ -36,10 +36,12 @@ $(ODIR)/%.o: $(IDIR)/%.c $(DEPS)
 
 cplxgraph: parse scan $(OBJ)
 		@mkdir -p $(BDIR)
+		@cp $(IDIR)/*.vert $(BDIR)
+		@cp $(IDIR)/*.frag $(BDIR)
 		$(CC) $(LIBS) -o $(BDIR)/$@ $(OBJ) $(IDIR)/glad/glad.c $(CFLAGS) $(LIBS)
 
 run: cplxgraph
-	./bin/cplxgraph
+	cd bin; ./cplxgraph
 
 clean:
 		rm -rf $(ODIR)/*.o
