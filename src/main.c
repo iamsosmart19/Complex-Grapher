@@ -48,6 +48,9 @@ int main(void) {
 
 	glViewport(0, 0, 800, 600);
 
+	//Points
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
 	//VBO
 	GLuint shaderProgram;
 	GLuint vboVert, vboFrag;
@@ -82,60 +85,67 @@ int main(void) {
 
 	GLuint vao;
 	GLuint triangleVBO;
-	float* data;
-	int width = 100;
-	int height = 100;
-	double interval = 0.01;
-	data = malloc(sizeof(float) * 2 * width * height);
+	float* posData;
+	GLfloat* colors;
+	int width = 10;
+	int height = 10;
+	double interval = 0.1;
+	glPointSize(interval * 500);
+
+	posData = malloc(sizeof(float) * 2 * width * height);
+	colors = malloc(sizeof(GLfloat) * 3 * width * height);
+
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*2; j+=2) {
-			data[i*height*2+j] = -0.5 + (width-i)*interval;
-			data[i*height*2+j+1] = -0.5 + (height-(j/2))*interval;
+			posData[i*height*2+j] = -0.5 + i*interval;
+			posData[i*height*2+j+1] = -0.5 + (j/2)*interval;
 		}
 	}
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < 10*2; j+=2) {
-			/* printf("%1.2f, %1.2f  ", data[i*height+j], data[i*height+j+1]); */
-			printf("%1.3f, ", data[i*height+j]);
-			printf("%1.3f,   ", data[i*height+j+1]);
+			/* printf("%1.2f, %1.2f  ", posData[i*height+j], posData[i*height+j+1]); */
+			printf("%1.3f, ", posData[i*height+j]);
+			printf("%1.3f,   ", posData[i*height+j+1]);
 		}
 		printf("\n");
 	}
-	/* float data[12][2] = { */
-	/* 	{0.0, 0.0}, */
-	/* 	{0.5, 0.0}, */
-	/* 	{0.5, 0.5}, */
 
-	/* 	{0.0, 0.0}, */
-	/* 	{0.0, 0.5}, */
-	/* 	{-0.5, 0.5}, */
-
-	/* 	{0.0, 0.0}, */
-	/* 	{-0.5, 0.0}, */
-	/* 	{-0.5, -0.5}, */
-
-	/* 	{0.0, 0.0}, */
-	/* 	{0.0, -0.5}, */
-	/* 	{0.5, -0.5} */
-	/* }; */
+	for(int i = 0; i < width; i++) {
+		for(int j = 0; j < height*3; j+=3) {
+				colors[i*height*3+j] = 1.0;
+				colors[i*height*3+j+1] = 1.0;
+				colors[i*height*3+j+2] = 1.0;
+		}
+	}
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
 	glGenBuffers(1, &triangleVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height, data, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height + sizeof(GLfloat) * 3 * width * height, NULL, GL_DYNAMIC_DRAW);
 
-	printf("sizeof(float) * 2 * width * height: %ld\n", sizeof(float) * 2 * width * height);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 2 * width * height, posData);
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height, sizeof(GLfloat) * 3 * width * height, colors);
 
+	printf("GLfloat: %ld, float: %ld\n", sizeof(GLfloat), sizeof(float));
+
+	//Position
 	GLint posAttrb = glGetAttribLocation(shaderProgram, "position");
 
 	glVertexAttribPointer(posAttrb, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glEnableVertexAttribArray(posAttrb);
-	glEnable(GL_PROGRAM_POINT_SIZE);
-	glPointSize(interval * 500);
-	
+
+	//Color
+	printf("colors size: %ld\n", sizeof(GLfloat) * 3 * width * height);
+
+	GLint colorAttrb = glGetAttribLocation(shaderProgram, "color");
+
+	glVertexAttribPointer(colorAttrb, 3, GL_FLOAT, GL_FALSE, 0, sizeof(float) * 2 * width * height);
+
+	glEnableVertexAttribArray(colorAttrb);
+
 	/* glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); */
 
 	while(!glfwWindowShouldClose(window))
