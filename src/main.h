@@ -8,3 +8,5 @@
 #include <GLFW/glfw3.h>
 
 char* filetobuf(char *file);
+
+void hsv2rgb(long double* H, long double* S, long double* V);

@@ -106,24 +106,34 @@ int main(void) {
 		}
 	}
 
-	for(int i = 0; i < width; i++) {
-		for(int j = 0; j < height*2; j+=2) {
+	/* for(int i = 0; i < width; i++) { */
+	/* 	for(int j = 0; j < height*2; j+=2) { */
 			/* printf("%1.2f, %1.2f  ", posData[i*height+j], posData[i*height+j+1]); */
 			/* printf("%1.3f,   ", posData[i*height*2+j]); */
 			/* printf("%1.3f,   ", posData[i*height*2+j+1]); */
-		}
+		/* } */
 		/* printf("\n"); */
-	}
+	/* } */
 
-	for(int i = 0; i < width * 4; i++) {
-		printf("(%d) %1.3f\n", i, posData[i]);
-	}
+	/* for(int i = 0; i < width * 4; i++) { */
+	/* 	printf("(%d) %1.3f\n", i, posData[i]); */
+	/* } */
 
+	cplx drawTemp;
+	long double drawH, drawS, drawV;
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*3; j+=3) {
-			colors[i*height*3+j] = 0.1;
-			colors[i*height*3+j+1] = 0.1;
-			colors[i*height*3+j+2] = 0.1;
+			/* printf("imag: %lf%+lfi\n", posData[i*height*2+(j/3)*2], posData[i*height*2+(j/3)*2+1]); */
+			/* printf("imag: %lf%+lf\n", creal(drawTemp), cimag(drawTemp)); */
+			drawTemp = evalFunc(output, count, posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I);
+			drawH = cargl(drawTemp);
+			drawS = (1 - pow(0.8, cabsl(drawTemp)));
+			drawV = 1.0;
+			hsv2rgb(&drawH, &drawS, &drawV);
+
+			colors[i*height*3+j] = drawH;
+			colors[i*height*3+j+1] = drawS;
+			colors[i*height*3+j+2] = drawV;
 		}
 	}
 
@@ -198,4 +208,56 @@ char* filetobuf(char *file) {
     buf[length] = 0; /* Null terminator */
 
     return buf; /* Return the buffer */
+}
+
+void hsv2rgb(long double* H, long double* S, long double* V) {
+	double      hh, p, q, t, ff;
+    long        i;
+
+	hh = *H;
+	if(hh >= 360.0) {
+		hh = 0.0;
+	}
+	hh /= 60.0;
+	i = (long)hh;
+
+	ff = hh - i;
+	p = *V * (1.0 - *S);
+    q = *V * (1.0 - (*S * ff));
+    t = *V * (1.0 - (*S * (1.0 - ff)));
+
+	switch(i) {
+		case 0:
+			*H = *V;
+			*S = t;
+			*V = p;
+			break;
+		case 1:
+			*H = q;
+			*S = *V;
+			*V = p;
+			break;
+		case 2:
+			*H = p;
+			*S = *V;
+			*V = t;
+			break;
+
+		case 3:
+			*H = p;
+			*S = q;
+			*V = *V;
+			break;
+		case 4:
+			*H = t;
+			*S = p;
+			*V = *V;
+			break;
+		case 5:
+		default:
+			*H = *V;
+			*S = p;
+			*V = q;
+			break;
+    }
 }
