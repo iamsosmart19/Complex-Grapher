@@ -251,17 +251,17 @@ void hsv2rgb(long double H, long double S, long double V, long double* ret) {
 		Gs = C;
 		Bs = 0;	
 	}
-	else if(H >= 2*M_PI/3 && H < M_PI/3) {
+	else if(H >= 2*M_PI/3 && H < M_PI) {
 		Rs = 0;
 		Gs = C;
 		Bs = X;	
 	}
-	else if(H <= -M_PI && H > -2*M_PI/3) {
+	else if(H >= -M_PI && H < -2*M_PI/3) {
 		Rs = 0;
 		Gs = X;
 		Bs = C;	
 	}
-	else if(H <= -2*M_PI/3 && H > -M_PI/3) {
+	else if(H >= -2*M_PI/3 && H < -M_PI/3) {
 		Rs = X;
 		Gs = 0;
 		Bs = C;	
