@@ -7,7 +7,7 @@
 #include <float.h>
 #include <limits.h>
 
-typedef double complex cplx;
+typedef long double complex cplx;
 
 typedef struct queueNodeStruct {
 	cplx val;

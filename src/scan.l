@@ -16,30 +16,7 @@
 	#include "parse.h"
 %}
 
-%x SC_STRING
-
 %%
-%{
-	int nesting = 0;
-	char *str = NULL;
-	int size = 0;
-	int capacity = 0;
-
-	#define STR_APPEND()											\
-	do {															\
-		if (capacity < size + yyleng + 1) {							\
-			do														\
-				capacity = capacity ? 2 * capacity : 128;			\
-			while (capacity < size + yyleng + 1);					\
-			str = realloc (str, capacity);							\
-		}															\
-		memcpy (str + size, yytext, yyleng);						\
-		size += yyleng;												\
-		assert (size < capacity);									\
-	} while (0)
-	/* yyin = fopen("input.txt", "r"); */
-%}
-
 	/* Rules. */
 
 	/* Scan a float. */

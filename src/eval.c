@@ -27,31 +27,6 @@ cplx evalFunc(cplx* arr, int tknCnt, cplx val) {
 		eval_COT
 	};
 
-	char lookuptable[22][5] = {
-		"SQRT", 
-		"ROOT", 
-		"LN", 
-		"LOG", 
-		"ABS", 
-		"FLOOR", 
-		"CEIL", 
-		"ASIN", 
-		"ACOS", 
-		"ATAN", 
-		"SINH", 
-		"COSH", 
-		"TANH", 
-		"SECH", 
-		"CSCH", 
-		"COTH", 
-		"SIN", 
-		"COS", 
-		"TAN", 
-		"SEC", 
-		"CSC", 
-		"COT"
-	};
-	
 
 	cplx ret = 0;
 	/* for(int i = 0; i < tknCnt; i++) { */

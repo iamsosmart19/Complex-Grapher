@@ -22,8 +22,8 @@ int main(void) {
 		output[cur++] = dequeue(&out);
 	}
 
-	cplx val = evalFunc(output, count, 1);
-	printf("Eval: %lf+%lfi\n", creal(val), cimag(val));
+	/* cplx val = evalFunc(output, count, 1); */
+	/* printf("Eval: %llf+%llfi\n", creal(val), cimag(val)); */
 
 	glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -121,19 +121,21 @@ int main(void) {
 
 	cplx drawTemp;
 	long double drawH, drawS, drawV;
+	long double ret[3];
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*3; j+=3) {
 			/* printf("imag: %lf%+lfi\n", posData[i*height*2+(j/3)*2], posData[i*height*2+(j/3)*2+1]); */
 			/* printf("imag: %lf%+lf\n", creal(drawTemp), cimag(drawTemp)); */
-			drawTemp = evalFunc(output, count, posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I);
+			drawTemp = evalFunc(output, count, posData[i*height*2+(j/3)*2] * 20 + posData[i*height*2+(j/3)*2+1] * 20 * I);
 			drawH = cargl(drawTemp);
-			drawS = (1 - pow(0.8, cabsl(drawTemp)));
-			drawV = 1.0;
-			hsv2rgb(&drawH, &drawS, &drawV);
+			drawS = ((long double)1.0 - cpowl(0.5, cabsl(drawTemp)));
+			drawV = (long double)1;
+			hsv2rgb(drawH, drawS, drawV, ret);
+			printf("%Lf %Lf %Lf\n%Lf, %Lf, %Lf\n\n", drawH, drawS, drawV, ret[0], ret[1], ret[2]);
 
-			colors[i*height*3+j] = drawH;
-			colors[i*height*3+j+1] = drawS;
-			colors[i*height*3+j+2] = drawV;
+			colors[i*height*3+j] = ret[0];
+			colors[i*height*3+j+1] = ret[1];
+			colors[i*height*3+j+2] = ret[2];
 		}
 	}
 
@@ -147,7 +149,7 @@ int main(void) {
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 2 * width * height, posData);
 	glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height, sizeof(GLfloat) * 3 * width * height, colors);
 
-	printf("GLfloat: %ld, float: %ld\n", sizeof(GLfloat), sizeof(float));
+	/* printf("GLfloat: %ld, float: %ld\n", sizeof(GLfloat), sizeof(float)); */
 
 	//Position
 	GLint posAttrb = glGetAttribLocation(shaderProgram, "position");
@@ -161,7 +163,7 @@ int main(void) {
 
 	GLint colorAttrb = glGetAttribLocation(shaderProgram, "color");
 
-	glVertexAttribPointer(colorAttrb, 3, GL_FLOAT, GL_FALSE, 0, sizeof(float) * 2 * width * height);
+	glVertexAttribPointer(colorAttrb, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(float) * 2 * width * height));
 
 	glEnableVertexAttribArray(colorAttrb);
 
@@ -210,54 +212,70 @@ char* filetobuf(char *file) {
     return buf; /* Return the buffer */
 }
 
-void hsv2rgb(long double* H, long double* S, long double* V) {
-	double      hh, p, q, t, ff;
-    long        i;
-
-	hh = *H;
-	if(hh >= 360.0) {
-		hh = 0.0;
+void hsv2rgb(long double H, long double S, long double V, long double* ret) {
+	if(H < -M_PI || H > M_PI + 0.001) {
+		ret[0] = 0;
+		ret[1] = 0;
+		ret[2] = 0;
+		return;
 	}
-	hh /= 60.0;
-	i = (long)hh;
+		
+	if(S < 0 || S > 1) {
+		ret[0] = 0;
+		ret[1] = 0;
+		ret[2] = 0;
+		return;
+	}
 
-	ff = hh - i;
-	p = *V * (1.0 - *S);
-    q = *V * (1.0 - (*S * ff));
-    t = *V * (1.0 - (*S * (1.0 - ff)));
+	if(V < 0 || V > 1) {
+		ret[0] = 0;
+		ret[1] = 0;
+		ret[2] = 0;
+		return;
+	}
+	long double C = S * V;
+	long double Hs = ((H * 180)/M_PI) > 0 ?  (H*180)/M_PI: 360 + (H*180)/M_PI;
+	long double X = C * (1 - fabsl(fmodl(Hs/ 60.0, 2) - 1));
+	/* printf("C: %llf\n\n", (long double)252.0 / 60.0); */
+	/* printf("C: %llf\n\n", (long double)((H * 180) / M_PI )); */
+	long double m = V - C;
+	long double Rs, Gs, Bs;
 
-	switch(i) {
-		case 0:
-			*H = *V;
-			*S = t;
-			*V = p;
-			break;
-		case 1:
-			*H = q;
-			*S = *V;
-			*V = p;
-			break;
-		case 2:
-			*H = p;
-			*S = *V;
-			*V = t;
-			break;
-
-		case 3:
-			*H = p;
-			*S = q;
-			*V = *V;
-			break;
-		case 4:
-			*H = t;
-			*S = p;
-			*V = *V;
-			break;
-		case 5:
-		default:
-			*H = *V;
-			*S = p;
-			*V = q;
-			break;
-    }
+	if(H >= 0 && H < M_PI/3) {
+		Rs = C;
+		Gs = X;
+		Bs = 0;	
+	}
+	else if(H >= M_PI/3 && H < 2*M_PI/3) {	
+		Rs = X;
+		Gs = C;
+		Bs = 0;	
+	}
+	else if(H >= 2*M_PI/3 && H < M_PI/3) {
+		Rs = 0;
+		Gs = C;
+		Bs = X;	
+	}
+	else if(H <= -M_PI && H > -2*M_PI/3) {
+		Rs = 0;
+		Gs = X;
+		Bs = C;	
+	}
+	else if(H <= -2*M_PI/3 && H > -M_PI/3) {
+		Rs = X;
+		Gs = 0;
+		Bs = C;	
+	}
+	else {
+		Rs = C;
+		Gs = 0;
+		Bs = X;	
+	}
+	/* printf("m: %Lf\n", m); */
+	/* printf("C: %Lf\n", C); */
+	/* printf("X: %Lf\n", X); */
+	
+	ret[0] = (Rs + m);
+	ret[1] = (Gs + m);
+	ret[2] = (Bs + m);
 }

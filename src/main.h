@@ -9,4 +9,4 @@
 
 char* filetobuf(char *file);
 
-void hsv2rgb(long double* H, long double* S, long double* V);
+void hsv2rgb(long double H, long double S, long double V, long double* ret);
