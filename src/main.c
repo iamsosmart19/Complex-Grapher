@@ -124,7 +124,6 @@ int main(void) {
 	/* } */
 
 	cplx drawTemp;
-	long double drawH, drawS, drawV;
 	long double ret[3];
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*3; j+=3) {
@@ -132,15 +131,13 @@ int main(void) {
 			/* printf("imag: %lf%+lf\n", creal(drawTemp), cimag(drawTemp)); */
 			/* drawTemp = evalFunc(output, count, posData[i*height*3+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I); */
 			drawTemp = evalFunc(output, count, posData[i*height*2+(j/3)*2] * 5 + posData[i*height*2+(j/3)*2+1] * 5 * I);
-			drawH = cargl(drawTemp);
-			drawS = ((long double)1.0 - cpowl(0.5, cabsl(drawTemp)));
-			drawV = (long double)1;
-			hsv2rgb(drawH, drawS, drawV, ret);
+			hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, &(colors[i*height*3+j]) );
+			/* hsv2rgb(cargl(drawTemp), 1.0 - cpowl(1.5, cabsl(drawTemp)), 1, ret); */
 			/* printf("%Lf %Lf %Lf\n%Lf, %Lf, %Lf\n\n", drawH, drawS, drawV, ret[0], ret[1], ret[2]); */
 
-			colors[i*height*3+j] = ret[0];
-			colors[i*height*3+j+1] = ret[1];
-			colors[i*height*3+j+2] = ret[2];
+			/* colors[i*height*3+j] = ret[0]; */
+			/* colors[i*height*3+j+1] = ret[1]; */
+			/* colors[i*height*3+j+2] = ret[2]; */
 		}
 	}
 
