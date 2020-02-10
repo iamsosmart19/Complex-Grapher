@@ -10,7 +10,7 @@ Grammar
     5     | "//" eqtn eol
     6     | error eol
 
-    7 eqtn: linestart mid exp
+    7 eqtn: linestart mid allexp
 
     8 linestart: "y"
     9          | "f(z)"
@@ -24,43 +24,46 @@ Grammar
    15 eol: "end-of-file"
    16    | "end-of-line"
 
-   17 exp: "number"
-   18    | "e"
-   19    | "pi"
-   20    | "i"
-   21    | "z"
-   22    | "(" exp ")"
-   23    | "(" exp ")" "(" exp ")"
-   24    | "number" "(" exp ")"
-   25    | exp "+" exp
-   26    | exp "-" exp
-   27    | exp "*" exp
-   28    | exp "/" exp
-   29    | exp "^" exp
-   30    | "+" exp
-   31    | "-" exp
-   32    | "sqrt" "(" exp ")"
-   33    | "root" "(" exp "," exp ")"
-   34    | "ln" "(" exp ")"
-   35    | "log" "_" "(" exp ")" "(" exp ")"
-   36    | "abs" "(" exp ")"
-   37    | "floor" "(" exp ")"
-   38    | "ceil" "(" exp ")"
-   39    | "asin" "(" exp ")"
-   40    | "acos" "(" exp ")"
-   41    | "atan" "(" exp ")"
-   42    | "sinh" "(" exp ")"
-   43    | "cosh" "(" exp ")"
-   44    | "tanh" "(" exp ")"
-   45    | "sech" "(" exp ")"
-   46    | "csch" "(" exp ")"
-   47    | "coth" "(" exp ")"
-   48    | "sin" "(" exp ")"
-   49    | "cos" "(" exp ")"
-   50    | "tan" "(" exp ")"
-   51    | "sec" "(" exp ")"
-   52    | "csc" "(" exp ")"
-   53    | "cot" "(" exp ")"
+   17 allexp: exp
+   18       | brexp
+
+   19 exp: "number"
+   20    | "e"
+   21    | "pi"
+   22    | "i"
+   23    | "z"
+   24    | exp "+" exp
+   25    | exp "-" exp
+   26    | exp "*" exp
+   27    | exp "/" exp
+   28    | exp "^" exp
+   29    | "+" exp
+   30    | "-" exp
+   31    | "sqrt" "(" exp ")"
+   32    | "root" "(" exp "," exp ")"
+   33    | "ln" "(" exp ")"
+   34    | "log" "_" "(" exp ")" "(" exp ")"
+   35    | "abs" "(" exp ")"
+   36    | "floor" "(" exp ")"
+   37    | "ceil" "(" exp ")"
+   38    | "asin" "(" exp ")"
+   39    | "acos" "(" exp ")"
+   40    | "atan" "(" exp ")"
+   41    | "sinh" "(" exp ")"
+   42    | "cosh" "(" exp ")"
+   43    | "tanh" "(" exp ")"
+   44    | "sech" "(" exp ")"
+   45    | "csch" "(" exp ")"
+   46    | "coth" "(" exp ")"
+   47    | "sin" "(" exp ")"
+   48    | "cos" "(" exp ")"
+   49    | "tan" "(" exp ")"
+   50    | "sec" "(" exp ")"
+   51    | "csc" "(" exp ")"
+   52    | "cot" "(" exp ")"
+
+   53 brexp: "(" exp ")"
+   54      | "(" exp ")" brexp
 
 
 Terminals, with rules where they appear
@@ -68,37 +71,37 @@ Terminals, with rules where they appear
     "end-of-file" (0) 0 15
     error (256) 6
     "//" (258) 5
-    "+" (259) 25 30
-    "-" (260) 26 31
-    "*" (261) 27
-    "/" (262) 28
-    "^" (263) 29
-    "_" (264) 35
-    "sqrt" (265) 32
-    "root" (266) 33
-    "ln" (267) 34
-    "log" (268) 35
-    "e" (269) 18
-    "abs" (270) 36
-    "floor" (271) 37
-    "ceil" (272) 38
-    "asin" (273) 39
-    "acos" (274) 40
-    "atan" (275) 41
-    "sinh" (276) 42
-    "cosh" (277) 43
-    "tanh" (278) 44
-    "sech" (279) 45
-    "csch" (280) 46
-    "coth" (281) 47
-    "sin" (282) 48
-    "cos" (283) 49
-    "tan" (284) 50
-    "sec" (285) 51
-    "csc" (286) 52
-    "cot" (287) 53
-    "pi" (288) 19
-    "i" (289) 20
+    "+" (259) 24 29
+    "-" (260) 25 30
+    "*" (261) 26
+    "/" (262) 27
+    "^" (263) 28
+    "_" (264) 34
+    "sqrt" (265) 31
+    "root" (266) 32
+    "ln" (267) 33
+    "log" (268) 34
+    "e" (269) 20
+    "abs" (270) 35
+    "floor" (271) 36
+    "ceil" (272) 37
+    "asin" (273) 38
+    "acos" (274) 39
+    "atan" (275) 40
+    "sinh" (276) 41
+    "cosh" (277) 42
+    "tanh" (278) 43
+    "sech" (279) 44
+    "csch" (280) 45
+    "coth" (281) 46
+    "sin" (282) 47
+    "cos" (283) 48
+    "tan" (284) 49
+    "sec" (285) 50
+    "csc" (286) 51
+    "cot" (287) 52
+    "pi" (288) 21
+    "i" (289) 22
     "y" (290) 8
     "f(z)" (291) 9
     "=" (292) 10
@@ -106,12 +109,12 @@ Terminals, with rules where they appear
     ">" (294) 12
     "<=" (295) 13
     ">=" (296) 14
-    "z" (297) 21
-    "(" (298) 22 23 24 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
-    ")" (299) 22 23 24 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
-    "," (300) 33
+    "z" (297) 23
+    "(" (298) 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54
+    ")" (299) 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54
+    "," (300) 32
     "end-of-line" (301) 16
-    "number" <cplx> (302) 17 24
+    "number" <cplx> (302) 19
     BINARY (303)
     UNARY (304)
 
@@ -138,9 +141,15 @@ Nonterminals, with rules where they appear
     eol (56)
         on left: 15 16
         on right: 4 5 6
-    exp (57)
-        on left: 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
-        on right: 1 7 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53
+    allexp (57)
+        on left: 17 18
+        on right: 7
+    exp (58)
+        on left: 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+        on right: 1 17 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54
+    brexp (59)
+        on left: 53 54
+        on right: 18 54
 
 
 State 0
@@ -179,24 +188,23 @@ State 0
     "y"       shift, and go to state 30
     "f(z)"    shift, and go to state 31
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    input      go to state 35
-    line       go to state 36
-    eqtn       go to state 37
-    linestart  go to state 38
-    exp        go to state 39
+    input      go to state 34
+    line       go to state 35
+    eqtn       go to state 36
+    linestart  go to state 37
+    exp        go to state 38
 
 
 State 1
 
     6 line: error . eol
 
-    "end-of-file"  shift, and go to state 40
-    "end-of-line"  shift, and go to state 41
+    "end-of-file"  shift, and go to state 39
+    "end-of-line"  shift, and go to state 40
 
-    eol  go to state 42
+    eol  go to state 41
 
 
 State 2
@@ -206,13 +214,13 @@ State 2
     "y"     shift, and go to state 30
     "f(z)"  shift, and go to state 31
 
-    eqtn       go to state 43
-    linestart  go to state 38
+    eqtn       go to state 42
+    linestart  go to state 37
 
 
 State 3
 
-   30 exp: "+" . exp
+   29 exp: "+" . exp
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -242,15 +250,14 @@ State 3
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 44
+    exp  go to state 43
 
 
 State 4
 
-   31 exp: "-" . exp
+   30 exp: "-" . exp
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -280,185 +287,184 @@ State 4
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 45
+    exp  go to state 44
 
 
 State 5
 
-   32 exp: "sqrt" . "(" exp ")"
+   31 exp: "sqrt" . "(" exp ")"
 
-    "("  shift, and go to state 46
+    "("  shift, and go to state 45
 
 
 State 6
 
-   33 exp: "root" . "(" exp "," exp ")"
+   32 exp: "root" . "(" exp "," exp ")"
 
-    "("  shift, and go to state 47
+    "("  shift, and go to state 46
 
 
 State 7
 
-   34 exp: "ln" . "(" exp ")"
+   33 exp: "ln" . "(" exp ")"
 
-    "("  shift, and go to state 48
+    "("  shift, and go to state 47
 
 
 State 8
 
-   35 exp: "log" . "_" "(" exp ")" "(" exp ")"
+   34 exp: "log" . "_" "(" exp ")" "(" exp ")"
 
-    "_"  shift, and go to state 49
+    "_"  shift, and go to state 48
 
 
 State 9
 
-   18 exp: "e" .
+   20 exp: "e" .
 
-    $default  reduce using rule 18 (exp)
+    $default  reduce using rule 20 (exp)
 
 
 State 10
 
-   36 exp: "abs" . "(" exp ")"
+   35 exp: "abs" . "(" exp ")"
 
-    "("  shift, and go to state 50
+    "("  shift, and go to state 49
 
 
 State 11
 
-   37 exp: "floor" . "(" exp ")"
+   36 exp: "floor" . "(" exp ")"
 
-    "("  shift, and go to state 51
+    "("  shift, and go to state 50
 
 
 State 12
 
-   38 exp: "ceil" . "(" exp ")"
+   37 exp: "ceil" . "(" exp ")"
 
-    "("  shift, and go to state 52
+    "("  shift, and go to state 51
 
 
 State 13
 
-   39 exp: "asin" . "(" exp ")"
+   38 exp: "asin" . "(" exp ")"
 
-    "("  shift, and go to state 53
+    "("  shift, and go to state 52
 
 
 State 14
 
-   40 exp: "acos" . "(" exp ")"
+   39 exp: "acos" . "(" exp ")"
 
-    "("  shift, and go to state 54
+    "("  shift, and go to state 53
 
 
 State 15
 
-   41 exp: "atan" . "(" exp ")"
+   40 exp: "atan" . "(" exp ")"
 
-    "("  shift, and go to state 55
+    "("  shift, and go to state 54
 
 
 State 16
 
-   42 exp: "sinh" . "(" exp ")"
+   41 exp: "sinh" . "(" exp ")"
 
-    "("  shift, and go to state 56
+    "("  shift, and go to state 55
 
 
 State 17
 
-   43 exp: "cosh" . "(" exp ")"
+   42 exp: "cosh" . "(" exp ")"
 
-    "("  shift, and go to state 57
+    "("  shift, and go to state 56
 
 
 State 18
 
-   44 exp: "tanh" . "(" exp ")"
+   43 exp: "tanh" . "(" exp ")"
 
-    "("  shift, and go to state 58
+    "("  shift, and go to state 57
 
 
 State 19
 
-   45 exp: "sech" . "(" exp ")"
+   44 exp: "sech" . "(" exp ")"
 
-    "("  shift, and go to state 59
+    "("  shift, and go to state 58
 
 
 State 20
 
-   46 exp: "csch" . "(" exp ")"
+   45 exp: "csch" . "(" exp ")"
 
-    "("  shift, and go to state 60
+    "("  shift, and go to state 59
 
 
 State 21
 
-   47 exp: "coth" . "(" exp ")"
+   46 exp: "coth" . "(" exp ")"
 
-    "("  shift, and go to state 61
+    "("  shift, and go to state 60
 
 
 State 22
 
-   48 exp: "sin" . "(" exp ")"
+   47 exp: "sin" . "(" exp ")"
 
-    "("  shift, and go to state 62
+    "("  shift, and go to state 61
 
 
 State 23
 
-   49 exp: "cos" . "(" exp ")"
+   48 exp: "cos" . "(" exp ")"
 
-    "("  shift, and go to state 63
+    "("  shift, and go to state 62
 
 
 State 24
 
-   50 exp: "tan" . "(" exp ")"
+   49 exp: "tan" . "(" exp ")"
 
-    "("  shift, and go to state 64
+    "("  shift, and go to state 63
 
 
 State 25
 
-   51 exp: "sec" . "(" exp ")"
+   50 exp: "sec" . "(" exp ")"
 
-    "("  shift, and go to state 65
+    "("  shift, and go to state 64
 
 
 State 26
 
-   52 exp: "csc" . "(" exp ")"
+   51 exp: "csc" . "(" exp ")"
 
-    "("  shift, and go to state 66
+    "("  shift, and go to state 65
 
 
 State 27
 
-   53 exp: "cot" . "(" exp ")"
+   52 exp: "cot" . "(" exp ")"
 
-    "("  shift, and go to state 67
+    "("  shift, and go to state 66
 
 
 State 28
 
-   19 exp: "pi" .
+   21 exp: "pi" .
 
-    $default  reduce using rule 19 (exp)
+    $default  reduce using rule 21 (exp)
 
 
 State 29
 
-   20 exp: "i" .
+   22 exp: "i" .
 
-    $default  reduce using rule 20 (exp)
+    $default  reduce using rule 22 (exp)
 
 
 State 30
@@ -477,182 +483,177 @@ State 31
 
 State 32
 
-   21 exp: "z" .
+   23 exp: "z" .
 
-    $default  reduce using rule 21 (exp)
+    $default  reduce using rule 23 (exp)
 
 
 State 33
 
-   22 exp: "(" . exp ")"
-   23    | "(" . exp ")" "(" exp ")"
+   19 exp: "number" .
 
-    "+"       shift, and go to state 3
-    "-"       shift, and go to state 4
-    "sqrt"    shift, and go to state 5
-    "root"    shift, and go to state 6
-    "ln"      shift, and go to state 7
-    "log"     shift, and go to state 8
-    "e"       shift, and go to state 9
-    "abs"     shift, and go to state 10
-    "floor"   shift, and go to state 11
-    "ceil"    shift, and go to state 12
-    "asin"    shift, and go to state 13
-    "acos"    shift, and go to state 14
-    "atan"    shift, and go to state 15
-    "sinh"    shift, and go to state 16
-    "cosh"    shift, and go to state 17
-    "tanh"    shift, and go to state 18
-    "sech"    shift, and go to state 19
-    "csch"    shift, and go to state 20
-    "coth"    shift, and go to state 21
-    "sin"     shift, and go to state 22
-    "cos"     shift, and go to state 23
-    "tan"     shift, and go to state 24
-    "sec"     shift, and go to state 25
-    "csc"     shift, and go to state 26
-    "cot"     shift, and go to state 27
-    "pi"      shift, and go to state 28
-    "i"       shift, and go to state 29
-    "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
-
-    exp  go to state 68
+    $default  reduce using rule 19 (exp)
 
 
 State 34
 
-   17 exp: "number" .
-   24    | "number" . "(" exp ")"
-
-    "("  shift, and go to state 69
-
-    $default  reduce using rule 17 (exp)
-
-
-State 35
-
     0 $accept: input . "end-of-file"
     3 input: input . line
 
-    "end-of-file"  shift, and go to state 70
+    "end-of-file"  shift, and go to state 67
     error          shift, and go to state 1
     "//"           shift, and go to state 2
     "y"            shift, and go to state 30
     "f(z)"         shift, and go to state 31
 
-    line       go to state 71
-    eqtn       go to state 37
-    linestart  go to state 38
+    line       go to state 68
+    eqtn       go to state 36
+    linestart  go to state 37
 
 
-State 36
+State 35
 
     2 input: line .
 
     $default  reduce using rule 2 (input)
 
 
-State 37
+State 36
 
     4 line: eqtn . eol
 
-    "end-of-file"  shift, and go to state 40
-    "end-of-line"  shift, and go to state 41
+    "end-of-file"  shift, and go to state 39
+    "end-of-line"  shift, and go to state 40
 
-    eol  go to state 72
+    eol  go to state 69
+
+
+State 37
+
+    7 eqtn: linestart . mid allexp
+
+    "="   shift, and go to state 70
+    "<"   shift, and go to state 71
+    ">"   shift, and go to state 72
+    "<="  shift, and go to state 73
+    ">="  shift, and go to state 74
+
+    mid  go to state 75
 
 
 State 38
 
-    7 eqtn: linestart . mid exp
-
-    "="   shift, and go to state 73
-    "<"   shift, and go to state 74
-    ">"   shift, and go to state 75
-    "<="  shift, and go to state 76
-    ">="  shift, and go to state 77
-
-    mid  go to state 78
-
-
-State 39
-
     1 input: exp .
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
 
     $default  reduce using rule 1 (input)
 
 
-State 40
+State 39
 
    15 eol: "end-of-file" .
 
     $default  reduce using rule 15 (eol)
 
 
-State 41
+State 40
 
    16 eol: "end-of-line" .
 
     $default  reduce using rule 16 (eol)
 
 
-State 42
+State 41
 
     6 line: error eol .
 
     $default  reduce using rule 6 (line)
 
 
-State 43
+State 42
 
     5 line: "//" eqtn . eol
 
-    "end-of-file"  shift, and go to state 40
-    "end-of-line"  shift, and go to state 41
+    "end-of-file"  shift, and go to state 39
+    "end-of-line"  shift, and go to state 40
 
-    eol  go to state 84
+    eol  go to state 81
+
+
+State 43
+
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   29    | "+" exp .
+
+    $default  reduce using rule 29 (exp)
 
 
 State 44
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   30    | "+" exp .
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   30    | "-" exp .
 
     $default  reduce using rule 30 (exp)
 
 
 State 45
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   31    | "-" exp .
+   31 exp: "sqrt" "(" . exp ")"
 
-    $default  reduce using rule 31 (exp)
+    "+"       shift, and go to state 3
+    "-"       shift, and go to state 4
+    "sqrt"    shift, and go to state 5
+    "root"    shift, and go to state 6
+    "ln"      shift, and go to state 7
+    "log"     shift, and go to state 8
+    "e"       shift, and go to state 9
+    "abs"     shift, and go to state 10
+    "floor"   shift, and go to state 11
+    "ceil"    shift, and go to state 12
+    "asin"    shift, and go to state 13
+    "acos"    shift, and go to state 14
+    "atan"    shift, and go to state 15
+    "sinh"    shift, and go to state 16
+    "cosh"    shift, and go to state 17
+    "tanh"    shift, and go to state 18
+    "sech"    shift, and go to state 19
+    "csch"    shift, and go to state 20
+    "coth"    shift, and go to state 21
+    "sin"     shift, and go to state 22
+    "cos"     shift, and go to state 23
+    "tan"     shift, and go to state 24
+    "sec"     shift, and go to state 25
+    "csc"     shift, and go to state 26
+    "cot"     shift, and go to state 27
+    "pi"      shift, and go to state 28
+    "i"       shift, and go to state 29
+    "z"       shift, and go to state 32
+    "number"  shift, and go to state 33
+
+    exp  go to state 82
 
 
 State 46
 
-   32 exp: "sqrt" "(" . exp ")"
+   32 exp: "root" "(" . exp "," exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -682,15 +683,14 @@ State 46
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 85
+    exp  go to state 83
 
 
 State 47
 
-   33 exp: "root" "(" . exp "," exp ")"
+   33 exp: "ln" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -720,60 +720,58 @@ State 47
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 86
+    exp  go to state 84
 
 
 State 48
 
-   34 exp: "ln" "(" . exp ")"
+   34 exp: "log" "_" . "(" exp ")" "(" exp ")"
 
-    "+"       shift, and go to state 3
-    "-"       shift, and go to state 4
-    "sqrt"    shift, and go to state 5
-    "root"    shift, and go to state 6
-    "ln"      shift, and go to state 7
-    "log"     shift, and go to state 8
-    "e"       shift, and go to state 9
-    "abs"     shift, and go to state 10
-    "floor"   shift, and go to state 11
-    "ceil"    shift, and go to state 12
-    "asin"    shift, and go to state 13
-    "acos"    shift, and go to state 14
-    "atan"    shift, and go to state 15
-    "sinh"    shift, and go to state 16
-    "cosh"    shift, and go to state 17
-    "tanh"    shift, and go to state 18
-    "sech"    shift, and go to state 19
-    "csch"    shift, and go to state 20
-    "coth"    shift, and go to state 21
-    "sin"     shift, and go to state 22
-    "cos"     shift, and go to state 23
-    "tan"     shift, and go to state 24
-    "sec"     shift, and go to state 25
-    "csc"     shift, and go to state 26
-    "cot"     shift, and go to state 27
-    "pi"      shift, and go to state 28
-    "i"       shift, and go to state 29
-    "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
-
-    exp  go to state 87
+    "("  shift, and go to state 85
 
 
 State 49
 
-   35 exp: "log" "_" . "(" exp ")" "(" exp ")"
+   35 exp: "abs" "(" . exp ")"
 
-    "("  shift, and go to state 88
+    "+"       shift, and go to state 3
+    "-"       shift, and go to state 4
+    "sqrt"    shift, and go to state 5
+    "root"    shift, and go to state 6
+    "ln"      shift, and go to state 7
+    "log"     shift, and go to state 8
+    "e"       shift, and go to state 9
+    "abs"     shift, and go to state 10
+    "floor"   shift, and go to state 11
+    "ceil"    shift, and go to state 12
+    "asin"    shift, and go to state 13
+    "acos"    shift, and go to state 14
+    "atan"    shift, and go to state 15
+    "sinh"    shift, and go to state 16
+    "cosh"    shift, and go to state 17
+    "tanh"    shift, and go to state 18
+    "sech"    shift, and go to state 19
+    "csch"    shift, and go to state 20
+    "coth"    shift, and go to state 21
+    "sin"     shift, and go to state 22
+    "cos"     shift, and go to state 23
+    "tan"     shift, and go to state 24
+    "sec"     shift, and go to state 25
+    "csc"     shift, and go to state 26
+    "cot"     shift, and go to state 27
+    "pi"      shift, and go to state 28
+    "i"       shift, and go to state 29
+    "z"       shift, and go to state 32
+    "number"  shift, and go to state 33
+
+    exp  go to state 86
 
 
 State 50
 
-   36 exp: "abs" "(" . exp ")"
+   36 exp: "floor" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -803,15 +801,14 @@ State 50
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 89
+    exp  go to state 87
 
 
 State 51
 
-   37 exp: "floor" "(" . exp ")"
+   37 exp: "ceil" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -841,15 +838,14 @@ State 51
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 90
+    exp  go to state 88
 
 
 State 52
 
-   38 exp: "ceil" "(" . exp ")"
+   38 exp: "asin" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -879,15 +875,14 @@ State 52
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 91
+    exp  go to state 89
 
 
 State 53
 
-   39 exp: "asin" "(" . exp ")"
+   39 exp: "acos" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -917,15 +912,14 @@ State 53
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 92
+    exp  go to state 90
 
 
 State 54
 
-   40 exp: "acos" "(" . exp ")"
+   40 exp: "atan" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -955,15 +949,14 @@ State 54
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 93
+    exp  go to state 91
 
 
 State 55
 
-   41 exp: "atan" "(" . exp ")"
+   41 exp: "sinh" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -993,15 +986,14 @@ State 55
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 94
+    exp  go to state 92
 
 
 State 56
 
-   42 exp: "sinh" "(" . exp ")"
+   42 exp: "cosh" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1031,15 +1023,14 @@ State 56
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 95
+    exp  go to state 93
 
 
 State 57
 
-   43 exp: "cosh" "(" . exp ")"
+   43 exp: "tanh" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1069,15 +1060,14 @@ State 57
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 96
+    exp  go to state 94
 
 
 State 58
 
-   44 exp: "tanh" "(" . exp ")"
+   44 exp: "sech" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1107,15 +1097,14 @@ State 58
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 97
+    exp  go to state 95
 
 
 State 59
 
-   45 exp: "sech" "(" . exp ")"
+   45 exp: "csch" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1145,15 +1134,14 @@ State 59
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 98
+    exp  go to state 96
 
 
 State 60
 
-   46 exp: "csch" "(" . exp ")"
+   46 exp: "coth" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1183,15 +1171,14 @@ State 60
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 99
+    exp  go to state 97
 
 
 State 61
 
-   47 exp: "coth" "(" . exp ")"
+   47 exp: "sin" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1221,15 +1208,14 @@ State 61
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 100
+    exp  go to state 98
 
 
 State 62
 
-   48 exp: "sin" "(" . exp ")"
+   48 exp: "cos" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1259,15 +1245,14 @@ State 62
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 101
+    exp  go to state 99
 
 
 State 63
 
-   49 exp: "cos" "(" . exp ")"
+   49 exp: "tan" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1297,15 +1282,14 @@ State 63
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 102
+    exp  go to state 100
 
 
 State 64
 
-   50 exp: "tan" "(" . exp ")"
+   50 exp: "sec" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1335,15 +1319,14 @@ State 64
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 103
+    exp  go to state 101
 
 
 State 65
 
-   51 exp: "sec" "(" . exp ")"
+   51 exp: "csc" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1373,15 +1356,14 @@ State 65
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 104
+    exp  go to state 102
 
 
 State 66
 
-   52 exp: "csc" "(" . exp ")"
+   52 exp: "cot" "(" . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1411,165 +1393,70 @@ State 66
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 105
+    exp  go to state 103
 
 
 State 67
-
-   53 exp: "cot" "(" . exp ")"
-
-    "+"       shift, and go to state 3
-    "-"       shift, and go to state 4
-    "sqrt"    shift, and go to state 5
-    "root"    shift, and go to state 6
-    "ln"      shift, and go to state 7
-    "log"     shift, and go to state 8
-    "e"       shift, and go to state 9
-    "abs"     shift, and go to state 10
-    "floor"   shift, and go to state 11
-    "ceil"    shift, and go to state 12
-    "asin"    shift, and go to state 13
-    "acos"    shift, and go to state 14
-    "atan"    shift, and go to state 15
-    "sinh"    shift, and go to state 16
-    "cosh"    shift, and go to state 17
-    "tanh"    shift, and go to state 18
-    "sech"    shift, and go to state 19
-    "csch"    shift, and go to state 20
-    "coth"    shift, and go to state 21
-    "sin"     shift, and go to state 22
-    "cos"     shift, and go to state 23
-    "tan"     shift, and go to state 24
-    "sec"     shift, and go to state 25
-    "csc"     shift, and go to state 26
-    "cot"     shift, and go to state 27
-    "pi"      shift, and go to state 28
-    "i"       shift, and go to state 29
-    "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
-
-    exp  go to state 106
-
-
-State 68
-
-   22 exp: "(" exp . ")"
-   23    | "(" exp . ")" "(" exp ")"
-   25    | exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 107
-
-
-State 69
-
-   24 exp: "number" "(" . exp ")"
-
-    "+"       shift, and go to state 3
-    "-"       shift, and go to state 4
-    "sqrt"    shift, and go to state 5
-    "root"    shift, and go to state 6
-    "ln"      shift, and go to state 7
-    "log"     shift, and go to state 8
-    "e"       shift, and go to state 9
-    "abs"     shift, and go to state 10
-    "floor"   shift, and go to state 11
-    "ceil"    shift, and go to state 12
-    "asin"    shift, and go to state 13
-    "acos"    shift, and go to state 14
-    "atan"    shift, and go to state 15
-    "sinh"    shift, and go to state 16
-    "cosh"    shift, and go to state 17
-    "tanh"    shift, and go to state 18
-    "sech"    shift, and go to state 19
-    "csch"    shift, and go to state 20
-    "coth"    shift, and go to state 21
-    "sin"     shift, and go to state 22
-    "cos"     shift, and go to state 23
-    "tan"     shift, and go to state 24
-    "sec"     shift, and go to state 25
-    "csc"     shift, and go to state 26
-    "cot"     shift, and go to state 27
-    "pi"      shift, and go to state 28
-    "i"       shift, and go to state 29
-    "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
-
-    exp  go to state 108
-
-
-State 70
 
     0 $accept: input "end-of-file" .
 
     $default  accept
 
 
-State 71
+State 68
 
     3 input: input line .
 
     $default  reduce using rule 3 (input)
 
 
-State 72
+State 69
 
     4 line: eqtn eol .
 
     $default  reduce using rule 4 (line)
 
 
-State 73
+State 70
 
    10 mid: "=" .
 
     $default  reduce using rule 10 (mid)
 
 
-State 74
+State 71
 
    11 mid: "<" .
 
     $default  reduce using rule 11 (mid)
 
 
-State 75
+State 72
 
    12 mid: ">" .
 
     $default  reduce using rule 12 (mid)
 
 
-State 76
+State 73
 
    13 mid: "<=" .
 
     $default  reduce using rule 13 (mid)
 
 
-State 77
+State 74
 
    14 mid: ">=" .
 
     $default  reduce using rule 14 (mid)
 
 
-State 78
+State 75
 
-    7 eqtn: linestart mid . exp
+    7 eqtn: linestart mid . allexp
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1599,15 +1486,91 @@ State 78
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "("       shift, and go to state 104
+    "number"  shift, and go to state 33
+
+    allexp  go to state 105
+    exp     go to state 106
+    brexp   go to state 107
+
+
+State 76
+
+   24 exp: exp "+" . exp
+
+    "+"       shift, and go to state 3
+    "-"       shift, and go to state 4
+    "sqrt"    shift, and go to state 5
+    "root"    shift, and go to state 6
+    "ln"      shift, and go to state 7
+    "log"     shift, and go to state 8
+    "e"       shift, and go to state 9
+    "abs"     shift, and go to state 10
+    "floor"   shift, and go to state 11
+    "ceil"    shift, and go to state 12
+    "asin"    shift, and go to state 13
+    "acos"    shift, and go to state 14
+    "atan"    shift, and go to state 15
+    "sinh"    shift, and go to state 16
+    "cosh"    shift, and go to state 17
+    "tanh"    shift, and go to state 18
+    "sech"    shift, and go to state 19
+    "csch"    shift, and go to state 20
+    "coth"    shift, and go to state 21
+    "sin"     shift, and go to state 22
+    "cos"     shift, and go to state 23
+    "tan"     shift, and go to state 24
+    "sec"     shift, and go to state 25
+    "csc"     shift, and go to state 26
+    "cot"     shift, and go to state 27
+    "pi"      shift, and go to state 28
+    "i"       shift, and go to state 29
+    "z"       shift, and go to state 32
+    "number"  shift, and go to state 33
+
+    exp  go to state 108
+
+
+State 77
+
+   25 exp: exp "-" . exp
+
+    "+"       shift, and go to state 3
+    "-"       shift, and go to state 4
+    "sqrt"    shift, and go to state 5
+    "root"    shift, and go to state 6
+    "ln"      shift, and go to state 7
+    "log"     shift, and go to state 8
+    "e"       shift, and go to state 9
+    "abs"     shift, and go to state 10
+    "floor"   shift, and go to state 11
+    "ceil"    shift, and go to state 12
+    "asin"    shift, and go to state 13
+    "acos"    shift, and go to state 14
+    "atan"    shift, and go to state 15
+    "sinh"    shift, and go to state 16
+    "cosh"    shift, and go to state 17
+    "tanh"    shift, and go to state 18
+    "sech"    shift, and go to state 19
+    "csch"    shift, and go to state 20
+    "coth"    shift, and go to state 21
+    "sin"     shift, and go to state 22
+    "cos"     shift, and go to state 23
+    "tan"     shift, and go to state 24
+    "sec"     shift, and go to state 25
+    "csc"     shift, and go to state 26
+    "cot"     shift, and go to state 27
+    "pi"      shift, and go to state 28
+    "i"       shift, and go to state 29
+    "z"       shift, and go to state 32
+    "number"  shift, and go to state 33
 
     exp  go to state 109
 
 
-State 79
+State 78
 
-   25 exp: exp "+" . exp
+   26 exp: exp "*" . exp
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1637,15 +1600,14 @@ State 79
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
     exp  go to state 110
 
 
-State 80
+State 79
 
-   26 exp: exp "-" . exp
+   27 exp: exp "/" . exp
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1675,15 +1637,14 @@ State 80
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
     exp  go to state 111
 
 
-State 81
+State 80
 
-   27 exp: exp "*" . exp
+   28 exp: exp "^" . exp
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -1713,900 +1674,566 @@ State 81
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
     exp  go to state 112
 
 
-State 82
-
-   28 exp: exp "/" . exp
-
-    "+"       shift, and go to state 3
-    "-"       shift, and go to state 4
-    "sqrt"    shift, and go to state 5
-    "root"    shift, and go to state 6
-    "ln"      shift, and go to state 7
-    "log"     shift, and go to state 8
-    "e"       shift, and go to state 9
-    "abs"     shift, and go to state 10
-    "floor"   shift, and go to state 11
-    "ceil"    shift, and go to state 12
-    "asin"    shift, and go to state 13
-    "acos"    shift, and go to state 14
-    "atan"    shift, and go to state 15
-    "sinh"    shift, and go to state 16
-    "cosh"    shift, and go to state 17
-    "tanh"    shift, and go to state 18
-    "sech"    shift, and go to state 19
-    "csch"    shift, and go to state 20
-    "coth"    shift, and go to state 21
-    "sin"     shift, and go to state 22
-    "cos"     shift, and go to state 23
-    "tan"     shift, and go to state 24
-    "sec"     shift, and go to state 25
-    "csc"     shift, and go to state 26
-    "cot"     shift, and go to state 27
-    "pi"      shift, and go to state 28
-    "i"       shift, and go to state 29
-    "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
-
-    exp  go to state 113
-
-
-State 83
-
-   29 exp: exp "^" . exp
-
-    "+"       shift, and go to state 3
-    "-"       shift, and go to state 4
-    "sqrt"    shift, and go to state 5
-    "root"    shift, and go to state 6
-    "ln"      shift, and go to state 7
-    "log"     shift, and go to state 8
-    "e"       shift, and go to state 9
-    "abs"     shift, and go to state 10
-    "floor"   shift, and go to state 11
-    "ceil"    shift, and go to state 12
-    "asin"    shift, and go to state 13
-    "acos"    shift, and go to state 14
-    "atan"    shift, and go to state 15
-    "sinh"    shift, and go to state 16
-    "cosh"    shift, and go to state 17
-    "tanh"    shift, and go to state 18
-    "sech"    shift, and go to state 19
-    "csch"    shift, and go to state 20
-    "coth"    shift, and go to state 21
-    "sin"     shift, and go to state 22
-    "cos"     shift, and go to state 23
-    "tan"     shift, and go to state 24
-    "sec"     shift, and go to state 25
-    "csc"     shift, and go to state 26
-    "cot"     shift, and go to state 27
-    "pi"      shift, and go to state 28
-    "i"       shift, and go to state 29
-    "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
-
-    exp  go to state 114
-
-
-State 84
+State 81
 
     5 line: "//" eqtn eol .
 
     $default  reduce using rule 5 (line)
 
 
+State 82
+
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   31    | "sqrt" "(" exp . ")"
+
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 113
+
+
+State 83
+
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   32    | "root" "(" exp . "," exp ")"
+
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ","  shift, and go to state 114
+
+
+State 84
+
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   33    | "ln" "(" exp . ")"
+
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 115
+
+
 State 85
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   32    | "sqrt" "(" exp . ")"
+   34 exp: "log" "_" "(" . exp ")" "(" exp ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 115
+    "+"       shift, and go to state 3
+    "-"       shift, and go to state 4
+    "sqrt"    shift, and go to state 5
+    "root"    shift, and go to state 6
+    "ln"      shift, and go to state 7
+    "log"     shift, and go to state 8
+    "e"       shift, and go to state 9
+    "abs"     shift, and go to state 10
+    "floor"   shift, and go to state 11
+    "ceil"    shift, and go to state 12
+    "asin"    shift, and go to state 13
+    "acos"    shift, and go to state 14
+    "atan"    shift, and go to state 15
+    "sinh"    shift, and go to state 16
+    "cosh"    shift, and go to state 17
+    "tanh"    shift, and go to state 18
+    "sech"    shift, and go to state 19
+    "csch"    shift, and go to state 20
+    "coth"    shift, and go to state 21
+    "sin"     shift, and go to state 22
+    "cos"     shift, and go to state 23
+    "tan"     shift, and go to state 24
+    "sec"     shift, and go to state 25
+    "csc"     shift, and go to state 26
+    "cot"     shift, and go to state 27
+    "pi"      shift, and go to state 28
+    "i"       shift, and go to state 29
+    "z"       shift, and go to state 32
+    "number"  shift, and go to state 33
+
+    exp  go to state 116
 
 
 State 86
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   33    | "root" "(" exp . "," exp ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   35    | "abs" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ","  shift, and go to state 116
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 117
 
 
 State 87
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   34    | "ln" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   36    | "floor" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 117
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 118
 
 
 State 88
 
-   35 exp: "log" "_" "(" . exp ")" "(" exp ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   37    | "ceil" "(" exp . ")"
 
-    "+"       shift, and go to state 3
-    "-"       shift, and go to state 4
-    "sqrt"    shift, and go to state 5
-    "root"    shift, and go to state 6
-    "ln"      shift, and go to state 7
-    "log"     shift, and go to state 8
-    "e"       shift, and go to state 9
-    "abs"     shift, and go to state 10
-    "floor"   shift, and go to state 11
-    "ceil"    shift, and go to state 12
-    "asin"    shift, and go to state 13
-    "acos"    shift, and go to state 14
-    "atan"    shift, and go to state 15
-    "sinh"    shift, and go to state 16
-    "cosh"    shift, and go to state 17
-    "tanh"    shift, and go to state 18
-    "sech"    shift, and go to state 19
-    "csch"    shift, and go to state 20
-    "coth"    shift, and go to state 21
-    "sin"     shift, and go to state 22
-    "cos"     shift, and go to state 23
-    "tan"     shift, and go to state 24
-    "sec"     shift, and go to state 25
-    "csc"     shift, and go to state 26
-    "cot"     shift, and go to state 27
-    "pi"      shift, and go to state 28
-    "i"       shift, and go to state 29
-    "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
-
-    exp  go to state 118
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 119
 
 
 State 89
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   36    | "abs" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   38    | "asin" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 119
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 120
 
 
 State 90
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   37    | "floor" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   39    | "acos" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 120
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 121
 
 
 State 91
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   38    | "ceil" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   40    | "atan" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 121
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 122
 
 
 State 92
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   39    | "asin" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   41    | "sinh" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 122
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 123
 
 
 State 93
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   40    | "acos" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   42    | "cosh" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 123
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 124
 
 
 State 94
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   41    | "atan" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   43    | "tanh" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 124
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 125
 
 
 State 95
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   42    | "sinh" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   44    | "sech" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 125
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 126
 
 
 State 96
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   43    | "cosh" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   45    | "csch" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 126
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 127
 
 
 State 97
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   44    | "tanh" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   46    | "coth" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 127
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 128
 
 
 State 98
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   45    | "sech" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   47    | "sin" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 128
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 129
 
 
 State 99
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   46    | "csch" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   48    | "cos" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 129
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 130
 
 
 State 100
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   47    | "coth" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   49    | "tan" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 130
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 131
 
 
 State 101
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   48    | "sin" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   50    | "sec" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 131
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 132
 
 
 State 102
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   49    | "cos" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   51    | "csc" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 132
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 133
 
 
 State 103
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   50    | "tan" "(" exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   52    | "cot" "(" exp . ")"
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 133
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 134
 
 
 State 104
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   51    | "sec" "(" exp . ")"
+   53 brexp: "(" . exp ")"
+   54      | "(" . exp ")" brexp
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 134
+    "+"       shift, and go to state 3
+    "-"       shift, and go to state 4
+    "sqrt"    shift, and go to state 5
+    "root"    shift, and go to state 6
+    "ln"      shift, and go to state 7
+    "log"     shift, and go to state 8
+    "e"       shift, and go to state 9
+    "abs"     shift, and go to state 10
+    "floor"   shift, and go to state 11
+    "ceil"    shift, and go to state 12
+    "asin"    shift, and go to state 13
+    "acos"    shift, and go to state 14
+    "atan"    shift, and go to state 15
+    "sinh"    shift, and go to state 16
+    "cosh"    shift, and go to state 17
+    "tanh"    shift, and go to state 18
+    "sech"    shift, and go to state 19
+    "csch"    shift, and go to state 20
+    "coth"    shift, and go to state 21
+    "sin"     shift, and go to state 22
+    "cos"     shift, and go to state 23
+    "tan"     shift, and go to state 24
+    "sec"     shift, and go to state 25
+    "csc"     shift, and go to state 26
+    "cot"     shift, and go to state 27
+    "pi"      shift, and go to state 28
+    "i"       shift, and go to state 29
+    "z"       shift, and go to state 32
+    "number"  shift, and go to state 33
+
+    exp  go to state 135
 
 
 State 105
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   52    | "csc" "(" exp . ")"
-
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 135
-
-
-State 106
-
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   53    | "cot" "(" exp . ")"
-
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 136
-
-
-State 107
-
-   22 exp: "(" exp ")" .
-   23    | "(" exp ")" . "(" exp ")"
-
-    "("  shift, and go to state 137
-
-    $default  reduce using rule 22 (exp)
-
-
-State 108
-
-   24 exp: "number" "(" exp . ")"
-   25    | exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 138
-
-
-State 109
-
-    7 eqtn: linestart mid exp .
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
+    7 eqtn: linestart mid allexp .
 
     $default  reduce using rule 7 (eqtn)
 
 
-State 110
+State 106
 
-   25 exp: exp . "+" exp
-   25    | exp "+" exp .
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
+   17 allexp: exp .
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
 
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
 
-    $default  reduce using rule 25 (exp)
+    $default  reduce using rule 17 (allexp)
 
 
-State 111
+State 107
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   26    | exp "-" exp .
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
+   18 allexp: brexp .
 
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
+    $default  reduce using rule 18 (allexp)
 
-    $default  reduce using rule 26 (exp)
 
+State 108
 
-State 112
+   24 exp: exp . "+" exp
+   24    | exp "+" exp .
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   27    | exp "*" exp .
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-
-    "^"  shift, and go to state 83
-
-    $default  reduce using rule 27 (exp)
-
-
-State 113
-
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   28    | exp "/" exp .
-   29    | exp . "^" exp
-
-    "^"  shift, and go to state 83
-
-    $default  reduce using rule 28 (exp)
-
-
-State 114
-
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   29    | exp "^" exp .
-
-    "^"  shift, and go to state 83
-
-    $default  reduce using rule 29 (exp)
-
-
-State 115
-
-   32 exp: "sqrt" "(" exp ")" .
-
-    $default  reduce using rule 32 (exp)
-
-
-State 116
-
-   33 exp: "root" "(" exp "," . exp ")"
-
-    "+"       shift, and go to state 3
-    "-"       shift, and go to state 4
-    "sqrt"    shift, and go to state 5
-    "root"    shift, and go to state 6
-    "ln"      shift, and go to state 7
-    "log"     shift, and go to state 8
-    "e"       shift, and go to state 9
-    "abs"     shift, and go to state 10
-    "floor"   shift, and go to state 11
-    "ceil"    shift, and go to state 12
-    "asin"    shift, and go to state 13
-    "acos"    shift, and go to state 14
-    "atan"    shift, and go to state 15
-    "sinh"    shift, and go to state 16
-    "cosh"    shift, and go to state 17
-    "tanh"    shift, and go to state 18
-    "sech"    shift, and go to state 19
-    "csch"    shift, and go to state 20
-    "coth"    shift, and go to state 21
-    "sin"     shift, and go to state 22
-    "cos"     shift, and go to state 23
-    "tan"     shift, and go to state 24
-    "sec"     shift, and go to state 25
-    "csc"     shift, and go to state 26
-    "cot"     shift, and go to state 27
-    "pi"      shift, and go to state 28
-    "i"       shift, and go to state 29
-    "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
-
-    exp  go to state 139
-
-
-State 117
-
-   34 exp: "ln" "(" exp ")" .
-
-    $default  reduce using rule 34 (exp)
-
-
-State 118
-
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   35    | "log" "_" "(" exp . ")" "(" exp ")"
-
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 140
-
-
-State 119
-
-   36 exp: "abs" "(" exp ")" .
-
-    $default  reduce using rule 36 (exp)
-
-
-State 120
-
-   37 exp: "floor" "(" exp ")" .
-
-    $default  reduce using rule 37 (exp)
-
-
-State 121
-
-   38 exp: "ceil" "(" exp ")" .
-
-    $default  reduce using rule 38 (exp)
-
-
-State 122
-
-   39 exp: "asin" "(" exp ")" .
-
-    $default  reduce using rule 39 (exp)
-
-
-State 123
-
-   40 exp: "acos" "(" exp ")" .
-
-    $default  reduce using rule 40 (exp)
-
-
-State 124
-
-   41 exp: "atan" "(" exp ")" .
-
-    $default  reduce using rule 41 (exp)
-
-
-State 125
-
-   42 exp: "sinh" "(" exp ")" .
-
-    $default  reduce using rule 42 (exp)
-
-
-State 126
-
-   43 exp: "cosh" "(" exp ")" .
-
-    $default  reduce using rule 43 (exp)
-
-
-State 127
-
-   44 exp: "tanh" "(" exp ")" .
-
-    $default  reduce using rule 44 (exp)
-
-
-State 128
-
-   45 exp: "sech" "(" exp ")" .
-
-    $default  reduce using rule 45 (exp)
-
-
-State 129
-
-   46 exp: "csch" "(" exp ")" .
-
-    $default  reduce using rule 46 (exp)
-
-
-State 130
-
-   47 exp: "coth" "(" exp ")" .
-
-    $default  reduce using rule 47 (exp)
-
-
-State 131
-
-   48 exp: "sin" "(" exp ")" .
-
-    $default  reduce using rule 48 (exp)
-
-
-State 132
-
-   49 exp: "cos" "(" exp ")" .
-
-    $default  reduce using rule 49 (exp)
-
-
-State 133
-
-   50 exp: "tan" "(" exp ")" .
-
-    $default  reduce using rule 50 (exp)
-
-
-State 134
-
-   51 exp: "sec" "(" exp ")" .
-
-    $default  reduce using rule 51 (exp)
-
-
-State 135
-
-   52 exp: "csc" "(" exp ")" .
-
-    $default  reduce using rule 52 (exp)
-
-
-State 136
-
-   53 exp: "cot" "(" exp ")" .
-
-    $default  reduce using rule 53 (exp)
-
-
-State 137
-
-   23 exp: "(" exp ")" "(" . exp ")"
-
-    "+"       shift, and go to state 3
-    "-"       shift, and go to state 4
-    "sqrt"    shift, and go to state 5
-    "root"    shift, and go to state 6
-    "ln"      shift, and go to state 7
-    "log"     shift, and go to state 8
-    "e"       shift, and go to state 9
-    "abs"     shift, and go to state 10
-    "floor"   shift, and go to state 11
-    "ceil"    shift, and go to state 12
-    "asin"    shift, and go to state 13
-    "acos"    shift, and go to state 14
-    "atan"    shift, and go to state 15
-    "sinh"    shift, and go to state 16
-    "cosh"    shift, and go to state 17
-    "tanh"    shift, and go to state 18
-    "sech"    shift, and go to state 19
-    "csch"    shift, and go to state 20
-    "coth"    shift, and go to state 21
-    "sin"     shift, and go to state 22
-    "cos"     shift, and go to state 23
-    "tan"     shift, and go to state 24
-    "sec"     shift, and go to state 25
-    "csc"     shift, and go to state 26
-    "cot"     shift, and go to state 27
-    "pi"      shift, and go to state 28
-    "i"       shift, and go to state 29
-    "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
-
-    exp  go to state 141
-
-
-State 138
-
-   24 exp: "number" "(" exp ")" .
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
 
     $default  reduce using rule 24 (exp)
 
 
-State 139
+State 109
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   33    | "root" "(" exp "," exp . ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   25    | exp "-" exp .
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 142
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
 
-
-State 140
-
-   35 exp: "log" "_" "(" exp ")" . "(" exp ")"
-
-    "("  shift, and go to state 143
+    $default  reduce using rule 25 (exp)
 
 
-State 141
+State 110
 
-   23 exp: "(" exp ")" "(" exp . ")"
-   25    | exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   26    | exp "*" exp .
+   27    | exp . "/" exp
+   28    | exp . "^" exp
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 144
+    "^"  shift, and go to state 80
+
+    $default  reduce using rule 26 (exp)
 
 
-State 142
+State 111
 
-   33 exp: "root" "(" exp "," exp ")" .
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   27    | exp "/" exp .
+   28    | exp . "^" exp
 
-    $default  reduce using rule 33 (exp)
+    "^"  shift, and go to state 80
+
+    $default  reduce using rule 27 (exp)
 
 
-State 143
+State 112
 
-   35 exp: "log" "_" "(" exp ")" "(" . exp ")"
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   28    | exp "^" exp .
+
+    "^"  shift, and go to state 80
+
+    $default  reduce using rule 28 (exp)
+
+
+State 113
+
+   31 exp: "sqrt" "(" exp ")" .
+
+    $default  reduce using rule 31 (exp)
+
+
+State 114
+
+   32 exp: "root" "(" exp "," . exp ")"
 
     "+"       shift, and go to state 3
     "-"       shift, and go to state 4
@@ -2636,38 +2263,285 @@ State 143
     "pi"      shift, and go to state 28
     "i"       shift, and go to state 29
     "z"       shift, and go to state 32
-    "("       shift, and go to state 33
-    "number"  shift, and go to state 34
+    "number"  shift, and go to state 33
 
-    exp  go to state 145
-
-
-State 144
-
-   23 exp: "(" exp ")" "(" exp ")" .
-
-    $default  reduce using rule 23 (exp)
+    exp  go to state 136
 
 
-State 145
+State 115
 
-   25 exp: exp . "+" exp
-   26    | exp . "-" exp
-   27    | exp . "*" exp
-   28    | exp . "/" exp
-   29    | exp . "^" exp
-   35    | "log" "_" "(" exp ")" "(" exp . ")"
+   33 exp: "ln" "(" exp ")" .
 
-    "+"  shift, and go to state 79
-    "-"  shift, and go to state 80
-    "*"  shift, and go to state 81
-    "/"  shift, and go to state 82
-    "^"  shift, and go to state 83
-    ")"  shift, and go to state 146
+    $default  reduce using rule 33 (exp)
 
 
-State 146
+State 116
 
-   35 exp: "log" "_" "(" exp ")" "(" exp ")" .
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   34    | "log" "_" "(" exp . ")" "(" exp ")"
+
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 137
+
+
+State 117
+
+   35 exp: "abs" "(" exp ")" .
 
     $default  reduce using rule 35 (exp)
+
+
+State 118
+
+   36 exp: "floor" "(" exp ")" .
+
+    $default  reduce using rule 36 (exp)
+
+
+State 119
+
+   37 exp: "ceil" "(" exp ")" .
+
+    $default  reduce using rule 37 (exp)
+
+
+State 120
+
+   38 exp: "asin" "(" exp ")" .
+
+    $default  reduce using rule 38 (exp)
+
+
+State 121
+
+   39 exp: "acos" "(" exp ")" .
+
+    $default  reduce using rule 39 (exp)
+
+
+State 122
+
+   40 exp: "atan" "(" exp ")" .
+
+    $default  reduce using rule 40 (exp)
+
+
+State 123
+
+   41 exp: "sinh" "(" exp ")" .
+
+    $default  reduce using rule 41 (exp)
+
+
+State 124
+
+   42 exp: "cosh" "(" exp ")" .
+
+    $default  reduce using rule 42 (exp)
+
+
+State 125
+
+   43 exp: "tanh" "(" exp ")" .
+
+    $default  reduce using rule 43 (exp)
+
+
+State 126
+
+   44 exp: "sech" "(" exp ")" .
+
+    $default  reduce using rule 44 (exp)
+
+
+State 127
+
+   45 exp: "csch" "(" exp ")" .
+
+    $default  reduce using rule 45 (exp)
+
+
+State 128
+
+   46 exp: "coth" "(" exp ")" .
+
+    $default  reduce using rule 46 (exp)
+
+
+State 129
+
+   47 exp: "sin" "(" exp ")" .
+
+    $default  reduce using rule 47 (exp)
+
+
+State 130
+
+   48 exp: "cos" "(" exp ")" .
+
+    $default  reduce using rule 48 (exp)
+
+
+State 131
+
+   49 exp: "tan" "(" exp ")" .
+
+    $default  reduce using rule 49 (exp)
+
+
+State 132
+
+   50 exp: "sec" "(" exp ")" .
+
+    $default  reduce using rule 50 (exp)
+
+
+State 133
+
+   51 exp: "csc" "(" exp ")" .
+
+    $default  reduce using rule 51 (exp)
+
+
+State 134
+
+   52 exp: "cot" "(" exp ")" .
+
+    $default  reduce using rule 52 (exp)
+
+
+State 135
+
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   53 brexp: "(" exp . ")"
+   54      | "(" exp . ")" brexp
+
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 138
+
+
+State 136
+
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   32    | "root" "(" exp "," exp . ")"
+
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 139
+
+
+State 137
+
+   34 exp: "log" "_" "(" exp ")" . "(" exp ")"
+
+    "("  shift, and go to state 140
+
+
+State 138
+
+   53 brexp: "(" exp ")" .
+   54      | "(" exp ")" . brexp
+
+    "("  shift, and go to state 104
+
+    $default  reduce using rule 53 (brexp)
+
+    brexp  go to state 141
+
+
+State 139
+
+   32 exp: "root" "(" exp "," exp ")" .
+
+    $default  reduce using rule 32 (exp)
+
+
+State 140
+
+   34 exp: "log" "_" "(" exp ")" "(" . exp ")"
+
+    "+"       shift, and go to state 3
+    "-"       shift, and go to state 4
+    "sqrt"    shift, and go to state 5
+    "root"    shift, and go to state 6
+    "ln"      shift, and go to state 7
+    "log"     shift, and go to state 8
+    "e"       shift, and go to state 9
+    "abs"     shift, and go to state 10
+    "floor"   shift, and go to state 11
+    "ceil"    shift, and go to state 12
+    "asin"    shift, and go to state 13
+    "acos"    shift, and go to state 14
+    "atan"    shift, and go to state 15
+    "sinh"    shift, and go to state 16
+    "cosh"    shift, and go to state 17
+    "tanh"    shift, and go to state 18
+    "sech"    shift, and go to state 19
+    "csch"    shift, and go to state 20
+    "coth"    shift, and go to state 21
+    "sin"     shift, and go to state 22
+    "cos"     shift, and go to state 23
+    "tan"     shift, and go to state 24
+    "sec"     shift, and go to state 25
+    "csc"     shift, and go to state 26
+    "cot"     shift, and go to state 27
+    "pi"      shift, and go to state 28
+    "i"       shift, and go to state 29
+    "z"       shift, and go to state 32
+    "number"  shift, and go to state 33
+
+    exp  go to state 142
+
+
+State 141
+
+   54 brexp: "(" exp ")" brexp .
+
+    $default  reduce using rule 54 (brexp)
+
+
+State 142
+
+   24 exp: exp . "+" exp
+   25    | exp . "-" exp
+   26    | exp . "*" exp
+   27    | exp . "/" exp
+   28    | exp . "^" exp
+   34    | "log" "_" "(" exp ")" "(" exp . ")"
+
+    "+"  shift, and go to state 76
+    "-"  shift, and go to state 77
+    "*"  shift, and go to state 78
+    "/"  shift, and go to state 79
+    "^"  shift, and go to state 80
+    ")"  shift, and go to state 143
+
+
+State 143
+
+   34 exp: "log" "_" "(" exp ")" "(" exp ")" .
+
+    $default  reduce using rule 34 (exp)

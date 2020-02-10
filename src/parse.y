@@ -145,7 +145,7 @@ line:
 ;
 
 eqtn:
-	linestart mid exp
+	linestart mid allexp
 ; 
 
 linestart:
@@ -165,15 +165,19 @@ eol:
 	TOK_EOF | EOL 
 ;
 
+allexp:
+	exp |
+	brexp
+;
+
 exp:
 	NUM %prec UNARY	{ } | 
 	"e"				{ } |
 	"pi"			{ } |
 	"i"	%prec UNARY	{ } |
 	"z" %prec UNARY { } |
-	"(" exp ")"		{ } |
-	"(" exp ")" "(" exp ")" %prec BINARY	{ enqueue(out, 2 - DBL_MAX * I); } |
-	NUM "(" exp ")" %prec BINARY	{ enqueue(out, 2 - DBL_MAX * I); } |
+	/* brexp			{ } | */
+	/* NUM brexp %prec BINARY	{ enqueue(out, 2 - DBL_MAX * I); } | */
 
 	exp "+" exp		{
 		enqueue(out, 0 - DBL_MAX * I);
@@ -219,6 +223,11 @@ exp:
 	"sec" "(" exp ")" %prec UNARY	{ enqueue(out, 19 + DBL_MAX * I); } |
 	"csc" "(" exp ")" %prec UNARY	{ enqueue(out, 20 + DBL_MAX * I); } |
 	"cot" "(" exp ")" %prec UNARY	{ enqueue(out, 21 + DBL_MAX * I); }
+;
+
+brexp:
+	"(" exp ")"	{ } |
+	"(" exp ")" brexp { enqueue(out, 2 - DBL_MAX * I); }
 ;
 
 %%
