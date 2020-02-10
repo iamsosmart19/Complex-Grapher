@@ -166,8 +166,7 @@ eol:
 ;
 
 allexp:
-	exp |
-	brexp
+	exp
 ;
 
 exp:
@@ -176,8 +175,7 @@ exp:
 	"pi"			{ } |
 	"i"	%prec UNARY	{ } |
 	"z" %prec UNARY { } |
-	/* brexp			{ } | */
-	/* NUM brexp %prec BINARY	{ enqueue(out, 2 - DBL_MAX * I); } | */
+	brexp			{ } |
 
 	exp "+" exp		{
 		enqueue(out, 0 - DBL_MAX * I);

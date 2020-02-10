@@ -90,9 +90,9 @@ int main(void) {
 	/* int width = 1600; */
 	/* int height = 2000; */
 	/* double interval = 0.001; */
-	int width = 1600;
-	int height = 2000;
-	double interval = 0.001;
+	int width = 800;
+	int height = 1000;
+	double interval = 0.002;
 	glPointSize(interval * 500);
 
 	posData = malloc(sizeof(float) * 2 * width * height);
@@ -146,14 +146,27 @@ int main(void) {
 	/* glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); */
 
 	int graphDrawn = 0;
+	long double zoom = 1;
 
 	while(!glfwWindowShouldClose(window) && !glfwWindowShouldClose(display)) {
 		//input
 		glfwPollEvents();
+		if (glfwGetKey(display, GLFW_KEY_UP) == GLFW_PRESS ){
+			zoom += 0.1;
+			graphDrawn = 0;
+		}
+		if (glfwGetKey(display, GLFW_KEY_DOWN) == GLFW_PRESS ){
+			if(zoom >= 1) {
+				zoom -= 0.1;
+			}
+			else {
+			}
+			graphDrawn = 0;
+		}
 
 		//render
 		if(!graphDrawn) {
-			drawGraph(posData, operations, count, colors, height, width);
+			drawGraph(posData, operations, count, colors, height, width, zoom);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 2 * width * height, posData);
 			glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height, sizeof(GLfloat) * 3 * width * height, colors);
 			graphDrawn = 1;
@@ -265,21 +278,13 @@ void hsv2rgb(long double H, long double S, long double V, GLfloat* ret) {
 	ret[2] = (Bs + m);
 }
 
-void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int height, int width) {
+void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int height, int width, long double zoom) {
 	cplx drawTemp;
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*3; j+=3) {
-			/* printf("imag: %lf%+lfi\n", posData[i*height*2+(j/3)*2], posData[i*height*2+(j/3)*2+1]); */
-			/* printf("imag: %lf%+lf\n", creal(drawTemp), cimag(drawTemp)); */
 			/* drawTemp = evalFunc(operations, opnum, posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I); */
-			drawTemp = evalFunc(operations, opnum, 5 * (posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I));
+			drawTemp = evalFunc(operations, opnum, zoom * (posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I));
 			hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, &(colors[i*height*3+j]) );
-			/* hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, ret ); */
-			/* printf("%Lf %Lf %Lf\n%Lf, %Lf, %Lf\n\n", drawH, drawS, drawV, ret[0], ret[1], ret[2]); */
-
-			/* colors[i*height*3+j] = ret[0]; */
-			/* colors[i*height*3+j+1] = ret[1]; */
-			/* colors[i*height*3+j+2] = ret[2]; */
 		}
 	}
 }
