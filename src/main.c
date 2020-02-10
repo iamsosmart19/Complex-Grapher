@@ -9,22 +9,19 @@ int main(void) {
 
 	// Possibly enable parser runtime debugging.
 	yydebug = !!getenv("YYDEBUG");
-	int count = 0;
 	queue out = queueInit();
-	result res = parse_string(function, &out, &count);
+	result res = parse_string(function, &out);
 	if( res.nerrs ) {
 		exit(0);
 	}
-	cplx* operations = (cplx*)malloc(count*sizeof(cplx));
-	int cur = 0;
+	cplx* operations = (cplx*)malloc(256*sizeof(cplx));
 
+	int count;
 	while(front(out) != INT_MIN) {
-		operations[cur++] = dequeue(&out);
+		operations[count++] = dequeue(&out);
 	}
-
-	/* cplx val = evalFunc(operations, count, 1); */
-	/* printf("Eval: %llf+%llfi\n", creal(val), cimag(val)); */
-
+	operations = (cplx*)realloc(operations, count*sizeof(cplx));
+	
 	glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -91,13 +88,11 @@ int main(void) {
 	float* posData;
 	GLfloat* colors;
 	/* int width = 1600; */
-	/* /1* int width = 2000; *1/ */
 	/* int height = 2000; */
 	/* double interval = 0.001; */
-	int width = 800;
-	/* int width = 2000; */
-	int height = 1000;
-	double interval = 0.002;
+	int width = 1600;
+	int height = 2000;
+	double interval = 0.001;
 	glPointSize(interval * 500);
 
 	posData = malloc(sizeof(float) * 2 * width * height);

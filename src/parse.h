@@ -59,7 +59,7 @@ extern int yydebug;
 		// Number of errors.
 		int nerrs;
 	} result;
-	result parse_string(const char* str, queue* out, int* tknCnt);
+	result parse_string(const char* str, queue* out);
 	result parse(void);
 
 #line 66 "src/parse.h"
@@ -137,17 +137,17 @@ typedef union YYSTYPE YYSTYPE;
 
 
 
-int yyparse (yyscan_t scanner, result *res, queue* out, int* tknCnt);
+int yyparse (yyscan_t scanner, result *res, queue* out);
 /* "%code provides" blocks.  */
 #line 24 "src/parse.y"
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
-	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, queue *out, int* tknCnt)
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, queue *out)
 	YY_DECL;
 
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
-	void yyerror(yyscan_t scanner, result *res, queue *out, int* tknCnt, const char *msg, ...);
+	void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...);
 
 #line 153 "src/parse.h"
 

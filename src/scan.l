@@ -27,7 +27,6 @@
 		yyerror(yyscanner, res, NULL, NULL, "float is out of range");
 	}
 	enqueue(out, n); 
-	(*tknCnt)++;
 	return NUM;
 }
 
@@ -39,7 +38,6 @@
 		yyerror(yyscanner, res, NULL, NULL, "integer is out of range");
 	}
 	enqueue(out, n); 
-	(*tknCnt)++;
 	return NUM;
 }
 
@@ -50,7 +48,6 @@
 		yyerror(yyscanner, res, NULL, NULL, "integer is out of range");
 	}
 	enqueue(out, n * I); 
-	(*tknCnt)++;
 	return NUM;
 }
 
@@ -61,48 +58,47 @@
 		yyerror(yyscanner, res, NULL, NULL, "float is out of range");
 	}
 	enqueue(out, n * I); 
-	(*tknCnt)++;
 	return NUM;
 }
 
 \/\/	return COMMENT;
 
-\+		{ (*tknCnt)++; return  PLUS; }
--		{ (*tknCnt)++; return  MINUS; }
-\*		{ (*tknCnt)++; return  STAR; }
-\/		{ (*tknCnt)++; return  SLASH; }
-\^		{ (*tknCnt)++; return  EXP; }
+\+		{ return  PLUS; }
+-		{ return  MINUS; }
+\*		{ return  STAR; }
+\/		{ return  SLASH; }
+\^		{ return  EXP; }
 _		{ return  UNDERSCORE; }
 
-sqrt 	{ (*tknCnt)++; return  SQRT; }
-root	{ (*tknCnt)++; return  ROOT; }
+sqrt 	{ SQRT; }
+root	{ return  ROOT; }
 
-ln		{ (*tknCnt)++; return  LN; }
-log		{ (*tknCnt)++; return  LOG; }
-e		{ (*tknCnt)++; enqueue(out, M_E); return  E; }
+ln		{ return  LN; }
+log		{ return  LOG; }
+e		{ enqueue(out, M_E); return  E; }
 
-abs		{ (*tknCnt)++; return  ABS; }
-floor	{ (*tknCnt)++; return  FLOOR; }
-ceil	{ (*tknCnt)++; return  CEIL; }
+abs		{ return  ABS; }
+floor	{ return  FLOOR; }
+ceil	{ return  CEIL; }
 
-arcsin	{ (*tknCnt)++; return  ASIN; }
-arccos	{ (*tknCnt)++; return  ACOS; }
-arctan	{ (*tknCnt)++; return  ATAN; }
-sinh	{ (*tknCnt)++; return  SINH; }
-cosh	{ (*tknCnt)++; return  COSH; }
-tanh	{ (*tknCnt)++; return  TANH; }
-sech	{ (*tknCnt)++; return  SECH; }
-csch	{ (*tknCnt)++; return  CSCH; }
-coth	{ (*tknCnt)++; return  COTH; }
-sin		{ (*tknCnt)++; return  SIN; }
-cos		{ (*tknCnt)++; return  COS; }
-tan		{ (*tknCnt)++; return  TAN; }
-sec		{ (*tknCnt)++; return  SEC; }
-csc		{ (*tknCnt)++; return  CSC; }
-cot		{ (*tknCnt)++; return  COT; }
-pi		{ (*tknCnt)++; enqueue(out, M_PI); return  PI; }
+arcsin	{ return  ASIN; }
+arccos	{ return  ACOS; }
+arctan	{ return  ATAN; }
+sinh	{ return  SINH; }
+cosh	{ return  COSH; }
+tanh	{ return  TANH; }
+sech	{ return  SECH; }
+csch	{ return  CSCH; }
+coth	{ return  COTH; }
+sin		{ return  SIN; }
+cos		{ return  COS; }
+tan		{ return  TAN; }
+sec		{ return  SEC; }
+csc		{ return  CSC; }
+cot		{ return  COT; }
+pi		{ enqueue(out, M_PI); return  PI; }
 
-i		{ (*tknCnt)++; enqueue(out, I); return  MI; }
+i		{ enqueue(out, I); return  MI; }
 
  /* Ignore white spaces. */
 [ \t]+	continue;
@@ -112,7 +108,7 @@ i		{ (*tknCnt)++; enqueue(out, I); return  MI; }
 y		{ return Y; }
 f\(z\)	{ return FZ; }
 
-z		{ (*tknCnt)++; enqueue(out, DBL_MAX + DBL_MAX * I); return LETR; }
+z		{ enqueue(out, DBL_MAX + DBL_MAX * I); return LETR; }
 =		{ return  EQUALS; }
 \<		{ return  LESSTHAN; }
 \>		{ return  GREATERTHAN; }

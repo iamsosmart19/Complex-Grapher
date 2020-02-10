@@ -16,7 +16,7 @@
 		// Number of errors.
 		int nerrs;
 	} result;
-	result parse_string(const char* str, queue* out, int* tknCnt);
+	result parse_string(const char* str, queue* out);
 	result parse(void);
 }
 
@@ -24,11 +24,11 @@
 %code provides {
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
-	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, queue *out, int* tknCnt)
+	#define YY_DECL enum yytokentype yylex(YYSTYPE* yylval, yyscan_t yyscanner, result *res, queue *out)
 	YY_DECL;
 
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
-	void yyerror(yyscan_t scanner, result *res, queue *out, int* tknCnt, const char *msg, ...);
+	void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...);
 }
 
 // Emitted on top of the implementation file.
@@ -44,7 +44,7 @@
 }
 
 %code {
-	result parse_string(const char* str, queue* out, int* tknCnt);
+	result parse_string(const char* str, queue* out);
 	result parse(void);
 	int precValues[5] = {2, 2, 3, 3, 4};
 }
@@ -58,7 +58,7 @@
 %param {yyscan_t scanner}{result *res}
 
 //custom yyparse paramaters
-%param {queue* out}{int* tknCnt}
+%param {queue* out}
 
 %token
 	COMMENT "//"
@@ -172,6 +172,8 @@ exp:
 	"i"	%prec UNARY	{ } |
 	"z" %prec UNARY { } |
 	"(" exp ")"		{ } |
+	"(" exp ")" "(" exp ")" %prec BINARY	{ enqueue(out, 2 - DBL_MAX * I); } |
+	NUM "(" exp ")" %prec BINARY	{ enqueue(out, 2 - DBL_MAX * I); } |
 
 	exp "+" exp		{
 		enqueue(out, 0 - DBL_MAX * I);
@@ -216,7 +218,7 @@ exp:
 	"tan" "(" exp ")" %prec UNARY	{ enqueue(out, 18 + DBL_MAX * I); } |
 	"sec" "(" exp ")" %prec UNARY	{ enqueue(out, 19 + DBL_MAX * I); } |
 	"csc" "(" exp ")" %prec UNARY	{ enqueue(out, 20 + DBL_MAX * I); } |
-	"cot" "(" exp ")" %prec UNARY	{ enqueue(out, 21 + DBL_MAX * I); } 
+	"cot" "(" exp ")" %prec UNARY	{ enqueue(out, 21 + DBL_MAX * I); }
 ;
 
 %%
@@ -228,26 +230,25 @@ result parse(void) {
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	result res = {1, 0, 0};
-	yyparse(scanner, &res, NULL, NULL);
+	yyparse(scanner, &res, NULL);
 	yylex_destroy(scanner);
 	return res;
 }
 
 //For operators set real() to INT_MAX and imaginary part to op value
-result parse_string(const char* str, queue* out, int* tknCnt) {
-	*tknCnt = 0;
+result parse_string(const char* str, queue* out) {
 	/* printf("%s\n", str); */
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);
 	result res = {0, 0, 0};
-	yyparse(scanner, &res, out, tknCnt);
+	yyparse(scanner, &res, out);
 	yy_delete_buffer(buf, scanner);
 	yylex_destroy(scanner);
 	return res;
 }
 
-void yyerror(yyscan_t scanner, result *res, queue *out, int* tknCnt, const char *msg, ...) {
+void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...) {
 	(void) scanner;
 	va_list args;
 	va_start(args, msg);

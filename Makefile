@@ -1,6 +1,6 @@
 #C
 CC = gcc
-CFLAGS = -O3 -Wextra -Wall -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl
+CFLAGS = -O3 -Wextra -Wall
 
 BISON=bison
 FLEX=flex
@@ -10,22 +10,25 @@ all: cplxgraph
 
 .PHONY: clean
 
-LIBS=-lm
+LIBS=-lm -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
 BDIR=bin
 
+DDIR=dbg
+
 #Dependencies
 IDIR=src
-_DEPS = stack.h queue.h scan.h parse.h eval.h main.h 
+_DEPS = stack.h queue.h scan.h parse.h eval.h main.h parsetest.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Object files
 ODIR=obj
+# _OBJ = stack.o queue.o scan.o parse.o eval.o parsetest.o 
 _OBJ = stack.o queue.o scan.o parse.o eval.o main.o 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 parse: $(IDIR)/parse.y
-	$(BISON) $(BISONFLAGS) --defines -o $(IDIR)/parse.c $<
+	$(BISON) $(BISONFLAGS) --defines -o $(IDIR)/parse.c $< -v --report-file=$(DDIR)/parse.out
 
 scan: $(IDIR)/scan.l
 	$(FLEX) $(FLEXFLAGS) -o $(IDIR)/scan.c --header-file=$(IDIR)/scan.h $<
