@@ -15,14 +15,14 @@ int main(void) {
 	if( res.nerrs ) {
 		exit(0);
 	}
-	cplx* output = (cplx*)malloc(count*sizeof(cplx));
+	cplx* operations = (cplx*)malloc(count*sizeof(cplx));
 	int cur = 0;
 
 	while(front(out) != INT_MIN) {
-		output[cur++] = dequeue(&out);
+		operations[cur++] = dequeue(&out);
 	}
 
-	/* cplx val = evalFunc(output, count, 1); */
+	/* cplx val = evalFunc(operations, count, 1); */
 	/* printf("Eval: %llf+%llfi\n", creal(val), cimag(val)); */
 
 	glfwInit();
@@ -123,32 +123,12 @@ int main(void) {
 	/* 	printf("(%d) %1.3f\n", i, posData[i]); */
 	/* } */
 
-	cplx drawTemp;
-	for(int i = 0; i < width; i++) {
-		for(int j = 0; j < height*3; j+=3) {
-			/* printf("imag: %lf%+lfi\n", posData[i*height*2+(j/3)*2], posData[i*height*2+(j/3)*2+1]); */
-			/* printf("imag: %lf%+lf\n", creal(drawTemp), cimag(drawTemp)); */
-			/* drawTemp = evalFunc(output, count, posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I); */
-			drawTemp = evalFunc(output, count, 5 * (posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I));
-			hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, &(colors[i*height*3+j]) );
-			/* hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, ret ); */
-			/* printf("%Lf %Lf %Lf\n%Lf, %Lf, %Lf\n\n", drawH, drawS, drawV, ret[0], ret[1], ret[2]); */
-
-			/* colors[i*height*3+j] = ret[0]; */
-			/* colors[i*height*3+j+1] = ret[1]; */
-			/* colors[i*height*3+j+2] = ret[2]; */
-		}
-	}
-
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
 	glGenBuffers(1, &triangleVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height + sizeof(GLfloat) * 3 * width * height, NULL, GL_DYNAMIC_DRAW);
-
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 2 * width * height, posData);
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height, sizeof(GLfloat) * 3 * width * height, colors);
 
 	/* printf("GLfloat: %ld, float: %ld\n", sizeof(GLfloat), sizeof(float)); */
 
@@ -170,11 +150,20 @@ int main(void) {
 
 	/* glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); */
 
+	int graphDrawn = 0;
+
 	while(!glfwWindowShouldClose(window) && !glfwWindowShouldClose(display)) {
 		//input
 		glfwPollEvents();
 
 		//render
+		if(!graphDrawn) {
+			drawGraph(posData, operations, count, colors, height, width);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 2 * width * height, posData);
+			glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height, sizeof(GLfloat) * 3 * width * height, colors);
+			graphDrawn = 1;
+		}
+
 		/* glClearColor(0.2f, 0.68f, 0.08f, 1.0f); */
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -279,4 +268,23 @@ void hsv2rgb(long double H, long double S, long double V, GLfloat* ret) {
 	ret[0] = (Rs + m);
 	ret[1] = (Gs + m);
 	ret[2] = (Bs + m);
+}
+
+void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int height, int width) {
+	cplx drawTemp;
+	for(int i = 0; i < width; i++) {
+		for(int j = 0; j < height*3; j+=3) {
+			/* printf("imag: %lf%+lfi\n", posData[i*height*2+(j/3)*2], posData[i*height*2+(j/3)*2+1]); */
+			/* printf("imag: %lf%+lf\n", creal(drawTemp), cimag(drawTemp)); */
+			/* drawTemp = evalFunc(operations, opnum, posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I); */
+			drawTemp = evalFunc(operations, opnum, 5 * (posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I));
+			hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, &(colors[i*height*3+j]) );
+			/* hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, ret ); */
+			/* printf("%Lf %Lf %Lf\n%Lf, %Lf, %Lf\n\n", drawH, drawS, drawV, ret[0], ret[1], ret[2]); */
+
+			/* colors[i*height*3+j] = ret[0]; */
+			/* colors[i*height*3+j+1] = ret[1]; */
+			/* colors[i*height*3+j+2] = ret[2]; */
+		}
+	}
 }
