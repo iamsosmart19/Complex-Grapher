@@ -92,91 +92,91 @@ cplx evalFunc(cplx* arr, int tknCnt, cplx val) {
 	return ret;
 }
 
-void eval_SQRT(stack *s) {
+inline void eval_SQRT(stack *s) {
 	s_push(s, sqrt(s_pop(s)));
 }
 
-void eval_ROOT(stack *s){
+inline void eval_ROOT(stack *s){
 	s_push(s, pow(s_pop(s), 1/s_pop(s)));
 }
  
-void eval_LN(stack *s){
+inline void eval_LN(stack *s){
 	s_push(s, log(s_pop(s)));
 }
  
-void eval_LOG(stack *s){
+inline void eval_LOG(stack *s){
 	s_push(s, log(s_pop(s)) / log(s_pop(s)));
 }
  
-void eval_ABS(stack *s){
+inline void eval_ABS(stack *s){
 	s_push(s, fabs(s_pop(s)));
 }
  
-void eval_FLOOR(stack *s){
+inline void eval_FLOOR(stack *s){
 	s_push(s, (s_pop(s)));
 }
  
-void eval_CEIL(stack *s){
+inline void eval_CEIL(stack *s){
 	s_push(s, (s_pop(s)));
 }
  
-void eval_ASIN(stack *s){
+inline void eval_ASIN(stack *s){
 	s_push(s, asin(s_pop(s)));
 }
  
-void eval_ACOS(stack *s){
+inline void eval_ACOS(stack *s){
 	s_push(s, acos(s_pop(s)));
 }
  
-void eval_ATAN(stack *s){
+inline void eval_ATAN(stack *s){
 	s_push(s, atan(s_pop(s)));
 }
  
-void eval_SINH(stack *s){
+inline void eval_SINH(stack *s){
 	s_push(s, sinh(s_pop(s)));
 }
  
-void eval_COSH(stack *s){
+inline void eval_COSH(stack *s){
 	s_push(s, cosh(s_pop(s)));
 }
  
-void eval_TANH(stack *s){
+inline void eval_TANH(stack *s){
 	s_push(s, tanh(s_pop(s)));
 }
  
-void eval_SECH(stack *s){
+inline void eval_SECH(stack *s){
 	s_push(s, 1/cosh(s_pop(s)));
 }
  
-void eval_CSCH(stack *s){
+inline void eval_CSCH(stack *s){
 	s_push(s, 1/sinh(s_pop(s)));
 }
  
-void eval_COTH(stack *s){
+inline void eval_COTH(stack *s){
 	s_push(s, 1/tanh(s_pop(s)));
 }
  
-void eval_SIN(stack *s){
+inline void eval_SIN(stack *s){
 	s_push(s, sin(s_pop(s)));
 }
  
-void eval_COS(stack *s){
+inline void eval_COS(stack *s){
 	s_push(s, cos(s_pop(s)));
 }
  
-void eval_TAN(stack *s){
+inline void eval_TAN(stack *s){
 	s_push(s, tan(s_pop(s)));
 }
  
-void eval_SEC(stack *s){
+inline void eval_SEC(stack *s){
 	s_push(s, 1/cos(s_pop(s)));
 }
  
-void eval_CSC(stack *s){
+inline void eval_CSC(stack *s){
 	s_push(s, 1/sin(s_pop(s)));
 }
  
-void eval_COT(stack *s){
+inline void eval_COT(stack *s){
 	s_push(s, 1/tan(s_pop(s)));
 }
 

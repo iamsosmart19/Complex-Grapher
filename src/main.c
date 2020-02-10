@@ -90,10 +90,14 @@ int main(void) {
 	GLuint triangleVBO;
 	float* posData;
 	GLfloat* colors;
-	int width = 1600;
+	/* int width = 1600; */
+	/* /1* int width = 2000; *1/ */
+	/* int height = 2000; */
+	/* double interval = 0.001; */
+	int width = 800;
 	/* int width = 2000; */
-	int height = 2000;
-	double interval = 0.001;
+	int height = 1000;
+	double interval = 0.002;
 	glPointSize(interval * 500);
 
 	posData = malloc(sizeof(float) * 2 * width * height);
@@ -126,12 +130,13 @@ int main(void) {
 		for(int j = 0; j < height*3; j+=3) {
 			/* printf("imag: %lf%+lfi\n", posData[i*height*2+(j/3)*2], posData[i*height*2+(j/3)*2+1]); */
 			/* printf("imag: %lf%+lf\n", creal(drawTemp), cimag(drawTemp)); */
-			drawTemp = evalFunc(output, count, posData[i*height*2+(j/3)*2] * 20 + posData[i*height*2+(j/3)*2+1] * 20 * I);
+			/* drawTemp = evalFunc(output, count, posData[i*height*3+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I); */
+			drawTemp = evalFunc(output, count, posData[i*height*2+(j/3)*2] * 5 + posData[i*height*2+(j/3)*2+1] * 5 * I);
 			drawH = cargl(drawTemp);
 			drawS = ((long double)1.0 - cpowl(0.5, cabsl(drawTemp)));
 			drawV = (long double)1;
 			hsv2rgb(drawH, drawS, drawV, ret);
-			printf("%Lf %Lf %Lf\n%Lf, %Lf, %Lf\n\n", drawH, drawS, drawV, ret[0], ret[1], ret[2]);
+			/* printf("%Lf %Lf %Lf\n%Lf, %Lf, %Lf\n\n", drawH, drawS, drawV, ret[0], ret[1], ret[2]); */
 
 			colors[i*height*3+j] = ret[0];
 			colors[i*height*3+j+1] = ret[1];
