@@ -124,15 +124,14 @@ int main(void) {
 	/* } */
 
 	cplx drawTemp;
-	long double ret[3];
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*3; j+=3) {
 			/* printf("imag: %lf%+lfi\n", posData[i*height*2+(j/3)*2], posData[i*height*2+(j/3)*2+1]); */
 			/* printf("imag: %lf%+lf\n", creal(drawTemp), cimag(drawTemp)); */
-			/* drawTemp = evalFunc(output, count, posData[i*height*3+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I); */
-			drawTemp = evalFunc(output, count, posData[i*height*2+(j/3)*2] * 5 + posData[i*height*2+(j/3)*2+1] * 5 * I);
+			/* drawTemp = evalFunc(output, count, posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I); */
+			drawTemp = evalFunc(output, count, 5 * (posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I));
 			hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, &(colors[i*height*3+j]) );
-			/* hsv2rgb(cargl(drawTemp), 1.0 - cpowl(1.5, cabsl(drawTemp)), 1, ret); */
+			/* hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, ret ); */
 			/* printf("%Lf %Lf %Lf\n%Lf, %Lf, %Lf\n\n", drawH, drawS, drawV, ret[0], ret[1], ret[2]); */
 
 			/* colors[i*height*3+j] = ret[0]; */
@@ -214,7 +213,7 @@ char* filetobuf(char *file) {
     return buf; /* Return the buffer */
 }
 
-void hsv2rgb(long double H, long double S, long double V, long double* ret) {
+void hsv2rgb(long double H, long double S, long double V, GLfloat* ret) {
 	if(H < -M_PI || H > M_PI + 0.001) {
 		ret[0] = 0;
 		ret[1] = 0;
