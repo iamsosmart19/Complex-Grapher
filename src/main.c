@@ -160,6 +160,7 @@ int main(void) {
 				zoom -= 0.1;
 			}
 			else {
+				zoom -= zoom/10;
 			}
 			graphDrawn = 0;
 		}
@@ -280,11 +281,15 @@ void hsv2rgb(long double H, long double S, long double V, GLfloat* ret) {
 
 void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int height, int width, long double zoom) {
 	cplx drawTemp;
+	long double zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5;
+	printf("%Lf: %Lf\n", zoom, zoomc);
+	//Speed this the hell up
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*3; j+=3) {
 			/* drawTemp = evalFunc(operations, opnum, posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I); */
 			drawTemp = evalFunc(operations, opnum, zoom * (posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I));
-			hsv2rgb(cargl(drawTemp), 1.0 - cpowl(0.5, cabsl(drawTemp)), 1, &(colors[i*height*3+j]) );
+			//Have this scale with zoom
+			hsv2rgb(cargl(drawTemp), 1.0 - cpowl(zoomc, cabsl(drawTemp)), 1, &(colors[i*height*3+j]) );
 		}
 	}
 }
