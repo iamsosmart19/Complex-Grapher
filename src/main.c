@@ -95,8 +95,9 @@ int main(void) {
 	int height = 1000;
 	int n = width * height;
 	double interval = 0.002;
-	long double zoom = 5;
-	long double zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5;
+	long double zoom = 1;
+	float zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5;
+	printf("zoomc: %f\n", zoomc);
 	glPointSize(interval * 500);
 
     size_t posSize = sizeof(float) * 2 * n;
@@ -180,7 +181,7 @@ int main(void) {
 	}
 
     // Create the compute kernel in the program we wish to run
-    kernel = clCreateKernel(program, "vecAdd", &err);
+    kernel = clCreateKernel(program, "graph", &err);
 	if(err != CL_SUCCESS) {
 		printf("error: %d\n", err);
 	}
@@ -222,6 +223,9 @@ int main(void) {
 	printf("%f\n", colors[3]);
 	printf("%f\n", colors[4]);
 	printf("%f\n", colors[5]);
+	printf("%f\n", colors[3*n-3]);
+	printf("%f\n", colors[3*n-2]);
+	printf("%f\n", colors[3*n-1]);
 	/* for(int i = 0; i < width; i++) { */
 	/* 	for(int j = 0; j < height*2; j+=2) { */
 			/* printf("%1.2f, %1.2f  ", posData[i*height+j], posData[i*height+j+1]); */
