@@ -2,9 +2,11 @@
 #include "scan.h"
 
 #include "eval.h"
+#include <string.h>
 
 //GRAPHICS LIBRARIES
 #include "glad/glad.h"
+#include <CL/cl.h>
 #include <GLFW/glfw3.h>
 
 char* filetobuf(char *file);

@@ -49,7 +49,7 @@ extern int yydebug;
 	#include <complex.h>
 	#include "queue.h"
 
-	typedef long double complex cplx;
+	typedef double complex cplx;
 	typedef void* yyscan_t;
 	typedef struct {
 		// Whether to print the intermediate results.

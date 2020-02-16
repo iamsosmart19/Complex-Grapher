@@ -5,7 +5,7 @@
 #include <float.h>
 #include <complex.h>
 
-typedef long double complex cplx;
+typedef double complex cplx;
 
 typedef struct stackNodeStruct {
 	cplx val;
