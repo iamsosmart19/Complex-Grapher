@@ -95,8 +95,9 @@ int main(void) {
 	int height = 1000;
 	int n = width * height;
 	double interval = 0.002;
-	long double zoom = 1;
-	float zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5;
+	long double zoom = 5;
+	/* float zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5; */
+	float zoomc = 0.2;
 	printf("zoomc: %f\n", zoomc);
 	glPointSize(interval * 500);
 
