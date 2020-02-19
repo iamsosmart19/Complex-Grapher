@@ -95,9 +95,9 @@ int main(void) {
 	int height = 1000;
 	int n = width * height;
 	double interval = 0.002;
-	long double zoom = 5;
-	/* float zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5; */
-	float zoomc = 0.2;
+	double zoom = 20;
+	float zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5;
+	/* float zoomc = 0.2; */
 	printf("zoomc: %f\n", zoomc);
 	glPointSize(interval * 500);
 
@@ -131,7 +131,7 @@ int main(void) {
     cl_int err;
  
     // Number of work items in each local work group
-    localSize = 256;
+    localSize = 512;
  
     // Number of total work items - localSize must be divisor
     globalSize = ceil(n/(float)localSize)*localSize;
@@ -204,8 +204,9 @@ int main(void) {
     err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &colorBuffer);
     err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &opBuffer);
     err |= clSetKernelArg(kernel, 3, sizeof(int), &count);
-    err |= clSetKernelArg(kernel, 4, sizeof(float), &zoomc);
-    err |= clSetKernelArg(kernel, 5, sizeof(unsigned int), &n);
+    err |= clSetKernelArg(kernel, 4, sizeof(double), &zoom);
+    err |= clSetKernelArg(kernel, 5, sizeof(float), &zoomc);
+    err |= clSetKernelArg(kernel, 6, sizeof(unsigned int), &n);
  
     // Execute the kernel over the entire range of the data set  
     err = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &globalSize, &localSize, 0, NULL, NULL);
