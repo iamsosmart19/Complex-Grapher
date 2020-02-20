@@ -11,8 +11,8 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 	if (id < n) {
 		float2 input = vload2(0, &a[id*2]);
 		cplx ret = evalFunc(op, opnum, (cplx)(zoom*input.x, zoom*input.y));
-		float3 DBG = (float3)(ret.x, ret.y, 1);
-		float3 HSV = (float3)((float)carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), 1.0);
+		// float3 DBG = (float3)(ret.x, ret.y, 1);
+		float3 HSV = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), 1.0);
 		float3 RGB = hsv2rgb(HSV.x, HSV.y, HSV.z);
 		vstore3(RGB, 0, &b[id*3]);
 		//vstore3(DBG, 0, &b[id*3]);

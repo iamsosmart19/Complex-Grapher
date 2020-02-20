@@ -293,6 +293,22 @@ int main(void) {
 
 		//render
 		if(!graphDrawn) {
+			err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &posBuffer);
+			err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &colorBuffer);
+			err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &opBuffer);
+			err |= clSetKernelArg(kernel, 3, sizeof(int), &count);
+			err |= clSetKernelArg(kernel, 4, sizeof(double), &zoom);
+			err |= clSetKernelArg(kernel, 5, sizeof(float), &zoomc);
+			err |= clSetKernelArg(kernel, 6, sizeof(unsigned int), &n);
+		 
+			// Execute the kernel over the entire range of the data set  
+			err = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &globalSize, &localSize, 0, NULL, NULL);
+		 
+			// Wait for the command queue to get serviced before reading back results
+			clFinish(queue);
+		 
+			// Read the results from the device
+			clEnqueueReadBuffer(queue, colorBuffer, CL_TRUE, 0, colorSize, colors, 0, NULL, NULL);
 			/* drawGraph(posData, operations, count, colors, height, width, zoom); */
 			glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height, sizeof(GLfloat) * 3 * width * height, colors);
 			graphDrawn = 1;
