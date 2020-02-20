@@ -68,7 +68,9 @@ inline cplx cpow(cplx m, cplx n) {
 }
 
 inline cplx csqrt(cplx n) {
-	return (cplx)( sqrt(cabs(n))*(cos(carg(n)/2)), sqrt(cabs(n))*(sin(carg(n)/2)));
+	return (cplx)(-1,-1);
+	/* return (cplx)( sqrt(cabs(n))*(cos(carg(n)/2.0)), sqrt(cabs(n))*(sin(carg(n)/2.0))); */
+	/* return (cplx)(sqrt((cabs(n) + n.x)/2.0), sqrt((cabs(n) - n.x)/2.0)); */
 }
 
 inline cplx csin(cplx n) {

@@ -70,7 +70,7 @@
 \^		{ return  EXP; }
 _		{ return  UNDERSCORE; }
 
-sqrt 	{ SQRT; }
+sqrt 	{ return SQRT; }
 root	{ return  ROOT; }
 
 ln		{ return  LN; }
