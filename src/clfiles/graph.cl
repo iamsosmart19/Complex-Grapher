@@ -11,6 +11,7 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 	if (id < n) {
 		float2 input = vload2(0, &a[id*2]);
 		cplx ret = evalFunc(op, opnum, (cplx)(zoom*input.x, zoom*input.y));
+		float3 DBG = (float3)(ret.x, ret.y, 1);
 		float3 HSV = (float3)((float)carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), 1.0);
 		float3 RGB = hsv2rgb(HSV.x, HSV.y, HSV.z);
 		vstore3(RGB, 0, &b[id*3]);
@@ -144,13 +145,14 @@ cplx evalFunc(__constant cplx *op, int opnum, cplx val) {
 				case 3:
 					oprnd1 = s_pop(&s);
 					oprnd2 = s_pop(&s);
-					s_push(&s, cdiv(oprnd2, oprnd1) );
+					s_push(&s, cdiv(oprnd1, oprnd2) );
 					break;
 
 				case 4:
 					oprnd1 = s_pop(&s);
 					oprnd2 = s_pop(&s);
 					s_push(&s, cpow(oprnd2, oprnd1) );
+					// return cpow(oprnd2, oprnd1);
 					break;
 
 				case 5:
@@ -163,6 +165,8 @@ cplx evalFunc(__constant cplx *op, int opnum, cplx val) {
 		}
 	}
 	return (cplx)(s_pop(&s));
+	// return cpow((cplx)(M_E, 0), (cplx)(1.5, 1.5));
+	// return cpow((cplx)(M_E, 0), val );
 }
 
 float3 hsv2rgb(float H, float S, float V) {

@@ -75,7 +75,7 @@ root	{ return  ROOT; }
 
 ln		{ return  LN; }
 log		{ return  LOG; }
-e		{ enqueue(out, M_E); return  E; }
+e		{ enqueue(out, M_E); return E; }
 
 abs		{ return  ABS; }
 floor	{ return  FLOOR; }
