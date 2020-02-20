@@ -14,7 +14,7 @@ inline cplx cmult(cplx n, cplx m) {
 }
 
 inline cplx cdiv(cplx m, cplx n) {
-	return (cplx)( (n.x*m.x + n.y*m.y)/(pow(n.x, 2) + pow(m.x, 2)), (n.y*m.x - n.x*m.y)/(pow(n.x, 2) + pow(m.x, 2))) ;
+	return (cplx)( (n.x*m.x + n.y*m.y)/(pow(n.x, 2) + pow(n.y, 2)), (n.y*m.x - n.x*m.y)/(pow(n.x, 2) + pow(n.y, 2)) );
 }
 
 inline double creal(cplx n) {
@@ -80,7 +80,8 @@ inline cplx ccos(cplx n) {
 }
 
 inline cplx ctan(cplx n) {
-	return cdiv(ccos(n), csin(n));
+	/* return cmult(csub((cplx)(0,0), (cplx)(0,1)), ctanh(cmult((cplx)(0, 1), n)) ); */
+	return cdiv(csin(n), ccos(n));
 }
 
 inline cplx csinh(cplx n) {
@@ -92,7 +93,7 @@ inline cplx ccosh(cplx n) {
 }
 
 inline cplx ctanh(cplx n) {
-	return csinh(n)/ccosh(n);
+	return cdiv( csub(cexp(n), cexp(csub((cplx)(0, 0), n))), cadd(cexp(n), cexp(csub((cplx)(0, 0), n))) );
 }
 
 inline cplx casinh(cplx n) {

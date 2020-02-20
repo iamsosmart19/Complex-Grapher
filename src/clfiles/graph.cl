@@ -15,6 +15,7 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 		float3 HSV = (float3)((float)carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), 1.0);
 		float3 RGB = hsv2rgb(HSV.x, HSV.y, HSV.z);
 		vstore3(RGB, 0, &b[id*3]);
+		//vstore3(DBG, 0, &b[id*3]);
 	}
 }
 
@@ -145,7 +146,10 @@ cplx evalFunc(__constant cplx *op, int opnum, cplx val) {
 				case 3:
 					oprnd1 = s_pop(&s);
 					oprnd2 = s_pop(&s);
-					s_push(&s, cdiv(oprnd1, oprnd2) );
+					s_push(&s, cdiv(oprnd2, oprnd1) );
+					// return oprnd1;
+					// return oprnd2;
+					// return cdiv(oprnd2, oprnd1);
 					break;
 
 				case 4:
