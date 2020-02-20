@@ -19,8 +19,6 @@ int main(void) {
 	int count;
 	while(front(out) != -DBL_MAX-DBL_MAX*I) {
 		operations[count++] = dequeue(&out);
-		printf("%lf%+lfi\n\n", creal(operations[count-1]), cimag(operations[count-1]));
-		printf("%lf%+lfi\n\n", creal(front(out)), cimag(front(out)));
 	}
 	operations = (cplx*)realloc(operations, count*sizeof(cplx));
 	printf("count: %d\n", count);

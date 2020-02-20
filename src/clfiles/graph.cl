@@ -37,7 +37,7 @@ cplx evalFunc(__constant cplx *op, int opnum, cplx val) {
 
 					case 1:
 						oprnd2 = s_pop(&s);
-						s_push(&s, cpow(oprnd1, cdiv((cplx)(1,0), oprnd2)));
+						s_push(&s, cpow(oprnd2, cdiv((cplx)(1,0), oprnd1)));
 						break;
 
 					case 2:
