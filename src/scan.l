@@ -81,9 +81,9 @@ abs		{ return  ABS; }
 floor	{ return  FLOOR; }
 ceil	{ return  CEIL; }
 
-arcsin	{ return  ASIN; }
-arccos	{ return  ACOS; }
-arctan	{ return  ATAN; }
+asin	{ return  ASIN; }
+acos	{ return  ACOS; }
+atan	{ return  ATAN; }
 sinh	{ return  SINH; }
 cosh	{ return  COSH; }
 tanh	{ return  TANH; }

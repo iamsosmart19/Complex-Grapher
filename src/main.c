@@ -139,11 +139,21 @@ int main(void) {
     // Bind to platform
     err = clGetPlatformIDs(1, &cpPlatform, NULL);
  
+	if(err != CL_SUCCESS) {
+		printf("error: %d\n", err);
+	}
+
     // Get ID for the device
     err = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 1, &device_id, NULL);
- 
+	if(err != CL_SUCCESS) {
+		printf("error: %d\n", err);
+	}
+
     // Create a context  
     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
+	if(err != CL_SUCCESS) {
+		printf("error: %d\n", err);
+	}
  
     // Create a command queue 
     queue = clCreateCommandQueueWithProperties(context, device_id, 0, &err);
@@ -151,8 +161,8 @@ int main(void) {
 	/* printf("BR: 0\n"); */
 
     // Create the compute program from the source buffer
-	char kernelSource[4096];
-	memset(kernelSource, '\0', 4096);
+	char kernelSource[16384];
+	memset(kernelSource, '\0', 16384);
 	FILE* kernelFile = fopen("graph.cl", "r");
 	char kTemp[512];
 	while(fgets(kTemp, 512, kernelFile) != NULL) {
@@ -161,11 +171,14 @@ int main(void) {
 	fclose(kernelFile);
 	/* printf("|%s|", kernelSource); */
 	/* printf("\n\n"); */
+
+
 	const char* kSrcPtr = kernelSource;
     program = clCreateProgramWithSource(context, 1, (const char **)&kSrcPtr, NULL, &err);
 
 	if(err != CL_SUCCESS) {
 		printf("program build failed\n");
+		printf("error: %d\n", err);
 	}
  
     // Build the program executable 
@@ -278,15 +291,15 @@ int main(void) {
 		//input
 		glfwPollEvents();
 		if (glfwGetKey(display, GLFW_KEY_UP) == GLFW_PRESS ){
-			zoom += 0.1;
+			zoom += zoom/20;
 			graphDrawn = 0;
 		}
 		if (glfwGetKey(display, GLFW_KEY_DOWN) == GLFW_PRESS ){
 			if(zoom >= 1) {
-				zoom -= 0.1;
+				zoom -= zoom/20;
 			}
 			else {
-				zoom -= zoom/10;
+				zoom -= zoom/20;
 			}
 			graphDrawn = 0;
 		}
@@ -310,7 +323,7 @@ int main(void) {
 			// Read the results from the device
 			clEnqueueReadBuffer(queue, colorBuffer, CL_TRUE, 0, colorSize, colors, 0, NULL, NULL);
 			/* drawGraph(posData, operations, count, colors, height, width, zoom); */
-			glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height, sizeof(GLfloat) * 3 * width * height, colors);
+			glBufferSubData(GL_ARRAY_BUFFER, posSize, colorSize, colors);
 			graphDrawn = 1;
 		}
 
@@ -331,6 +344,7 @@ int main(void) {
 
     // release OpenCL resources
     clReleaseMemObject(posBuffer);
+	clReleaseMemObject(opBuffer);
     clReleaseMemObject(colorBuffer);
     clReleaseProgram(program);
     clReleaseKernel(kernel);
@@ -428,6 +442,7 @@ void hsv2rgb(long double H, long double S, long double V, GLfloat* ret) {
 	ret[2] = (Bs + m);
 }
 
+/*
 void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int height, int width, long double zoom) {
 	cplx drawTemp;
 	long double zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5;
@@ -435,10 +450,11 @@ void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int
 	//Speed this the hell up
 	for(int i = 0; i < width; i++) {
 		for(int j = 0; j < height*3; j+=3) {
-			/* drawTemp = evalFunc(operations, opnum, posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I); */
+			//drawTemp = evalFunc(operations, opnum, posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I);
 			drawTemp = evalFunc(operations, opnum, zoom * (posData[i*height*2+(j/3)*2] + posData[i*height*2+(j/3)*2+1] * I));
 			//Have this scale with zoom
 			hsv2rgb(cargl(drawTemp), 1.0 - cpowl(zoomc, cabsl(drawTemp)), 1, &(colors[i*height*3+j]) );
 		}
 	}
 }
+*/
