@@ -26,7 +26,7 @@ inline double cimag(cplx n) {
 }
 
 inline cplx conj(cplx n) {
-	return (cplx)(n.x, n.y);
+	return (cplx)(n.x, -n.y);
 }
 
 inline double carg(cplx n) {
@@ -68,8 +68,7 @@ inline cplx cpow(cplx m, cplx n) {
 }
 
 inline cplx csqrt(cplx n) {
-	return (cplx)(-1,-1);
-	/* return (cplx)( sqrt(cabs(n))*(cos(carg(n)/2.0)), sqrt(cabs(n))*(sin(carg(n)/2.0))); */
+	return (cplx)( sqrt(cabs(n))*(cos(carg(n)/2.0)), sqrt(cabs(n))*(sin(carg(n)/2.0)));
 	/* return (cplx)(sqrt((cabs(n) + n.x)/2.0), sqrt((cabs(n) - n.x)/2.0)); */
 }
 
