@@ -1,11 +1,11 @@
-#include "stack.h"
+#include "complex.h"
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
 __kernel void graph( __global float *a, __global float *b, __constant cplx *op, const int opnum, const double zoom, const float zoomc, const unsigned int n) {
 	int id = get_global_id(0);
 
 	if (id < 28) {
-		cplx sample = (cplx)(0.12, -0.12);
+		cplx sample = (cplx)(-1.23, 2.01);
 		switch(id) {
 			case 0:
 				sample = cadd(sample, sample);
@@ -20,7 +20,7 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 				break;
 
 			case 3:
-				sample = cdiv(sample, sample);
+				sample = cdiv(sample, (cplx)(12.3, -3));
 				break;
 
 			case 4:
@@ -28,7 +28,7 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 				break;
 
 			case 5:
-				sample = (cplx)(0, cimag(sample));
+				sample = (cplx)(cimag(sample), 0);
 				break;
 
 			case 6:
@@ -36,7 +36,7 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 				break;
 
 			case 7:
-				sample = carg(sample);
+				sample = (cplx)(carg(sample), 0);
 				break;
 
 			case 8:
@@ -44,7 +44,7 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 				break;
 
 			case 9:
-				sample = cabs(sample);
+				sample = (cplx)(cabs(sample), 0);
 				break;
 
 			case 10:

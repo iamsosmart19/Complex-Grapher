@@ -14,7 +14,7 @@ inline cplx cmult(cplx n, cplx m) {
 }
 
 inline cplx cdiv(cplx m, cplx n) {
-	return (cplx)( (n.x*m.x + n.y*m.y)/(pow(n.x, 2) + pow(n.y, 2)), (n.y*m.x - n.x*m.y)/(pow(n.x, 2) + pow(n.y, 2)) );
+	return (cplx)( (n.x*m.x + n.y*m.y)/(pow(n.x, 2) + pow(n.y, 2)), (n.x*m.y - n.y*m.x)/(pow(n.x, 2) + pow(n.y, 2)) );
 }
 
 inline double creal(cplx n) {
@@ -26,7 +26,7 @@ inline double cimag(cplx n) {
 }
 
 inline cplx conj(cplx n) {
-	return (cplx)(n.x, -n.y);
+	return (cplx)(n.x, 0-n.y);
 }
 
 inline double carg(cplx n) {
@@ -40,6 +40,10 @@ inline double carg(cplx n) {
 		return M_PI;
 	}
 	return 0;
+	/* if(n.x != 0) { */
+	/* 	return atan(n.y/n.0); */
+	/* } */
+	/* return 0; */
 }
 
 inline cplx cproj(cplx n) {
@@ -77,7 +81,9 @@ inline cplx csin(cplx n) {
 }
 
 inline cplx ccos(cplx n) {
-	return (cplx)(cos(n.x) * cosh(n.y), sin(n.x) * sinh(n.y));
+	return (cplx)(cos(n.x) * cosh(n.y), -sin(n.x) * sinh(n.y));
+	/* return ccosh(cmult((cplx)(0,1), n)); */
+	/* return cdiv(cadd(cexp(cmult((cplx)(1,0), n)), cexp(cmult((cplx)(-1,0), n))), (cplx)(2,0)); */
 }
 
 inline cplx ctan(cplx n) {
@@ -98,7 +104,8 @@ inline cplx ctanh(cplx n) {
 }
 
 inline cplx casinh(cplx n) {
-	return clog(cadd(n, csqrt(cadd((cplx)(1, 0), cpow(n, 2))) ) );
+	return clog(cadd(n, csqrt(cadd((cplx)(1, 0), cpow(n, (cplx)(2,0)))) ) );
+	/* return clog(cadd(n, cmult(csqrt(cadd(n, (cplx)(0,1))), csqrt(csub(n, (cplx)(0, 1)))))); */
 }
 
 inline cplx cacosh(cplx n) {
@@ -106,15 +113,18 @@ inline cplx cacosh(cplx n) {
 }
 
 inline cplx catanh(cplx n) {
-	return cdiv(csub(clog(cadd(n, (cplx)(1, 0))), clog(csub(n, (cplx)(1, 0)))) ,(cplx)(2, 0));
+	return cdiv(csub(clog(cadd(n, (cplx)(1, 0))), clog(csub((cplx)(1, 0), n))), (cplx)(2, 0));
 }
 
 inline cplx casin(cplx n) {
 	return cmult( (cplx)(0, -1), casinh(cmult((cplx)(0, 1), n))); 
+	/* return carg(cadd(cmult((cplx)(0,1), n), csqrt(csub((cplx)(1,0), cpow(n, (cplx)(2,0)) )) )); */
 }
 
 inline cplx cacos(cplx n) {
-	return csub( (cplx)(M_PI/2), casin(n));
+	/* return cmult( (cplx)(0, -1), cacosh(cmult((cplx)(0, 1), n))); */ 
+	/* return carg(cadd(n, cmult((cplx)(0,1), csqrt(csub((cplx)(1,0), cpow(n, (cplx)(2,0)) )) ))); */
+	return cadd(cdiv((cplx)(M_PI,0), (cplx)(2,0)), cmult((cplx)(0,1), clog(cadd(cmult((cplx)(0,1), n), csqrt(csub((cplx)(1,0), cpow(n, (cplx)(2,0)) ))))));
 }
 
 inline cplx catan(cplx n) {

@@ -1,6 +1,8 @@
 #include "main.h"
 
 int main(void) {
+	setenv("CUDA_CACHE_DISABLE", "1", 1);
+
 	FILE* sample = fopen("input.txt", "r");
 	/* FILE* sample = fopen("input3.txt", "r"); */
 	char function[1024];
@@ -191,7 +193,7 @@ int main(void) {
     // Build the program executable 
     err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
 	if(err != CL_SUCCESS) {
-		printf("error: %d\n", err);
+		printf("build error: %d\n", err);
 		size_t errorSize;
 		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &errorSize);
 		
@@ -204,7 +206,7 @@ int main(void) {
     // Create the compute kernel in the program we wish to run
     kernel = clCreateKernel(program, "graph", &err);
 	if(err != CL_SUCCESS) {
-		printf("error: %d\n", err);
+		printf("link error: %d\n", err);
 	}
 
 	printf("count*sizeof(cplx): %ld\n", count * sizeof(cplx));
@@ -237,11 +239,11 @@ int main(void) {
     // Read the results from the device
     clEnqueueReadBuffer(queue, colorBuffer, CL_TRUE, 0, colorSize, colors, 0, NULL, NULL);
 
-	cplx ret = 0.12 - 0.12*I;
+	cplx ret = -1.23 + 2.01*I;
 	cplx ctestTemp;
 	if (test) {
 		for(int i = 0; i < 26 * 3; i += 3) {
-			switch(i) {
+			switch(i/3) {
 				case 0:
 					ctestTemp = ret + ret;
 					break;
@@ -255,7 +257,7 @@ int main(void) {
 					break;
 
 				case 3:
-					ctestTemp = ret / ret;
+					ctestTemp = ret / (12.3 - 3 * I);
 					break;
 
 				case 4:
@@ -347,9 +349,9 @@ int main(void) {
 					break;
 			}
 
-			printf("%d: %f%+fi\n", i/3, colors[i] , colors[i+1] );
-			printf("%d: %f%+fi\n", i/3, creal(ctestTemp) , cimag(ctestTemp));
-			/* printf("%d: %f%+fi\n", i/3, colors[i] - creal(ctestTemp) , colors[i+1] - cimag(ctestTemp)); */
+			printf("%d SHADER: %f%+fi\n", i/3, colors[i] , colors[i+1] );
+			printf("%d COMPLX: %lf%+lfi\n", i/3, creal(ctestTemp) , cimag(ctestTemp));
+			printf("%d: %f%+fi\n\n", i/3, colors[i] - creal(ctestTemp) , colors[i+1] - cimag(ctestTemp));
 		}
 	}
 	else {

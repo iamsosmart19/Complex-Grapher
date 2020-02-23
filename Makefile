@@ -1,6 +1,6 @@
 #C
 CC = gcc
-CFLAGS = -O3 -Wextra -Wall -fno-stack-protector
+CFLAGS = -O3 -Wextra -Wall
 
 BISON=bison
 FLEX=flex
