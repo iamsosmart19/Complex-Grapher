@@ -16,7 +16,7 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 		float3 RGB;
 		//RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod(log(cabs(ret)), 0.1) + 0.9);
 		//RGB = hsv2rgb(RGB.x, RGB.y, RGB.z);
-		if(ret.x*ret.y > 0 && fmod(ceil(ret.x + ret.y), 2.0) == 1) {
+		if(fmod(abs((int)(ceil(ret.x) + ceil(ret.y))), 2.0) < 0.001) {
 			RGB = (float3)(1);
 		}
 		else {
