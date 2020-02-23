@@ -14,8 +14,14 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 		// float3 DBG = (float3)(ret.x, ret.y, 1);
 
 		float3 RGB;
-		RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod(log(cabs(ret)), 0.1) + 0.9);
-		RGB = hsv2rgb(RGB.x, RGB.y, RGB.z);
+		//RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod(log(cabs(ret)), 0.1) + 0.9);
+		//RGB = hsv2rgb(RGB.x, RGB.y, RGB.z);
+		if(ret.x*ret.y > 0 && fmod(ceil(ret.x + ret.y), 2.0) == 1) {
+			RGB = (float3)(1);
+		}
+		else {
+			RGB = (float3)(0);
+		}
 		vstore3(RGB, 0, &b[id*3]);
 		//vstore3(DBG, 0, &b[id*3]);
 	}
