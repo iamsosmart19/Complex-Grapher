@@ -1,7 +1,11 @@
 #include "main.h"
 
+//#define test 0
+
 int main(void) {
+#ifdef test
 	setenv("CUDA_CACHE_DISABLE", "1", 1);
+#endif
 
 	FILE* sample = fopen("input.txt", "r");
 	/* FILE* sample = fopen("input3.txt", "r"); */
@@ -163,16 +167,14 @@ int main(void) {
 	/* printf("BR: 0\n"); */
 
     // Create the compute program from the source buffer
-	int test = 1;
 	char kernelSource[16384];
 	memset(kernelSource, '\0', 16384);
 	FILE* kernelFile;
-	if( test ) {
+#ifdef test
 		kernelFile = fopen("ctest.cl", "r");
-	}
-	else {
+#else 
 		kernelFile = fopen("graph.cl", "r");
-	}
+#endif
 	char kTemp[512];
 	while(fgets(kTemp, 512, kernelFile) != NULL) {
 		strcat(kernelSource, kTemp);
@@ -239,134 +241,133 @@ int main(void) {
     // Read the results from the device
     clEnqueueReadBuffer(queue, colorBuffer, CL_TRUE, 0, colorSize, colors, 0, NULL, NULL);
 
+#ifdef test
 	cplx ret = -1.23 + 2.01*I;
 	cplx ctestTemp;
-	if (test) {
-		for(int i = 0; i < 26 * 3; i += 3) {
-			switch(i/3) {
-				case 0:
-					ctestTemp = ret + ret;
-					break;
+	for(int i = 0; i < 26 * 3; i += 3) {
+		switch(i/3) {
+			case 0:
+				ctestTemp = ret + ret;
+				break;
 
-				case 1:
-					ctestTemp = ret - ret;
-					break;
+			case 1:
+				ctestTemp = ret - ret;
+				break;
 
-				case 2:
-					ctestTemp = ret * ret;
-					break;
+			case 2:
+				ctestTemp = ret * ret;
+				break;
 
-				case 3:
-					ctestTemp = ret / (12.3 - 3 * I);
-					break;
+			case 3:
+				ctestTemp = ret / (12.3 - 3 * I);
+				break;
 
-				case 4:
-					ctestTemp = creal(ret);
-					break;
+			case 4:
+				ctestTemp = creal(ret);
+				break;
 
-				case 5:
-					ctestTemp = cimag(ret);
-					break;
+			case 5:
+				ctestTemp = cimag(ret);
+				break;
 
-				case 6:
-					ctestTemp = conj(ret);
-					break;
+			case 6:
+				ctestTemp = conj(ret);
+				break;
 
-				case 7:
-					ctestTemp = carg(ret);
-					break;
+			case 7:
+				ctestTemp = carg(ret);
+				break;
 
-				case 8:
-					ctestTemp = cproj(ret);
-					break;
+			case 8:
+				ctestTemp = cproj(ret);
+				break;
 
-				case 9:
-					ctestTemp = cabs(ret);
-					break;
+			case 9:
+				ctestTemp = cabs(ret);
+				break;
 
-				case 10:
-					ctestTemp = cexp(ret);
-					break;
+			case 10:
+				ctestTemp = cexp(ret);
+				break;
 
-				case 11:
-					ctestTemp = clog(ret);
-					break;
+			case 11:
+				ctestTemp = clog(ret);
+				break;
 
-				case 12:
-					ctestTemp = cpow(ret, ret);
-					break;
+			case 12:
+				ctestTemp = cpow(ret, ret);
+				break;
 
-				case 13:
-					ctestTemp = csqrt(ret);
-					break;
+			case 13:
+				ctestTemp = csqrt(ret);
+				break;
 
-				case 14:
-					ctestTemp = csin(ret);
-					break;
+			case 14:
+				ctestTemp = csin(ret);
+				break;
 
-				case 15:
-					ctestTemp = ccos(ret);
-					break;
+			case 15:
+				ctestTemp = ccos(ret);
+				break;
 
-				case 16:
-					ctestTemp = ctan(ret);
-					break;
+			case 16:
+				ctestTemp = ctan(ret);
+				break;
 
-				case 17:
-					ctestTemp = csinh(ret);
-					break;
+			case 17:
+				ctestTemp = csinh(ret);
+				break;
 
-				case 18:
-					ctestTemp = ccosh(ret);
-					break;
+			case 18:
+				ctestTemp = ccosh(ret);
+				break;
 
-				case 19:
-					ctestTemp = ctanh(ret);
-					break;
+			case 19:
+				ctestTemp = ctanh(ret);
+				break;
 
-				case 20:
-					ctestTemp = casinh(ret);
-					break;
+			case 20:
+				ctestTemp = casinh(ret);
+				break;
 
-				case 21:
-					ctestTemp = cacosh(ret);
-					break;
+			case 21:
+				ctestTemp = cacosh(ret);
+				break;
 
-				case 22:
-					ctestTemp = catanh(ret);
-					break;
+			case 22:
+				ctestTemp = catanh(ret);
+				break;
 
-				case 23:
-					ctestTemp = casin(ret);
-					break;
+			case 23:
+				ctestTemp = casin(ret);
+				break;
 
-				case 24:
-					ctestTemp = cacos(ret);
-					break;
+			case 24:
+				ctestTemp = cacos(ret);
+				break;
 
-				case 25:
-					ctestTemp = catan(ret);
+			case 25:
+				ctestTemp = catan(ret);
 					break;
-			}
-
-			printf("%d SHADER: %f%+fi\n", i/3, colors[i] , colors[i+1] );
-			printf("%d COMPLX: %lf%+lfi\n", i/3, creal(ctestTemp) , cimag(ctestTemp));
-			printf("%d: %f%+fi\n\n", i/3, colors[i] - creal(ctestTemp) , colors[i+1] - cimag(ctestTemp));
 		}
+
+		printf("%d SHADER: %f%+fi\n", i/3, colors[i] , colors[i+1] );
+		printf("%d COMPLX: %lf%+lfi\n", i/3, creal(ctestTemp) , cimag(ctestTemp));
+		printf("%d: %f%+fi\n\n", i/3, colors[i] - creal(ctestTemp) , colors[i+1] - cimag(ctestTemp));
 	}
-	else {
-		printf("%f\n", posData[0]);
-		printf("%f\n", posData[1]);
-		printf("%f\n", colors[0]);
-		printf("%f\n", colors[1]);
-		printf("%f\n", colors[2]);
-		printf("%f\n", colors[3]);
-		printf("%f\n", colors[4]);
-		printf("%f\n", colors[5]);
-		printf("%f\n", colors[3*n-3]);
-		printf("%f\n", colors[3*n-2]);
-		printf("%f\n", colors[3*n-1]);
-	}
+#else
+	printf("%f\n", posData[0]);
+	printf("%f\n", posData[1]);
+	printf("%f\n", colors[0]);
+	printf("%f\n", colors[1]);
+	printf("%f\n", colors[2]);
+	printf("%f\n", colors[3]);
+	printf("%f\n", colors[4]);
+	printf("%f\n", colors[5]);
+	printf("%f\n", colors[3*n-3]);
+	printf("%f\n", colors[3*n-2]);
+	printf("%f\n", colors[3*n-1]);
+#endif
 
 	/* for(int i = 0; i < width; i++) { */
 	/* 	for(int j = 0; j < height*2; j+=2) { */
