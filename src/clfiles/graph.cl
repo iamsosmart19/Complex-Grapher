@@ -13,12 +13,13 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 		cplx ret = evalFunc(op, opnum, (cplx)(zoom*input.x, zoom*input.y));
 		// float3 DBG = (float3)(ret.x, ret.y, 1);
 		float3 HSV, RGB;
-		if(fabs(round(ret.x) - ret.x) <= 0.01 || fabs(round(ret.y) - ret.y) <= 0.01) {
+		if(fabs(round(ret.x) - ret.x) <= 0.005*zoom || fabs(round(ret.y) - ret.y) <= 0.005*zoom) {
 			RGB = (float3)(0, 0, 0);
 		}
 		else {
 			HSV = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod(log(cabs(ret)), 1) + 0.9);
-			RGB = hsv2rgb(HSV.x, HSV.y, HSV.z < 1.0 ? HSV.z : 1.0);
+			RGB = hsv2rgb(HSV.x, HSV.y, 1.0);
+			//RGB = hsv2rgb(HSV.x, HSV.y, HSV.z < 1.0 ? HSV.z : 1.0);
 		}
 		//float3 DBG = (float3)(fmod(log(cabs(ret)), 1), 0, 1);
 		vstore3(RGB, 0, &b[id*3]);
