@@ -14,9 +14,9 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 		// float3 DBG = (float3)(ret.x, ret.y, 1);
 
 		float3 RGB;
-		RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod(log(cabs(ret)), 0.1) + 0.9);
+		RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod((float)log(cabs(ret)), (float)log(sqrt((float)2))) + 1 - log(sqrt((float)2)));
 		RGB = hsv2rgb(RGB.x, RGB.y, RGB.z);
-		RGB -= (float3)(fmod(abs((int)((ceil(ret.x) + ceil(ret.y)))), 2.0)/2);
+		RGB -= (float3)(fmod(abs((int)((ceil(ret.x/2) + ceil(ret.y/2)))), 2.0)/2);
 		;//constant
 		//RGB -= (float3)(fmod(abs((int)((ceil(ret.x/zoom*20) + ceil(ret.y/zoom*20)))), 2.0)/10);
 		vstore3(RGB, 0, &b[id*3]);
