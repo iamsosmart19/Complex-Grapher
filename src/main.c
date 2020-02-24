@@ -71,7 +71,7 @@ int main(void) {
 	GLint vertSuccess;
 	glGetShaderiv(vboVert, GL_COMPILE_STATUS, &vertSuccess);
 	if(vertSuccess != GL_TRUE) {
-		printf("Error: compile error for shader vboVert\n");
+		printf("Error: compile error for shader vboVert: \n");
 	}
 
 	fragSource = filetobuf("fragShad.frag");
@@ -86,13 +86,14 @@ int main(void) {
 	glLinkProgram(shaderProgram);
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &vertSuccess);
 	if(vertSuccess != GL_TRUE) {
-		printf("Error: compile error for program shaderProgram\n");
+		printf("Error: compile error for program shaderProgram: \n");
 	}
 	glUseProgram(shaderProgram);
 
 	GLuint vao;
 	GLuint triangleVBO;
 	float* posData;
+	float posOffset[2] = {0, 0};
 	GLfloat* colors;
 	/* int width = 1600; */
 	/* int height = 2000; */
@@ -230,7 +231,8 @@ int main(void) {
     err |= clSetKernelArg(kernel, 3, sizeof(int), &count);
     err |= clSetKernelArg(kernel, 4, sizeof(double), &zoom);
     err |= clSetKernelArg(kernel, 5, sizeof(float), &zoomc);
-    err |= clSetKernelArg(kernel, 6, sizeof(unsigned int), &n);
+    err |= clSetKernelArg(kernel, 6, sizeof(float)*2, &posOffset);
+    err |= clSetKernelArg(kernel, 7, sizeof(unsigned int), &n);
  
     // Execute the kernel over the entire range of the data set  
     err = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &globalSize, &localSize, 0, NULL, NULL);
@@ -391,6 +393,13 @@ int main(void) {
 
 	/* printf("GLfloat: %ld, float: %ld\n", sizeof(GLfloat), sizeof(float)); */
 
+	//Offset
+	GLint offsetUniform = glGetUniformLocation(shaderProgram, "offset");
+
+	glUniform2f(offsetUniform, posOffset[0], posOffset[1]);
+
+	printf("Uniform at: %d\n", offsetUniform);
+
 	//Position
 	GLint posAttrb = glGetAttribLocation(shaderProgram, "position");
 
@@ -418,14 +427,14 @@ int main(void) {
 	while(!glfwWindowShouldClose(window) && !glfwWindowShouldClose(display)) {
 		//input
 		glfwPollEvents();
-		if (glfwGetKey(display, GLFW_KEY_UP) == GLFW_PRESS ){
+		if (glfwGetKey(display, GLFW_KEY_COMMA) == GLFW_PRESS ){
 			zoom += zoom/20;
 			/* zoomc = zoom < 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5; */
 			zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
-			printf("zoomc: %.10f\n", zoomc);
+			/* printf("zoomc: %.10f\n", zoomc); */
 			graphDrawn = 0;
 		}
-		if (glfwGetKey(display, GLFW_KEY_DOWN) == GLFW_PRESS ){
+		if (glfwGetKey(display, GLFW_KEY_PERIOD) == GLFW_PRESS ){
 			if(zoom >= 1) {
 				zoom -= zoom/20;
 			}
@@ -434,7 +443,28 @@ int main(void) {
 			}
 			/* zoomc = zoom < 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5; */
 			zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
-			printf("zoomc: %.10f\n", zoomc);
+			/* printf("zoomc: %.10f\n", zoomc); */
+			graphDrawn = 0;
+		}
+
+		//Movement code
+		if (glfwGetKey(display, GLFW_KEY_UP) == GLFW_PRESS ) {
+			posOffset[1] += 0.1;
+			graphDrawn = 0;
+		}
+
+		if (glfwGetKey(display, GLFW_KEY_DOWN) == GLFW_PRESS ) {
+			posOffset[1] -= 0.1;
+			graphDrawn = 0;
+		}
+
+		if (glfwGetKey(display, GLFW_KEY_LEFT) == GLFW_PRESS ) {
+			posOffset[0] -= 0.1;
+			graphDrawn = 0;
+		}
+
+		if (glfwGetKey(display, GLFW_KEY_RIGHT) == GLFW_PRESS ) {
+			posOffset[0] += 0.1;
 			graphDrawn = 0;
 		}
 
@@ -446,7 +476,8 @@ int main(void) {
 			err |= clSetKernelArg(kernel, 3, sizeof(int), &count);
 			err |= clSetKernelArg(kernel, 4, sizeof(double), &zoom);
 			err |= clSetKernelArg(kernel, 5, sizeof(float), &zoomc);
-			err |= clSetKernelArg(kernel, 6, sizeof(unsigned int), &n);
+			err |= clSetKernelArg(kernel, 6, sizeof(float)*2, &posOffset);
+			err |= clSetKernelArg(kernel, 7, sizeof(unsigned int), &n);
 		 
 			// Execute the kernel over the entire range of the data set  
 			err = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &globalSize, &localSize, 0, NULL, NULL);
@@ -494,7 +525,7 @@ char* filetobuf(char *file) {
     long length;
     char *buf;
 
-    fptr = fopen(file, "rb"); /* Open file for reading */
+    fptr = fopen(file, "r"); /* Open file for reading */
     if (!fptr) /* Return NULL on failure */
         return NULL;
     fseek(fptr, 0, SEEK_END); /* Seek to the end of the file */

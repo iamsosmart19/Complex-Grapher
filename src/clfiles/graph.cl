@@ -5,19 +5,19 @@
 cplx evalFunc(__constant cplx *op, int opnum, cplx val);
 float3 hsv2rgb(float H, float S, float V);
 
-__kernel void graph( __global float *a, __global float *b, __constant cplx *op, const int opnum, const double zoom, const float zoomc, const unsigned int n) {
+__kernel void graph( __global float *a, __global float *b, __constant cplx *op, const int opnum, const double zoom, const float zoomc, const float2 offset, const unsigned int n) {
 	int id = get_global_id(0);
 
 	if (id < n) {
 		float2 input = vload2(0, &a[id*2]);
-		cplx ret = evalFunc(op, opnum, (cplx)(zoom*input.x, zoom*input.y));
+		cplx ret = evalFunc(op, opnum, (cplx)(zoom*(input.x+offset.x), zoom*(input.y+offset.y)));
 		// float3 DBG = (float3)(ret.x, ret.y, 1);
 
 		float gap = log(sqrt((float)2));
 		float3 RGB;
 		RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod((float)log(cabs(ret)), gap) + 1 - gap);
 		RGB = hsv2rgb(RGB.x, RGB.y, RGB.z);
-		RGB -= (float3)(fmod(abs((int)((ceil(ret.x/2) + ceil(ret.y/2)))), 2.0)/10);
+		RGB -= (float3)(fmod(abs((int)((ceil(ret.x/5) + ceil(ret.y/5)))), 2.0)/10);
 		vstore3(RGB, 0, &b[id*3]);
 		//vstore3(DBG, 0, &b[id*3]);
 	}
