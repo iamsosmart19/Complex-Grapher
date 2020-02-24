@@ -34,14 +34,6 @@ int main(void) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Complex Function Grapher", NULL, NULL);
-	if (window == NULL)
-	{
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-
 	GLFWwindow* display = glfwCreateWindow(600, 600, "Display", NULL, NULL);
 	glfwMakeContextCurrent(display);
 
@@ -393,13 +385,6 @@ int main(void) {
 
 	/* printf("GLfloat: %ld, float: %ld\n", sizeof(GLfloat), sizeof(float)); */
 
-	//Offset
-	GLint offsetUniform = glGetUniformLocation(shaderProgram, "offset");
-
-	glUniform2f(offsetUniform, posOffset[0], posOffset[1]);
-
-	printf("Uniform at: %d\n", offsetUniform);
-
 	//Position
 	GLint posAttrb = glGetAttribLocation(shaderProgram, "position");
 
@@ -424,24 +409,27 @@ int main(void) {
 
 	int graphDrawn = 0;
 
-	while(!glfwWindowShouldClose(window) && !glfwWindowShouldClose(display)) {
+	while(!glfwWindowShouldClose(display)) {
 		//input
 		glfwPollEvents();
 		if (glfwGetKey(display, GLFW_KEY_COMMA) == GLFW_PRESS ){
-			zoom += zoom/20;
-			/* zoomc = zoom < 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5; */
+			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
+				zoom += zoom/5;
+			}
+			else {
+				zoom += zoom/20;
+			}
 			zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
 			/* printf("zoomc: %.10f\n", zoomc); */
 			graphDrawn = 0;
 		}
 		if (glfwGetKey(display, GLFW_KEY_PERIOD) == GLFW_PRESS ){
-			if(zoom >= 1) {
-				zoom -= zoom/20;
+			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
+				zoom -= zoom/5;
 			}
 			else {
 				zoom -= zoom/20;
 			}
-			/* zoomc = zoom < 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5; */
 			zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
 			/* printf("zoomc: %.10f\n", zoomc); */
 			graphDrawn = 0;
@@ -449,22 +437,49 @@ int main(void) {
 
 		//Movement code
 		if (glfwGetKey(display, GLFW_KEY_UP) == GLFW_PRESS ) {
-			posOffset[1] += 0.1;
+			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
+				posOffset[1] += zoom / 100;
+			}
+			else {
+				posOffset[1] += zoom / 400;
+			}
 			graphDrawn = 0;
 		}
 
 		if (glfwGetKey(display, GLFW_KEY_DOWN) == GLFW_PRESS ) {
-			posOffset[1] -= 0.1;
+			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
+				posOffset[1] -= zoom / 100;
+			}
+			else {
+				posOffset[1] -= zoom / 400;
+			}
 			graphDrawn = 0;
 		}
 
 		if (glfwGetKey(display, GLFW_KEY_LEFT) == GLFW_PRESS ) {
-			posOffset[0] -= 0.1;
+			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
+				posOffset[0] -= zoom / 100;
+			}
+			else {
+				posOffset[0] -= zoom / 400;
+			}
 			graphDrawn = 0;
 		}
 
 		if (glfwGetKey(display, GLFW_KEY_RIGHT) == GLFW_PRESS ) {
-			posOffset[0] += 0.1;
+			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
+				posOffset[0] += zoom / 100;
+			}
+			else {
+				posOffset[0] += zoom / 400;
+			}
+			graphDrawn = 0;
+		}
+
+		if (glfwGetKey(display, GLFW_KEY_SPACE) == GLFW_PRESS ) {
+			posOffset[0] = 0;
+			posOffset[1] = 0;
+			zoom = 10;
 			graphDrawn = 0;
 		}
 
@@ -501,7 +516,6 @@ int main(void) {
 		glDrawArrays(GL_POINTS, 0, width * height);
 		
 		//Events
-		glfwSwapBuffers(window);
 		glfwSwapBuffers(display);
 	}
 
