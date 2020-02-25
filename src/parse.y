@@ -131,22 +131,14 @@
 %%
 // Rules.
 input:
-	exp %prec BINARY | 
 	line |
 	input line
 ;
 
 line:
-	eqtn eol  { } | 
-	"//" eqtn eol {
-		;
-	} |
+	exp eol  { } | 
 	error eol { /*printf("err\n");*/ yyerrok; }
 ;
-
-eqtn:
-	linestart mid allexp
-; 
 
 linestart:
 	"y"	|
@@ -163,10 +155,6 @@ mid:
 
 eol:
 	TOK_EOF | EOL 
-;
-
-allexp:
-	exp
 ;
 
 exp:

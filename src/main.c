@@ -438,40 +438,40 @@ int main(void) {
 		//Movement code
 		if (glfwGetKey(display, GLFW_KEY_UP) == GLFW_PRESS ) {
 			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				posOffset[1] += zoom / 100;
+				posOffset[1] += fabs(log(zoom)) / 10;
 			}
 			else {
-				posOffset[1] += zoom / 400;
+				posOffset[1] += fabs(log(zoom)) / 100;
 			}
 			graphDrawn = 0;
 		}
 
 		if (glfwGetKey(display, GLFW_KEY_DOWN) == GLFW_PRESS ) {
 			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				posOffset[1] -= zoom / 100;
+				posOffset[1] -= fabs(log(zoom)) / 10;
 			}
 			else {
-				posOffset[1] -= zoom / 400;
+				posOffset[1] -= fabs(log(zoom)) / 100;
 			}
 			graphDrawn = 0;
 		}
 
 		if (glfwGetKey(display, GLFW_KEY_LEFT) == GLFW_PRESS ) {
 			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				posOffset[0] -= zoom / 100;
+				posOffset[0] -= fabs(log(zoom)) / 10;
 			}
 			else {
-				posOffset[0] -= zoom / 400;
+				posOffset[0] -= fabs(log(zoom)) / 100;
 			}
 			graphDrawn = 0;
 		}
 
 		if (glfwGetKey(display, GLFW_KEY_RIGHT) == GLFW_PRESS ) {
 			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				posOffset[0] += zoom / 100;
+				posOffset[0] += fabs(log(zoom)) / 10;
 			}
 			else {
-				posOffset[0] += zoom / 400;
+				posOffset[0] += fabs(log(zoom)) / 100;
 			}
 			graphDrawn = 0;
 		}
