@@ -28,6 +28,28 @@ int main(void) {
 	}
 	operations = (cplx*)realloc(operations, count*sizeof(cplx));
 	printf("count: %d\n", count);
+
+	//SDL
+	//The window we'll be rendering to
+    SDL_Window* SDLwindow = NULL;
+    
+    //The surface contained by the window
+    SDL_Surface* screenSurface = NULL;
+
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
+		return 1;
+	}
+
+	SDLwindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
+
+	screenSurface = SDL_GetWindowSurface( SDLwindow );
+
+	SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0x12, 0x67, 0xBF ) );
+
+	SDL_UpdateWindowSurface( SDLwindow );
+
+	//GLFW OpenGL code
 	
 	glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -112,6 +134,8 @@ int main(void) {
 			posData[i*height*2+j+1] = -1.0 + (j/2)*interval;
 		}
 	}
+
+	//OpenCL code;
 
     // Device input buffers
     cl_mem posBuffer;
@@ -529,6 +553,10 @@ int main(void) {
     clReleaseKernel(kernel);
     clReleaseCommandQueue(queue);
     clReleaseContext(context);
+
+	//release SDL resources
+	SDL_DestroyWindow( SDLwindow );
+	SDL_Quit();
 
 	// Exit on failure if there were errors.
 	return 0;

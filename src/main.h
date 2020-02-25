@@ -7,6 +7,7 @@
 //GRAPHICS LIBRARIES
 #include "glad/glad.h"
 #include <CL/cl.h>
+#include <SDL2/SDL.h>
 #include <GLFW/glfw3.h>
 
 char* filetobuf(char *file);

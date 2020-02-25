@@ -10,7 +10,7 @@ all: cplxgraph
 
 .PHONY: clean
 
-LIBS=-lm -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lOpenCL
+LIBS=-lm -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lOpenCL -lSDL2
 
 BDIR=bin
 
