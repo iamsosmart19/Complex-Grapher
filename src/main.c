@@ -1,7 +1,5 @@
 #include "main.h"
 
-//#define test 0
-
 int main(void) {
 #ifdef test
 	setenv("CUDA_CACHE_DISABLE", "1", 1);
@@ -30,6 +28,7 @@ int main(void) {
 	printf("count: %d\n", count);
 
 	//SDL
+	TTF_Init();
 	//The window we'll be rendering to
     SDL_Window* SDLwindow = NULL;
     
@@ -41,13 +40,44 @@ int main(void) {
 		return 1;
 	}
 
-	SDLwindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
+	SDLwindow = SDL_CreateWindow( "SDL Window", 30, 200, 800, 600, SDL_WINDOW_SHOWN );
 
 	screenSurface = SDL_GetWindowSurface( SDLwindow );
 
 	SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0x12, 0x67, 0xBF ) );
 
 	SDL_UpdateWindowSurface( SDLwindow );
+
+	//renderer
+	SDL_Renderer* SDLMainWindowRenderer = SDL_CreateRenderer(SDLwindow, -1, 0);
+
+	//quit code
+	int SDL_close_window = 0;
+	SDL_Event shouldCloseWindow;
+
+	//Text code;
+	char textBoxString[2048] = "Enter a function";
+
+	TTF_Font* gFont = TTF_OpenFont( "../comp-mod/cmuntt.ttf", 28 );
+
+	if(gFont == NULL) {
+		printf("font no exist\n");
+	}
+
+	SDL_Color textBoxColour = { 255, 255, 255, 255 };
+
+	SDL_Surface* textBoxSurface = TTF_RenderText_Solid( gFont, textBoxString, textBoxColour);
+
+	if(textBoxSurface == NULL) {
+		printf("Surface render error\n");
+	}
+
+	SDL_Texture* textBoxTexture = SDL_CreateTextureFromSurface(SDLMainWindowRenderer, textBoxSurface);
+	if(textBoxTexture == NULL) {
+		printf("Texture render error: %s\n", SDL_GetError());
+	}
+
+	/* SDL_StartTextInput(); */
 
 	//GLFW OpenGL code
 	
@@ -57,6 +87,7 @@ int main(void) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* display = glfwCreateWindow(600, 600, "Display", NULL, NULL);
+	glfwSetWindowPos(display, 900, 200);
 	glfwMakeContextCurrent(display);
 
 	// tell GLFW to capture our mouse
@@ -433,8 +464,13 @@ int main(void) {
 
 	int graphDrawn = 0;
 
-	while(!glfwWindowShouldClose(display)) {
+	while(!glfwWindowShouldClose(display) && !SDL_close_window) {
 		//input
+		SDL_PollEvent(&shouldCloseWindow);
+		if(shouldCloseWindow.type == SDL_QUIT) {
+			SDL_close_window = 1;
+		}
+
 		glfwPollEvents();
 		if (glfwGetKey(display, GLFW_KEY_COMMA) == GLFW_PRESS ){
 			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
@@ -535,12 +571,23 @@ int main(void) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		/* SDL_SetRenderDrawColor( SDLMainWindowRenderer, 0x12, 0x67, 0xBF, 0xFF ); */
+		/* SDL_RenderClear( SDLMainWindowRenderer); */
+
 		//draw VBO
 		glBindVertexArray(vao);
 		glDrawArrays(GL_POINTS, 0, width * height);
+
+		//Draw Textbox
+		SDL_RenderCopy(SDLMainWindowRenderer, textBoxTexture, NULL, NULL);
+		SDL_RenderPresent(SDLMainWindowRenderer);
 		
 		//Events
+		SDL_UpdateWindowSurface(SDLwindow);
+		SDL_RenderPresent(SDLMainWindowRenderer);
 		glfwSwapBuffers(display);
+
+		printf("");
 	}
 
 	glfwTerminate();
@@ -556,6 +603,11 @@ int main(void) {
 
 	//release SDL resources
 	SDL_DestroyWindow( SDLwindow );
+	TTF_CloseFont( gFont );
+	SDL_DestroyTexture(textBoxTexture);
+	/* SDL_FreeSurface(screenSurface); */
+
+	TTF_Quit();
 	SDL_Quit();
 
 	// Exit on failure if there were errors.
