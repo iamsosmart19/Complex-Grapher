@@ -40,7 +40,7 @@ int main(void) {
 	}
 	TTF_Init();
 
-	SDLwindow = SDL_CreateWindow( "SDL Window", 30, 200, 800, 600, SDL_WINDOW_SHOWN );
+	SDLwindow = SDL_CreateWindow( "SDL Window", 650, 200, 800, 600, SDL_WINDOW_SHOWN );
 	screenSurface = SDL_GetWindowSurface(SDLwindow);
 	/* SDL_FillRect(screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0x12, 0x67, 0xBF ) ); */
 	SDL_UpdateWindowSurface( SDLwindow );
@@ -109,6 +109,7 @@ int main(void) {
 	printf("DB: 1\n");
 	/* glClear(GL_COLOR_BUFFER_BIT); */
 	SDL_GL_SwapWindow(display);
+	SDL_GL_MakeCurrent(display, displayContext);
 	/* GLFWwindow* display = glfwCreateWindow(600, 600, "Display", NULL, NULL); */
 	/* glfwSetWindowPos(display, 900, 200); */
 	/* glfwMakeContextCurrent(display); */
@@ -116,8 +117,7 @@ int main(void) {
 	// tell GLFW to capture our mouse
     /* glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); */
 
-
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, 600, 600);
 
 	//Points
 	glEnable(GL_PROGRAM_POINT_SIZE);
@@ -586,17 +586,6 @@ int main(void) {
 			graphDrawn = 1;
 		}
 
-		/* glClearColor(0.2f, 0.68f, 0.08f, 1.0f); */
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		/* SDL_SetRenderDrawColor( SDLMainWindowRenderer, 0x12, 0x67, 0xBF, 0xFF ); */
-		/* SDL_RenderClear( SDLMainWindowRenderer); */
-
-		//draw VBO
-		glBindVertexArray(vao);
-		glDrawArrays(GL_POINTS, 0, width * height);
-
 		//Draw Textbox
 		SDL_RenderCopy(SDLMainWindowRenderer, textBoxTexture, NULL, &dstrect);
 		SDL_RenderPresent(SDLMainWindowRenderer);
@@ -606,7 +595,21 @@ int main(void) {
 		SDL_RenderPresent(SDLMainWindowRenderer);
 		/* glfwSwapBuffers(display); */
 
+		SDL_GL_MakeCurrent(display, displayContext);
+
+		glClearColor(0.2f, 0.68f, 0.08f, 1.0f);
+		/* glClearColor(0.0f, 0.0f, 0.0f, 1.0f); */
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		/* SDL_SetRenderDrawColor( SDLMainWindowRenderer, 0x12, 0x67, 0xBF, 0xFF ); */
+		/* SDL_RenderClear( SDLMainWindowRenderer); */
+
+		//draw VBO
+		glBindVertexArray(vao);
+		glDrawArrays(GL_POINTS, 0, width * height);
+
 		SDL_GL_SwapWindow(display);
+		SDL_UpdateWindowSurface(display);
 
 		/* printf(""); */
 	}
