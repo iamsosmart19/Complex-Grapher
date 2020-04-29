@@ -34,19 +34,15 @@ int main(void) {
     //The surface contained by the window
     SDL_Surface* screenSurface = NULL;
 
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+	if( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
 		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
 		return 1;
 	}
-
 	TTF_Init();
 
 	SDLwindow = SDL_CreateWindow( "SDL Window", 30, 200, 800, 600, SDL_WINDOW_SHOWN );
-
-	screenSurface = SDL_GetWindowSurface( SDLwindow );
-
-	SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0x12, 0x67, 0xBF ) );
-
+	screenSurface = SDL_GetWindowSurface(SDLwindow);
+	/* SDL_FillRect(screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0x12, 0x67, 0xBF ) ); */
 	SDL_UpdateWindowSurface( SDLwindow );
 
 	//renderer
@@ -59,16 +55,14 @@ int main(void) {
 	//Text code;
 	char textBoxString[2048] = "Enter a function";
 
-	TTF_Font* gFont = TTF_OpenFont( "../comp-mod/cmunrm.ttf", 28 );
-
+	TTF_Font* gFont = TTF_OpenFont("../comp-mod/cmunrm.ttf", 20);
 	if(gFont == NULL) {
 		printf("font no exist\n");
 	}
 
 	SDL_Color textBoxColour = { 255, 255, 255, 255 };
 
-	SDL_Surface* textBoxSurface = TTF_RenderText_Solid( gFont, textBoxString, textBoxColour);
-
+	SDL_Surface* textBoxSurface = TTF_RenderText_Solid(gFont, textBoxString, textBoxColour);
 	if(textBoxSurface == NULL) {
 		printf("Surface render error\n");
 	}
@@ -78,7 +72,9 @@ int main(void) {
 		printf("Texture render error: %s\n", SDL_GetError());
 	}
 
-	SDL_QueryTexture(textBoxTexture, NULL, NULL, 0, 0);
+	int size[2] = {0, 0};
+	SDL_QueryTexture(textBoxTexture, NULL, NULL, &size[0], &size[1]);
+	SDL_Rect dstrect = { 0, 0, size[0], size[1] };
 
 	/* SDL_StartTextInput(); */
 
@@ -602,13 +598,15 @@ int main(void) {
 		glDrawArrays(GL_POINTS, 0, width * height);
 
 		//Draw Textbox
-		SDL_RenderCopy(SDLMainWindowRenderer, textBoxTexture, NULL, NULL);
+		SDL_RenderCopy(SDLMainWindowRenderer, textBoxTexture, NULL, &dstrect);
 		SDL_RenderPresent(SDLMainWindowRenderer);
 		
 		//Events
 		SDL_UpdateWindowSurface(SDLwindow);
 		SDL_RenderPresent(SDLMainWindowRenderer);
 		/* glfwSwapBuffers(display); */
+
+		SDL_GL_SwapWindow(display);
 
 		/* printf(""); */
 	}
