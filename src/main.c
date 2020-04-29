@@ -84,7 +84,6 @@ int main(void) {
 
 	//GLFW OpenGL code
 	
-	SDL_GLContext displayContext;
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -97,8 +96,14 @@ int main(void) {
 
 	SDL_Window* display = SDL_CreateWindow("Display", 1, 1, 600, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
 	
-	displayContext = SDL_GL_CreateContext(display);
+	SDL_GLContext displayContext = SDL_GL_CreateContext(display);
+
 	SDL_GL_SetSwapInterval(1);
+ 
+	glClearColor(1.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_GL_SetSwapInterval(1);
+	SDL_GL_SwapWindow(display);
 	/* GLFWwindow* display = glfwCreateWindow(600, 600, "Display", NULL, NULL); */
 	/* glfwSetWindowPos(display, 900, 200); */
 	/* glfwMakeContextCurrent(display); */
@@ -106,10 +111,10 @@ int main(void) {
 	// tell GLFW to capture our mouse
     /* glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); */
 
-	/* if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) */
-	/* { */
-	/* 	return -1; */
-	/* } */
+	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+	{
+		return -1;
+	}
 
 	glViewport(0, 0, 800, 600);
 
@@ -554,7 +559,7 @@ int main(void) {
 			/* posOffset[1] = 0; */
 			/* zoom = 10; */
 			/* graphDrawn = 0; */
-		}
+		/* } */
 
 		//render
 		if(!graphDrawn) {
