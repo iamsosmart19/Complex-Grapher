@@ -9,6 +9,9 @@
 #include <CL/cl.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+
+/* #include <GL/gl.h> */
+/* #include <GL/glu.h> */
 #include <GLFW/glfw3.h>
 
 //#define test 0

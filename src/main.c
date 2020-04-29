@@ -28,7 +28,6 @@ int main(void) {
 	printf("count: %d\n", count);
 
 	//SDL
-	TTF_Init();
 	//The window we'll be rendering to
     SDL_Window* SDLwindow = NULL;
     
@@ -39,6 +38,8 @@ int main(void) {
 		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
 		return 1;
 	}
+
+	TTF_Init();
 
 	SDLwindow = SDL_CreateWindow( "SDL Window", 30, 200, 800, 600, SDL_WINDOW_SHOWN );
 
@@ -58,7 +59,7 @@ int main(void) {
 	//Text code;
 	char textBoxString[2048] = "Enter a function";
 
-	TTF_Font* gFont = TTF_OpenFont( "../comp-mod/cmuntt.ttf", 28 );
+	TTF_Font* gFont = TTF_OpenFont( "../comp-mod/cmunrm.ttf", 28 );
 
 	if(gFont == NULL) {
 		printf("font no exist\n");
@@ -77,26 +78,38 @@ int main(void) {
 		printf("Texture render error: %s\n", SDL_GetError());
 	}
 
+	SDL_QueryTexture(textBoxTexture, NULL, NULL, 0, 0);
+
 	/* SDL_StartTextInput(); */
 
 	//GLFW OpenGL code
 	
-	glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	SDL_GLContext displayContext;
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-	GLFWwindow* display = glfwCreateWindow(600, 600, "Display", NULL, NULL);
-	glfwSetWindowPos(display, 900, 200);
-	glfwMakeContextCurrent(display);
+	/* glfwInit(); */
+    /* glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); */
+    /* glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); */
+    /* glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); */
+
+	SDL_Window* display = SDL_CreateWindow("Display", 1, 1, 600, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
+	
+	displayContext = SDL_GL_CreateContext(display);
+	SDL_GL_SetSwapInterval(1);
+	/* GLFWwindow* display = glfwCreateWindow(600, 600, "Display", NULL, NULL); */
+	/* glfwSetWindowPos(display, 900, 200); */
+	/* glfwMakeContextCurrent(display); */
 
 	// tell GLFW to capture our mouse
     /* glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); */
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		return -1;
-	}
+	/* if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) */
+	/* { */
+	/* 	return -1; */
+	/* } */
 
 	glViewport(0, 0, 800, 600);
 
@@ -464,83 +477,83 @@ int main(void) {
 
 	int graphDrawn = 0;
 
-	while(!glfwWindowShouldClose(display) && !SDL_close_window) {
+	while(/*!glfwWindowShouldClose(display) && */!SDL_close_window) {
 		//input
 		SDL_PollEvent(&shouldCloseWindow);
 		if(shouldCloseWindow.type == SDL_QUIT) {
 			SDL_close_window = 1;
 		}
 
-		glfwPollEvents();
-		if (glfwGetKey(display, GLFW_KEY_COMMA) == GLFW_PRESS ){
-			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				zoom += zoom/5;
-			}
-			else {
-				zoom += zoom/20;
-			}
-			zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
-			/* printf("zoomc: %.10f\n", zoomc); */
-			graphDrawn = 0;
-		}
-		if (glfwGetKey(display, GLFW_KEY_PERIOD) == GLFW_PRESS ){
-			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				zoom -= zoom/5;
-			}
-			else {
-				zoom -= zoom/20;
-			}
-			zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
-			/* printf("zoomc: %.10f\n", zoomc); */
-			graphDrawn = 0;
-		}
+		/* glfwPollEvents(); */
+		/* if (glfwGetKey(display, GLFW_KEY_COMMA) == GLFW_PRESS ){ */
+		/* 	if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) { */
+		/* 		zoom += zoom/5; */
+		/* 	} */
+		/* 	else { */
+		/* 		zoom += zoom/20; */
+		/* 	} */
+		/* 	zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001; */
+		/* 	/1* printf("zoomc: %.10f\n", zoomc); *1/ */
+		/* 	graphDrawn = 0; */
+		/* } */
+		/* if (glfwGetKey(display, GLFW_KEY_PERIOD) == GLFW_PRESS ){ */
+		/* 	if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) { */
+		/* 		zoom -= zoom/5; */
+		/* 	} */
+		/* 	else { */
+		/* 		zoom -= zoom/20; */
+		/* 	} */
+		/* 	zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001; */
+		/* 	/1* printf("zoomc: %.10f\n", zoomc); *1/ */
+		/* 	graphDrawn = 0; */
+		/* } */
 
-		//Movement code
-		if (glfwGetKey(display, GLFW_KEY_UP) == GLFW_PRESS ) {
-			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				posOffset[1] += fabs(log(zoom)) / 10;
-			}
-			else {
-				posOffset[1] += fabs(log(zoom)) / 100;
-			}
-			graphDrawn = 0;
-		}
+		/* //Movement code */
+		/* if (glfwGetKey(display, GLFW_KEY_UP) == GLFW_PRESS ) { */
+		/* 	if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) { */
+		/* 		posOffset[1] += fabs(log(zoom)) / 10; */
+		/* 	} */
+		/* 	else { */
+		/* 		posOffset[1] += fabs(log(zoom)) / 100; */
+		/* 	} */
+		/* 	graphDrawn = 0; */
+		/* } */
 
-		if (glfwGetKey(display, GLFW_KEY_DOWN) == GLFW_PRESS ) {
-			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				posOffset[1] -= fabs(log(zoom)) / 10;
-			}
-			else {
-				posOffset[1] -= fabs(log(zoom)) / 100;
-			}
-			graphDrawn = 0;
-		}
+		/* if (glfwGetKey(display, GLFW_KEY_DOWN) == GLFW_PRESS ) { */
+		/* 	if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) { */
+				/* posOffset[1] -= fabs(log(zoom)) / 10; */
+			/* } */
+			/* else { */
+				/* posOffset[1] -= fabs(log(zoom)) / 100; */
+			/* } */
+			/* graphDrawn = 0; */
+		/* } */
 
-		if (glfwGetKey(display, GLFW_KEY_LEFT) == GLFW_PRESS ) {
-			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				posOffset[0] -= fabs(log(zoom)) / 10;
-			}
-			else {
-				posOffset[0] -= fabs(log(zoom)) / 100;
-			}
-			graphDrawn = 0;
-		}
+		/* if (glfwGetKey(display, GLFW_KEY_LEFT) == GLFW_PRESS ) { */
+			/* if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) { */
+				/* posOffset[0] -= fabs(log(zoom)) / 10; */
+			/* } */
+			/* else { */
+				/* posOffset[0] -= fabs(log(zoom)) / 100; */
+			/* } */
+			/* graphDrawn = 0; */
+		/* } */
 
-		if (glfwGetKey(display, GLFW_KEY_RIGHT) == GLFW_PRESS ) {
-			if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) {
-				posOffset[0] += fabs(log(zoom)) / 10;
-			}
-			else {
-				posOffset[0] += fabs(log(zoom)) / 100;
-			}
-			graphDrawn = 0;
-		}
+		/* if (glfwGetKey(display, GLFW_KEY_RIGHT) == GLFW_PRESS ) { */
+			/* if (glfwGetKey(display, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ) { */
+				/* posOffset[0] += fabs(log(zoom)) / 10; */
+			/* } */
+			/* else { */
+				/* posOffset[0] += fabs(log(zoom)) / 100; */
+			/* } */
+			/* graphDrawn = 0; */
+		/* } */
 
-		if (glfwGetKey(display, GLFW_KEY_SPACE) == GLFW_PRESS ) {
-			posOffset[0] = 0;
-			posOffset[1] = 0;
-			zoom = 10;
-			graphDrawn = 0;
+		/* if (glfwGetKey(display, GLFW_KEY_SPACE) == GLFW_PRESS ) { */
+			/* posOffset[0] = 0; */
+			/* posOffset[1] = 0; */
+			/* zoom = 10; */
+			/* graphDrawn = 0; */
 		}
 
 		//render
@@ -585,12 +598,12 @@ int main(void) {
 		//Events
 		SDL_UpdateWindowSurface(SDLwindow);
 		SDL_RenderPresent(SDLMainWindowRenderer);
-		glfwSwapBuffers(display);
+		/* glfwSwapBuffers(display); */
 
-		printf("");
+		/* printf(""); */
 	}
 
-	glfwTerminate();
+	/* glfwTerminate(); */
 
     // release OpenCL resources
     clReleaseMemObject(posBuffer);
