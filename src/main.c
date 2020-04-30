@@ -40,7 +40,7 @@ int main(void) {
 	}
 	TTF_Init();
 
-	SDLwindow = SDL_CreateWindow( "SDL Window", 650, 200, 800, 600, SDL_WINDOW_SHOWN );
+	SDLwindow = SDL_CreateWindow( "SDL Window", 250, 200, 800, 600, SDL_WINDOW_SHOWN );
 	screenSurface = SDL_GetWindowSurface(SDLwindow);
 	/* SDL_FillRect(screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0x12, 0x67, 0xBF ) ); */
 	SDL_UpdateWindowSurface( SDLwindow );
@@ -50,7 +50,7 @@ int main(void) {
 
 	//quit code
 	int SDL_close_window = 0;
-	SDL_Event shouldCloseWindow;
+	SDL_Event events;
 
 	//Text code;
 	char textBoxString[2048] = "Enter a function";
@@ -91,7 +91,7 @@ int main(void) {
     /* glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); */
     /* glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); */
 
-	SDL_Window* display = SDL_CreateWindow("Display", 1, 1, 600, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
+	SDL_Window* display = SDL_CreateWindow("Display", 1050, 200, 600, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
 	
 	displayContext = SDL_GL_CreateContext(display);
 
@@ -115,9 +115,9 @@ int main(void) {
 	/* glfwMakeContextCurrent(display); */
 
 	// tell GLFW to capture our mouse
-    /* glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); */
+    /* glfwSetInputMode(display, GLFW_CURSOR, GLFW_CURSOR_DISABLED); */
 
-	glViewport(0, 0, 600, 600);
+	glViewport(0, 0, 800, 600);
 
 	//Points
 	glEnable(GL_PROGRAM_POINT_SIZE);
@@ -485,9 +485,20 @@ int main(void) {
 
 	while(/*!glfwWindowShouldClose(display) && */!SDL_close_window) {
 		//input
-		SDL_PollEvent(&shouldCloseWindow);
-		if(shouldCloseWindow.type == SDL_QUIT) {
-			SDL_close_window = 1;
+		SDL_PollEvent(&events);
+		switch (events.type) {
+			case SDL_QUIT:
+				SDL_close_window = 1;
+				break;
+
+			case SDL_WINDOWEVENT:
+				if(events.window.event == SDL_WINDOWEVENT_CLOSE) {
+					SDL_close_window = 1;
+				}
+				break;
+
+			default:
+				break;
 		}
 
 		/* glfwPollEvents(); */
@@ -596,10 +607,6 @@ int main(void) {
 		/* glfwSwapBuffers(display); */
 
 		SDL_GL_MakeCurrent(display, displayContext);
-
-		glClearColor(0.2f, 0.68f, 0.08f, 1.0f);
-		/* glClearColor(0.0f, 0.0f, 0.0f, 1.0f); */
-		glClear(GL_COLOR_BUFFER_BIT);
 
 		/* SDL_SetRenderDrawColor( SDLMainWindowRenderer, 0x12, 0x67, 0xBF, 0xFF ); */
 		/* SDL_RenderClear( SDLMainWindowRenderer); */
