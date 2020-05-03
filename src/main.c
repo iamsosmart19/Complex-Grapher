@@ -30,6 +30,7 @@ int main(void) {
 	//SDL
 	//The window we'll be rendering to
     SDL_Window* SDLwindow = NULL;
+	int SDLwindowID;
     
     //The surface contained by the window
     SDL_Surface* screenSurface = NULL;
@@ -41,6 +42,7 @@ int main(void) {
 	TTF_Init();
 
 	SDLwindow = SDL_CreateWindow( "SDL Window", 250, 200, 800, 600, SDL_WINDOW_SHOWN );
+	SDLwindowID = SDL_GetWindowID(SDLwindow);
 	screenSurface = SDL_GetWindowSurface(SDLwindow);
 	/* SDL_FillRect(screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0x12, 0x67, 0xBF ) ); */
 	SDL_UpdateWindowSurface( SDLwindow );
@@ -92,6 +94,7 @@ int main(void) {
     /* glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); */
 
 	SDL_Window* display = SDL_CreateWindow("Display", 1050, 200, 600, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
+	int displayID = SDL_GetWindowID(display);
 	
 	displayContext = SDL_GL_CreateContext(display);
 
@@ -492,8 +495,10 @@ int main(void) {
 				break;
 
 			case SDL_WINDOWEVENT:
-				if(events.window.event == SDL_WINDOWEVENT_CLOSE) {
-					SDL_close_window = 1;
+				if(events.window.windowID == SDLwindowID) {
+					if(events.window.event == SDL_WINDOWEVENT_CLOSE) {
+						SDL_close_window = 1;
+					}
 				}
 				break;
 
