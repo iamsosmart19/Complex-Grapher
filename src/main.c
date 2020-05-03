@@ -51,7 +51,7 @@ int main(void) {
 	SDL_Renderer* SDLMainWindowRenderer = SDL_CreateRenderer(SDLwindow, -1, 0);
 
 	//quit code
-	int SDL_close_window = 0;
+	int closeApp = 0;
 	SDL_Event events;
 
 	//Text code;
@@ -486,19 +486,45 @@ int main(void) {
 
 	int graphDrawn = 0;
 
-	while(/*!glfwWindowShouldClose(display) && */!SDL_close_window) {
+	/* SDL_EnableUNICODE(SDL_ENABLE); */
+    SDL_StartTextInput();
+
+	while(/*!glfwWindowShouldClose(display) && */!closeApp) {
 		//input
 		SDL_PollEvent(&events);
 		switch (events.type) {
 			case SDL_QUIT:
-				SDL_close_window = 1;
+				closeApp = 1;
 				break;
 
 			case SDL_WINDOWEVENT:
 				if(events.window.windowID == SDLwindowID) {
 					if(events.window.event == SDL_WINDOWEVENT_CLOSE) {
-						SDL_close_window = 1;
+						closeApp = 1;
 					}
+				}
+
+				if(events.window.windowID == displayID) {
+					if(events.window.event == SDL_WINDOWEVENT_CLOSE) {
+						SDL_MinimizeWindow(display);
+					}
+				}
+				break;
+
+			case SDL_KEYDOWN:
+				/* if(events.window.event == displayID) { */
+				if(SDL_GetWindowFlags(display) & SDL_WINDOW_INPUT_FOCUS) {
+					switch(events.key.keysym.sym) {
+						case SDLK_UP:
+							if(events.key.keysym.mod & KMOD_LSHIFT) {
+								posOffset[1] += fabs(log(zoom)) / 10;
+							}
+							else {
+								posOffset[1] += fabs(log(zoom)) / 100;
+							}
+							break;
+					}
+					graphDrawn = 0;
 				}
 				break;
 
