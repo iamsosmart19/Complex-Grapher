@@ -515,6 +515,31 @@ int main(void) {
 				/* if(events.window.event == displayID) { */
 				if(SDL_GetWindowFlags(display) & SDL_WINDOW_INPUT_FOCUS) {
 					switch(events.key.keysym.sym) {
+						case SDLK_COMMA:
+							if(events.key.keysym.mod & KMOD_LSHIFT) {
+								zoom += zoom/5;
+							}
+							else {
+								zoom += zoom/20;
+							}
+							zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
+							/* printf("zoomc: %.10f\n", zoomc); */
+							graphDrawn = 0;
+							break;
+
+						case SDLK_PERIOD:
+							if(events.key.keysym.mod & KMOD_LSHIFT) {
+								zoom -= zoom/5;
+							}
+							else {
+								zoom -= zoom/20;
+							}
+							zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
+							/* printf("zoomc: %.10f\n", zoomc); */
+							graphDrawn = 0;
+							break;
+
+
 						case SDLK_UP:
 							if(events.key.keysym.mod & KMOD_LSHIFT) {
 								posOffset[1] += fabs(log(zoom)) / 10;
@@ -523,6 +548,44 @@ int main(void) {
 								posOffset[1] += fabs(log(zoom)) / 100;
 							}
 							break;
+
+						case SDLK_DOWN:
+							if(events.key.keysym.mod & KMOD_LSHIFT) {
+								posOffset[1] -= fabs(log(zoom)) / 10;
+							}
+							else {
+								posOffset[1] -= fabs(log(zoom)) / 100;
+							}
+							break;
+
+						case SDLK_LEFT:
+							if(events.key.keysym.mod & KMOD_LSHIFT) {
+								posOffset[0] -= fabs(log(zoom)) / 10;
+							}
+							else {
+								posOffset[0] -= fabs(log(zoom)) / 100;
+							}
+							break;
+
+						case SDLK_RIGHT:
+							if(events.key.keysym.mod & KMOD_LSHIFT) {
+								posOffset[0] += fabs(log(zoom)) / 10;
+							}
+							else {
+								posOffset[0] += fabs(log(zoom)) / 100;
+							}
+							break;
+
+						case SDLK_SPACE:
+							posOffset[0] = 0;
+							posOffset[1] = 0;
+							zoom = 10;
+							graphDrawn = 0;
+							break;
+
+						default:
+							break;
+
 					}
 					graphDrawn = 0;
 				}
