@@ -544,90 +544,52 @@ int main(void) {
 			graphDrawn = 0;
 		}
 
-			/* case SDL_KEYDOWN: */
-			/* 	/1* if(events.window.event == displayID) { *1/ */
-			/* 	if(SDL_GetWindowFlags(display) & SDL_WINDOW_INPUT_FOCUS) { */
-			/* 		switch(events.key.keysym.sym) { */
-			/* 			case SDLK_COMMA: */
-			/* 				printf("repeat\n"); */
-			/* 				if(events.key.keysym.mod & KMOD_LSHIFT) { */
-			/* 					zoom += zoom/5; */
-			/* 				} */
-			/* 				else { */
-			/* 					zoom += zoom/20; */
-			/* 				} */
-			/* 				zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001; */
-			/* 				/1* printf("zoomc: %.10f\n", zoomc); *1/ */
-			/* 				graphDrawn = 0; */
-			/* 				break; */
+		if(keystates[SDL_SCANCODE_UP]) {
+			if(keystates[SDL_SCANCODE_LSHIFT]) {
+				posOffset[1] += fabs(log(zoom)) / 10;
+			}
+			else {
+				posOffset[1] += fabs(log(zoom)) / 100;
+			}
+			graphDrawn = 0;
+		}
 
-			/* 			case SDLK_PERIOD: */
-			/* 				if(events.key.keysym.mod & KMOD_LSHIFT) { */
-			/* 					zoom -= zoom/5; */
-			/* 				} */
-			/* 				else { */
-			/* 					zoom -= zoom/20; */
-			/* 				} */
-			/* 				zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001; */
-			/* 				/1* printf("zoomc: %.10f\n", zoomc); *1/ */
-			/* 				graphDrawn = 0; */
-			/* 				break; */
+		if(keystates[SDL_SCANCODE_DOWN]) {
+			if(keystates[SDL_SCANCODE_LSHIFT]) {
+				posOffset[1] -= fabs(log(zoom)) / 10;
+			}
+			else {
+				posOffset[1] -= fabs(log(zoom)) / 100;
+			}
+			graphDrawn = 0;
+		}
 
+		if(keystates[SDL_SCANCODE_LEFT]) {
+			if(keystates[SDL_SCANCODE_LSHIFT]) {
+				posOffset[0] -= fabs(log(zoom)) / 10;
+			}
+			else {
+				posOffset[0] -= fabs(log(zoom)) / 100;
+			}
+			graphDrawn = 0;
+		}
 
-/* 						case SDLK_UP: */
-/* 							if(events.key.keysym.mod & KMOD_LSHIFT) { */
-/* 								posOffset[1] += fabs(log(zoom)) / 10; */
-/* 							} */
-/* 							else { */
-/* 								posOffset[1] += fabs(log(zoom)) / 100; */
-/* 							} */
-/* 							graphDrawn = 0; */
-/* 							break; */
+		if(keystates[SDL_SCANCODE_RIGHT]) {
+			if(keystates[SDL_SCANCODE_LSHIFT]) {
+				posOffset[0] += fabs(log(zoom)) / 10;
+			}
+			else {
+				posOffset[0] += fabs(log(zoom)) / 100;
+			}
+			graphDrawn = 0;
+		}
 
-/* 						case SDLK_DOWN: */
-/* 							if(events.key.keysym.mod & KMOD_LSHIFT) { */
-/* 								posOffset[1] -= fabs(log(zoom)) / 10; */
-/* 							} */
-/* 							else { */
-/* 								posOffset[1] -= fabs(log(zoom)) / 100; */
-/* 							} */
-/* 							graphDrawn = 0; */
-/* 							break; */
-
-/* 						case SDLK_LEFT: */
-/* 							if(events.key.keysym.mod & KMOD_LSHIFT) { */
-/* 								posOffset[0] -= fabs(log(zoom)) / 10; */
-/* 							} */
-/* 							else { */
-/* 								posOffset[0] -= fabs(log(zoom)) / 100; */
-/* 							} */
-/* 							graphDrawn = 0; */
-							/* break; */
-
-						/* case SDLK_RIGHT: */
-							/* if(events.key.keysym.mod & KMOD_LSHIFT) { */
-							/* 	posOffset[0] += fabs(log(zoom)) / 10; */
-							/* } */
-							/* else { */
-							/* 	posOffset[0] += fabs(log(zoom)) / 100; */
-							/* } */
-							/* graphDrawn = 0; */
-							/* break; */
-
-						/* case SDLK_SPACE: */
-							/* posOffset[0] = 0; */
-							/* posOffset[1] = 0; */
-							/* zoom = 10; */
-							/* graphDrawn = 0; */
-							/* break; */
-
-						/* default: */
-							/* break; */
-
-					/* } */
-				/* } */
-				/* break; */
-
+		if(keystates[SDL_SCANCODE_SPACE]) {
+			posOffset[0] = 0;
+			posOffset[1] = 0;
+			zoom = 10;
+			graphDrawn = 0;
+		}
 
 		//render
 		if(!graphDrawn) {
