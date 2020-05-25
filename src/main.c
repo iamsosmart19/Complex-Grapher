@@ -535,40 +535,40 @@ int main(void) {
 
 		if(keystates[SDL_SCANCODE_UP]) {
 			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				posOffset[1] += fabs(log(zoom)) / 10;
+				posOffset[1] += fabs(zoom) / 10;
 			}
 			else {
-				posOffset[1] += fabs(log(zoom)) / 100;
+				posOffset[1] += fabs(zoom) / 100;
 			}
 			graphDrawn = 0;
 		}
 
 		if(keystates[SDL_SCANCODE_DOWN]) {
 			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				posOffset[1] -= fabs(log(zoom)) / 10;
+				posOffset[1] -= fabs(zoom) / 10;
 			}
 			else {
-				posOffset[1] -= fabs(log(zoom)) / 100;
+				posOffset[1] -= fabs(zoom) / 100;
 			}
 			graphDrawn = 0;
 		}
 
 		if(keystates[SDL_SCANCODE_LEFT]) {
 			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				posOffset[0] -= fabs(log(zoom)) / 10;
+				posOffset[0] -= fabs(zoom) / 10;
 			}
 			else {
-				posOffset[0] -= fabs(log(zoom)) / 100;
+				posOffset[0] -= fabs(zoom) / 100;
 			}
 			graphDrawn = 0;
 		}
 
 		if(keystates[SDL_SCANCODE_RIGHT]) {
 			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				posOffset[0] += fabs(log(zoom)) / 10;
+				posOffset[0] += fabs(zoom) / 10;
 			}
 			else {
-				posOffset[0] += fabs(log(zoom)) / 100;
+				posOffset[0] += fabs(zoom) / 100;
 			}
 			graphDrawn = 0;
 		}
