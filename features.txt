@@ -85,3 +85,5 @@ pro resources for me
 	* https://learnopengl.com/Getting-started/OpenGL
 	* https://en.wikipedia.org/wiki/Domain_coloring
 
+
+real, imag, conj, riemann zeta

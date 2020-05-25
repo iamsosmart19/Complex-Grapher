@@ -9,6 +9,7 @@ int main(void) {
 	/* FILE* sample = fopen("input3.txt", "r"); */
 	char function[1024];
 	fgets(function, 1024, sample);
+	printf("|%s|\n", function);
 	fclose(sample);
 
 	// Possibly enable parser runtime debugging.
@@ -80,18 +81,13 @@ int main(void) {
 
 	/* SDL_StartTextInput(); */
 
-	//GLFW OpenGL code
+	//SDL OpenGL code
 	SDL_GLContext displayContext;
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-	/* glfwInit(); */
-    /* glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); */
-    /* glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); */
-    /* glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); */
 
 	SDL_Window* display = SDL_CreateWindow("Display", 1050, 200, 600, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
 	int displayID = SDL_GetWindowID(display);
@@ -107,18 +103,8 @@ int main(void) {
 		return -1;
 	}
  
-	printf("DB: 0\n");
-	/* glClearColor(1.0, 0.0, 0.0, 1.0); */
-	printf("DB: 1\n");
-	/* glClear(GL_COLOR_BUFFER_BIT); */
 	SDL_GL_SwapWindow(display);
 	SDL_GL_MakeCurrent(display, displayContext);
-	/* GLFWwindow* display = glfwCreateWindow(600, 600, "Display", NULL, NULL); */
-	/* glfwSetWindowPos(display, 900, 200); */
-	/* glfwMakeContextCurrent(display); */
-
-	// tell GLFW to capture our mouse
-    /* glfwSetInputMode(display, GLFW_CURSOR, GLFW_CURSOR_DISABLED); */
 
 	glViewport(0, 0, 800, 600);
 
@@ -167,8 +153,8 @@ int main(void) {
 	/* double interval = 0.001; */
 	int width = 800;
 	int height = 1000;
-	int n = width * height;
 	double interval = 0.002;
+	int n = width * height;
 	double zoom = 10;
 	/* float zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5; */
 	float zoomc = 0.001;
@@ -493,10 +479,13 @@ int main(void) {
     SDL_StartTextInput();
 	Uint8* keystates;
 
-	while(/*!glfwWindowShouldClose(display) && */!closeApp) {
+	while(!closeApp) {
 		//input
+		//SDL query keyboard state
 		Uint8* keystates = SDL_GetKeyboardState( NULL );
+		//SDL query events (mainly only using window events)
 		SDL_PollEvent(&events);
+
 		switch (events.type) {
 			case SDL_QUIT:
 				closeApp = 1;
@@ -591,7 +580,7 @@ int main(void) {
 			graphDrawn = 0;
 		}
 
-		//render
+		//render if graph not drawn, and then set drawn to true
 		if(!graphDrawn) {
 			err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &posBuffer);
 			err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &colorBuffer);
@@ -634,7 +623,6 @@ int main(void) {
 		glDrawArrays(GL_POINTS, 0, width * height);
 
 		SDL_GL_SwapWindow(display);
-		SDL_UpdateWindowSurface(display);
 
 		/* printf(""); */
 	}
@@ -651,9 +639,14 @@ int main(void) {
     clReleaseContext(context);
 
 	//release SDL resources
-	SDL_DestroyWindow( SDLwindow );
-	TTF_CloseFont( gFont );
+	SDL_GL_DeleteContext(displayContext);
 	SDL_DestroyTexture(textBoxTexture);
+	SDL_FreeSurface(screenSurface);
+	SDL_FreeSurface(textBoxSurface);
+	SDL_DestroyRenderer(SDLMainWindowRenderer);
+	SDL_DestroyWindow(SDLwindow);
+	SDL_DestroyWindow(display);
+	TTF_CloseFont(gFont);
 	/* SDL_FreeSurface(screenSurface); */
 
 	TTF_Quit();
@@ -704,8 +697,8 @@ void hsv2rgb(long double H, long double S, long double V, GLfloat* ret) {
 		return;
 	}
 	long double C = S * V;
-	long double Hs = ((H * 180)/M_PI) > 0 ?  (H*180)/M_PI: 360 + (H*180)/M_PI;
-	long double X = C * (1 - fabsl(fmodl(Hs/ 60.0, 2) - 1));
+	long double Hs = ((H * 180)/M_PI) > 0 ? (H*180)/M_PI: 360 + (H*180)/M_PI;
+	long double X = C * (1 - fabsl(fmodl(Hs/60.0, 2) - 1));
 	/* printf("C: %llf\n\n", (long double)252.0 / 60.0); */
 	/* printf("C: %llf\n\n", (long double)((H * 180) / M_PI )); */
 	long double m = V - C;

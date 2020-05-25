@@ -31,4 +31,4 @@ void eval_SEC(stack *s);
 void eval_CSC(stack *s); 
 void eval_COT(stack *s);
 
-Handler funcTable[22];
+/* Handler funcTable[22]; */
