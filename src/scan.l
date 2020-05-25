@@ -80,6 +80,8 @@ e		{ enqueue(out, M_E); return E; }
 abs		{ return  ABS; }
 floor	{ return  FLOOR; }
 ceil	{ return  CEIL; }
+re		{ return  REAL; }
+im		{ return  IMAG; }
 
 asin	{ return  ASIN; }
 acos	{ return  ACOS; }
@@ -117,6 +119,8 @@ z		{ enqueue(out, DBL_MAX + DBL_MAX * I); return LETR; }
 
 \(		{ return LBRAC; }
 \)		{ return RBRAC; }
+
+\|		{ return CONJ; }
 
 ,		{ return COMMA; }
 

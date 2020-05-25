@@ -125,6 +125,18 @@ cplx evalFunc(__constant cplx *op, int opnum, cplx val) {
 						s_push(&s, ctan(cdiv((cplx)(1,0), oprnd1)));
 						break;
 
+					case 22:
+						s_push(&s, creal(oprnd1));
+						break;
+
+					case 23:
+						s_push(&s, cimag(oprnd1));
+						break;
+
+					case 24:
+						s_push(&s, conj(oprnd1));
+						break;
+
 					default:
 						s_push(&s, oprnd1);
 						break;

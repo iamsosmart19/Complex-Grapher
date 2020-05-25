@@ -89,38 +89,41 @@ extern int yydebug;
     ABS = 270,                     /* "abs"  */
     FLOOR = 271,                   /* "floor"  */
     CEIL = 272,                    /* "ceil"  */
-    ASIN = 273,                    /* "asin"  */
-    ACOS = 274,                    /* "acos"  */
-    ATAN = 275,                    /* "atan"  */
-    SINH = 276,                    /* "sinh"  */
-    COSH = 277,                    /* "cosh"  */
-    TANH = 278,                    /* "tanh"  */
-    SECH = 279,                    /* "sech"  */
-    CSCH = 280,                    /* "csch"  */
-    COTH = 281,                    /* "coth"  */
-    SIN = 282,                     /* "sin"  */
-    COS = 283,                     /* "cos"  */
-    TAN = 284,                     /* "tan"  */
-    SEC = 285,                     /* "sec"  */
-    CSC = 286,                     /* "csc"  */
-    COT = 287,                     /* "cot"  */
-    PI = 288,                      /* "pi"  */
-    MI = 289,                      /* "i"  */
-    Y = 290,                       /* "y"  */
-    FZ = 291,                      /* "f(z)"  */
-    EQUALS = 292,                  /* "="  */
-    LESSTHAN = 293,                /* "<"  */
-    GREATERTHAN = 294,             /* ">"  */
-    LTHANEQTO = 295,               /* "<="  */
-    GTHANEQTO = 296,               /* ">="  */
-    LETR = 297,                    /* "z"  */
-    LBRAC = 298,                   /* "("  */
-    RBRAC = 299,                   /* ")"  */
-    COMMA = 300,                   /* ","  */
-    EOL = 301,                     /* "end-of-line"  */
-    NUM = 302,                     /* "number"  */
-    BINARY = 303,                  /* BINARY  */
-    UNARY = 304                    /* UNARY  */
+    REAL = 273,                    /* "real"  */
+    IMAG = 274,                    /* "imag"  */
+    ASIN = 275,                    /* "asin"  */
+    ACOS = 276,                    /* "acos"  */
+    ATAN = 277,                    /* "atan"  */
+    SINH = 278,                    /* "sinh"  */
+    COSH = 279,                    /* "cosh"  */
+    TANH = 280,                    /* "tanh"  */
+    SECH = 281,                    /* "sech"  */
+    CSCH = 282,                    /* "csch"  */
+    COTH = 283,                    /* "coth"  */
+    SIN = 284,                     /* "sin"  */
+    COS = 285,                     /* "cos"  */
+    TAN = 286,                     /* "tan"  */
+    SEC = 287,                     /* "sec"  */
+    CSC = 288,                     /* "csc"  */
+    COT = 289,                     /* "cot"  */
+    PI = 290,                      /* "pi"  */
+    MI = 291,                      /* "i"  */
+    Y = 292,                       /* "y"  */
+    FZ = 293,                      /* "f(z)"  */
+    EQUALS = 294,                  /* "="  */
+    LESSTHAN = 295,                /* "<"  */
+    GREATERTHAN = 296,             /* ">"  */
+    LTHANEQTO = 297,               /* "<="  */
+    GTHANEQTO = 298,               /* ">="  */
+    LETR = 299,                    /* "z"  */
+    LBRAC = 300,                   /* "("  */
+    RBRAC = 301,                   /* ")"  */
+    CONJ = 302,                    /* "|"  */
+    COMMA = 303,                   /* ","  */
+    EOL = 304,                     /* "end-of-line"  */
+    NUM = 305,                     /* "number"  */
+    BINARY = 306,                  /* BINARY  */
+    UNARY = 307                    /* UNARY  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -131,7 +134,7 @@ union YYSTYPE
 {
   cplx NUM;                                /* "number"  */
 
-#line 135 "src/parse.h"
+#line 138 "src/parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -153,6 +156,6 @@ int yyparse (yyscan_t scanner, result *res, queue* out);
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
 	void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...);
 
-#line 157 "src/parse.h"
+#line 160 "src/parse.h"
 
 #endif /* !YY_YY_SRC_PARSE_H_INCLUDED  */

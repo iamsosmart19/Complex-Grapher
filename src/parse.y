@@ -79,6 +79,8 @@
 	ABS		"abs"
 	FLOOR	"floor"
 	CEIL	"ceil"
+	REAL	"real"
+	IMAG	"imag"
 
 	ASIN	"asin"
 	ACOS	"acos"
@@ -111,6 +113,8 @@
 
 	LBRAC			"("
 	RBRAC			")"
+
+	CONJ			"|"
 
 	COMMA			","
 
@@ -193,6 +197,8 @@ exp:
 	"abs" "(" exp ")" %prec UNARY	{ enqueue(out, 4 + DBL_MAX * I); } |
 	"floor" "(" exp ")" %prec UNARY { enqueue(out, 5 + DBL_MAX * I); } |
 	"ceil" "(" exp ")" %prec UNARY	{ enqueue(out, 6 + DBL_MAX * I); } |
+	"real" "(" exp ")" %prec UNARY	{ enqueue(out, 22 + DBL_MAX * I); } |
+	"imag" "(" exp ")" %prec UNARY	{ enqueue(out, 23 + DBL_MAX * I); } |
 
 	"asin" "(" exp ")" %prec UNARY	{ enqueue(out, 7 + DBL_MAX * I); } |
 	"acos" "(" exp ")" %prec UNARY	{ enqueue(out, 8 + DBL_MAX * I); } |
@@ -208,7 +214,9 @@ exp:
 	"tan" "(" exp ")" %prec UNARY	{ enqueue(out, 18 + DBL_MAX * I); } |
 	"sec" "(" exp ")" %prec UNARY	{ enqueue(out, 19 + DBL_MAX * I); } |
 	"csc" "(" exp ")" %prec UNARY	{ enqueue(out, 20 + DBL_MAX * I); } |
-	"cot" "(" exp ")" %prec UNARY	{ enqueue(out, 21 + DBL_MAX * I); }
+	"cot" "(" exp ")" %prec UNARY	{ enqueue(out, 21 + DBL_MAX * I); } |
+
+	"|" exp "|" %prec UNARY			{ enqueue(out, 24 + DBL_MAX * I); }
 ;
 
 brexp:
