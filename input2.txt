@@ -11,3 +11,4 @@ z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^
 (root(z^z,z))
 sin(z)^root(z^z,z)
 root(root(root(root(root(root(root(z^z,z),z),z),z),z),z),z)
+re(sin(z)) + i * sin(im(z))
