@@ -10,7 +10,7 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 
 	if (id < n) {
 		float2 input = vload2(0, &a[id*2]);
-		cplx ret = evalFunc(op, opnum, (cplx)(zoom*(input.x+offset.x), zoom*(input.y+offset.y)));
+		cplx ret = evalFunc(op, opnum, (cplx)(zoom*(input.x)+offset.x, zoom*(input.y)+offset.y));
 		// float3 DBG = (float3)(ret.x, ret.y, 1);
 
 		float gap = log(sqrt((float)2));
