@@ -17,17 +17,26 @@
 /* #include <GLFW/glfw3.h> */
 
 //#define test 0
+char* filetobuf(char *file);
+
+void hsv2rgb(long double H, long double S, long double V, GLfloat* ret);
+
+void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int height, int width, long double zoom);
+
+//GTK TYPEDEFS
+
 typedef GtkWidget gtkWindow;
 typedef GtkWidget gtkButton;
 typedef GtkWidget gtkEntry;
 typedef GtkWidget gtkBox;
 typedef GtkWidget gtkGLArea;
 
-char* filetobuf(char *file);
+//GTK GL WRAPPERS
+typedef struct GlApplication_struct_decl {
+	gtkGLArea* area;
 
-void hsv2rgb(long double H, long double S, long double V, GLfloat* ret);
-
-void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int height, int width, long double zoom);
+	guint prog;
+} GlApplication;
 
 //GTK FUNCTIONS
 
@@ -35,7 +44,7 @@ static void print_hello(GtkWidget *widget, gpointer data);
 
 static void on_activate(GtkEntry* entry, gpointer user_data);
 
-static void on_realise(GtkGLArea *area);
+static void on_realise(GlApplication *app);
 
 static gboolean render(GtkGLArea *area, GdkGLContext *context);
 

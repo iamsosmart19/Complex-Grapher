@@ -40,6 +40,8 @@ int main(int argc, char* argv[]) {
 }
 
 static void activate (GtkApplication *app, gpointer user_data) {
+	GlApplication glMainApp;
+	
 	//Windows
 	gtkWindow *window;
 	gtkWindow *display;
@@ -50,8 +52,8 @@ static void activate (GtkApplication *app, gpointer user_data) {
 	gtk_css_provider_load_from_path(cssProvider, "entry.css", NULL);
 
 	//GLarea
-	gtkGLArea* GLdisplay;
-	GtkWidget* GLdisplay_box;
+	GtkWidget* GLdispla_box;
+	/* Glprogram shaderProgram; */
 
 	//UI elements
 	gtkButton *button;
@@ -61,21 +63,25 @@ static void activate (GtkApplication *app, gpointer user_data) {
 	GtkEntryBuffer *funcBuffer;
 	gtkBox *funcBox;
 
-	GLdisplay = gtk_gl_area_new();
-	gtk_widget_set_name(GLdisplay, "GLdisplay");
-	g_signal_connect(GLdisplay, "render", G_CALLBACK (render), NULL);
-	g_signal_connect(GLdisplay, "realize", G_CALLBACK (on_realise), GLdisplay);
-	gtk_widget_set_size_request(GLdisplay, 100, 100);
-
-	display = gtk_application_window_new(app);
-	gtk_window_set_title(GTK_WINDOW(display), "display");
-	gtk_window_set_default_size(GTK_WINDOW(display), 600, 600);
-
-	gtk_widget_show_all(display);
+	glMainApp.area = gtk_gl_area_new();
+	gtk_gl_area_set_required_version(glMainApp.area, 3, 3);
+	gtk_widget_set_name(glMainApp.area, "glMainApp.area");
+	g_signal_connect(glMainApp.area, "render", G_CALLBACK (render), NULL);
+	g_signal_connect(glMainApp.area, "realize", G_CALLBACK (on_realise), &glMainApp);
+	gtk_widget_set_size_request(glMainApp.area, 600, 600);
 
 	window = gtk_application_window_new (app);
 	gtk_window_set_title (GTK_WINDOW (window), "Window");
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 600);
+	gtk_window_set_type_hint((GtkWindow*)window, GDK_WINDOW_TYPE_HINT_DIALOG);
+
+	display = gtk_application_window_new(app);
+	gtk_window_set_title(GTK_WINDOW(display), "display");
+	gtk_window_set_default_size(GTK_WINDOW(display), 600, 600);
+	gtk_window_set_type_hint((GtkWindow*)display, GDK_WINDOW_TYPE_HINT_DIALOG);
+	gtk_window_set_keep_above(display, TRUE);
+
+	gtk_widget_show_all(display);
 
 	/* button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL); */
 	/* gtk_container_add (GTK_CONTAINER (window), button_box); */
@@ -90,17 +96,18 @@ static void activate (GtkApplication *app, gpointer user_data) {
 	funcBox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_container_add(GTK_CONTAINER(window), funcBox);
 
-	GLdisplay_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
-	gtk_widget_set_size_request(GLdisplay_box, 100, 100);
-	gtk_container_add(GTK_CONTAINER(display), GLdisplay_box);
+	GLdispla_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_set_size_request(GLdispla_box, 600, 600);
+	gtk_container_add(GTK_CONTAINER(display), GLdispla_box);
 
-	gtk_container_add(GTK_CONTAINER(GLdisplay_box), GLdisplay);
+	gtk_container_add(GTK_CONTAINER(GLdispla_box), glMainApp.area);
 
 	funcInput = gtk_entry_new_with_buffer(funcBuffer);
 	gtk_widget_set_name((funcInput), "funcIn");
 	gtk_entry_set_max_width_chars(GTK_ENTRY(funcInput), 256);
 	gtk_entry_set_placeholder_text(GTK_ENTRY(funcInput), "Enter function here");
 	/* gtk_entry_set_has_frame(funcInput, 1); */
+	/* char c = 'b'; */
 	g_signal_connect(funcInput, "activate", G_CALLBACK(on_activate), NULL);
 
 	context = gtk_widget_get_style_context(funcInput);
@@ -108,24 +115,27 @@ static void activate (GtkApplication *app, gpointer user_data) {
 
 	gtk_container_add(GTK_CONTAINER(funcBox), funcInput);
 
-	gtk_widget_show_all(window);
 	gtk_widget_show_all(display);
+	gtk_widget_show_all(window);
+	gtk_window_move(GTK_WINDOW(window), 120, 200);
+	gtk_window_move(GTK_WINDOW(display), 950, 200);
 }
 
 static void on_activate(GtkEntry* entry, gpointer user_data) {
-	const char *name;
+	char *name;
 	name = gtk_entry_get_text(entry);
 
-	g_print("\nHello %s!\n\n", name);
+	g_print("\nHello %s+%c\n\n", name, 'b');
 }
 
-static void on_realise(GtkGLArea *area) {
+static void on_realise(GlApplication *app) {
+	gtkGLArea* area = app->area;
+
 	gtk_gl_area_make_current(area);
 	if(gtk_gl_area_get_error(area) != NULL) {
 		printf("Could not get area\n");
 		return;
 	}
-	/* gtk_gl_area_set_required_version(area, 3, 3); */
 	return;
 	/* GError *internal_error = NULL; */
 	/* init_buffer_objects(&internal_error); */
@@ -144,6 +154,7 @@ static void on_realise(GtkGLArea *area) {
 }
 
 static gboolean render (GtkGLArea *area, GdkGLContext *context) {
+	glEnable(GL_PROGRAM_POINT_SIZE);
 	/* gtk_gl_area_set_required_version(area, 3, 3); */
 	// we can start by clearing the buffer
 	/* printf("you spastic\n"); */
