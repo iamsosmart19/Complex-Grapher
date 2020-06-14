@@ -27,6 +27,56 @@ int main(void) {
 	}
 	operations = (cplx*)realloc(operations, count*sizeof(cplx));
 	printf("count: %d\n", count);
+	for(int i = 0; i < count; i++) {
+		printf("%d: ", i);
+		if( cimag(operations[i]) == DBL_MAX) {
+			if( creal(operations[i]) == DBL_MAX) {
+				/* s_push(&s, val); */
+				printf("z\n", creal(operations[i]),  cimag(operations[i]));
+			}
+			else {
+				printf("|%s|\n", funcTable[(int)creal(operations[i])]);
+			}
+		}
+		else if( cimag(operations[i]) == -DBL_MAX ) {
+			switch((int)creal(operations[i])) {
+				case 0:
+					//add
+					printf("+\n");
+					break;
+
+				case 1:
+					//sub
+					printf("-\n");
+					break;
+
+				case 2:
+					//mult
+					printf("*\n");
+					break;
+
+				case 3:
+					//div
+					printf("/\n");
+					break;
+
+				case 4:
+					//pow
+					printf("^\n");
+					break;
+
+				case 5:
+					//-
+					printf("-\n");
+					break;
+			}
+		}
+		else {
+			/* s_push(&s, op[i]); */
+			printf("%lf%+lfi\n", creal(operations[i]),  cimag(operations[i]));
+		}
+		/* printf("%d: %lf%+lfi\n", i, creal(operations[i]) , cimag(operations[i])); */
+	}
 
 	//SDL
 	//The window we'll be rendering to

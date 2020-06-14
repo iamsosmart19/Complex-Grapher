@@ -11,4 +11,7 @@ z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^z^
 (root(z^z,z))
 sin(z)^root(z^z,z)
 root(root(root(root(root(root(root(z^z,z),z),z),z),z),z),z)
+root(root(root(root(root(z^z,z)^z, z)^z, z)^z, z)^z, z)
 re(sin(z)) + i * sin(im(z))
+root(root(root(root(root(root(root(root(root(root(sin(z)^sin(z),sin(z))^sin(z), sin(z))^sin(z), sin(z))^sin(z), sin(z))^sin(z), sin(z))^sin(z), sin(z))^sin(z), sin(z))^sin(z), sin(z))^sin(z), sin(z))^sin(z), sin(z))
+(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))^(tanh(z))
