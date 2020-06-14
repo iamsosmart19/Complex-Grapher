@@ -10,6 +10,5 @@ entry {
     border-color: Red;
 }
 
-#GLdisplay {
-	min-height: 30px;
+#GLdisplay_box {
 }

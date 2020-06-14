@@ -1,41 +1,39 @@
 #include "main.h"
 
 int main(int argc, char* argv[]) {
-/* #ifdef test */
-/* 	setenv("CUDA_CACHE_DISABLE", "1", 1); */
-/* #endif */
+#ifdef test
+	setenv("CUDA_CACHE_DISABLE", "1", 1);
+#endif
 
-/* 	FILE* sample = fopen("input.txt", "r"); */
-/* 	/1* FILE* sample = fopen("input3.txt", "r"); *1/ */
-/* 	char function[1024]; */
-/* 	fgets(function, 1024, sample); */
-/* 	printf("|%s|\n", function); */
-/* 	fclose(sample); */
+	FILE* sample = fopen("input.txt", "r");
+	/* FILE* sample = fopen("input3.txt", "r"); */
+	char function[1024];
+	fgets(function, 1024, sample);
+	printf("|%s|\n", function);
+	fclose(sample);
 
-/* 	// Possibly enable parser runtime debugging. */
-/* 	yydebug = !!getenv("YYDEBUG"); */
-/* 	queue out = queueInit(); */
-/* 	result res = parse_string(function, &out); */
-/* 	if( res.nerrs ) { */
-/* 		exit(0); */
-/* 	} */
-/* 	cplx* operations = (cplx*)malloc(128*sizeof(cplx)); */
+	// Possibly enable parser runtime debugging.
+	yydebug = !!getenv("YYDEBUG");
+	queue out = queueInit();
+	result res = parse_string(function, &out);
+	if( res.nerrs ) {
+		exit(0);
+	}
+	cplx* operations = (cplx*)malloc(128*sizeof(cplx));
 
-/* 	int count = 0; */
-/* 	while(front(out) != -DBL_MAX-DBL_MAX*I) { */
-/* 		operations[count++] = dequeue(&out); */
-/* 	} */
-/* 	operations = (cplx*)realloc(operations, count*sizeof(cplx)); */
-/* 	printf("count: %d\n", count); */
+	int count = 0;
+	while(front(out) != -DBL_MAX-DBL_MAX*I) {
+		operations[count++] = dequeue(&out);
+	}
+	operations = (cplx*)realloc(operations, count*sizeof(cplx));
+	printf("count: %d\n", count);
 
 	GtkApplication *app;
 	int app_status;
 
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-	printf("DB: 0\n");
 	app_status = g_application_run(G_APPLICATION(app), argc, argv);
-	printf("DB: 2\n");
 	g_object_unref(app);
 
 	return app_status;
@@ -65,10 +63,9 @@ static void activate (GtkApplication *app, gpointer user_data) {
 
 	GLdisplay = gtk_gl_area_new();
 	gtk_widget_set_name(GLdisplay, "GLdisplay");
-	//
-	//
 	g_signal_connect(GLdisplay, "render", G_CALLBACK (render), NULL);
 	g_signal_connect(GLdisplay, "realize", G_CALLBACK (on_realise), GLdisplay);
+	gtk_widget_set_size_request(GLdisplay, 100, 100);
 
 	display = gtk_application_window_new(app);
 	gtk_window_set_title(GTK_WINDOW(display), "display");
@@ -94,6 +91,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
 	gtk_container_add(GTK_CONTAINER(window), funcBox);
 
 	GLdisplay_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_set_size_request(GLdisplay_box, 100, 100);
 	gtk_container_add(GTK_CONTAINER(display), GLdisplay_box);
 
 	gtk_container_add(GTK_CONTAINER(GLdisplay_box), GLdisplay);
@@ -112,7 +110,6 @@ static void activate (GtkApplication *app, gpointer user_data) {
 
 	gtk_widget_show_all(window);
 	gtk_widget_show_all(display);
-	printf("DB: 1\n");
 }
 
 static void on_activate(GtkEntry* entry, gpointer user_data) {
