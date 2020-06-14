@@ -1,0 +1,15 @@
+/* entry { */ 
+/* 	color: Red; */
+/*     border-color: Red; */
+/* } */
+
+entry { 
+	min-height: 30px;
+	border-width: 3px;
+	background-color: White;
+    border-color: Red;
+}
+
+#GLdisplay {
+	min-height: 30px;
+}

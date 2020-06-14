@@ -1,6 +1,6 @@
 #C
 CC = gcc
-CFLAGS = -O3 -Wextra -Wall
+CFLAGS = -O3 -Wextra -Wall `pkg-config --cflags gtk+-3.0` -g
 
 BISON=bison
 FLEX=flex
@@ -10,7 +10,7 @@ all: cplxgraph
 
 .PHONY: clean
 
-LIBS=-lm -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lOpenCL -lSDL2 -lSDL2_ttf 
+LIBS=-lm -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lOpenCL -lSDL2 -lSDL2_ttf `pkg-config --libs gtk+-3.0` 
 
 BDIR=bin
 

@@ -1,710 +1,621 @@
 #include "main.h"
 
-int main(void) {
-#ifdef test
-	setenv("CUDA_CACHE_DISABLE", "1", 1);
-#endif
-
-	FILE* sample = fopen("input.txt", "r");
-	/* FILE* sample = fopen("input3.txt", "r"); */
-	char function[1024];
-	fgets(function, 1024, sample);
-	printf("|%s|\n", function);
-	fclose(sample);
-
-	// Possibly enable parser runtime debugging.
-	yydebug = !!getenv("YYDEBUG");
-	queue out = queueInit();
-	result res = parse_string(function, &out);
-	if( res.nerrs ) {
-		exit(0);
-	}
-	cplx* operations = (cplx*)malloc(128*sizeof(cplx));
-
-	int count;
-	while(front(out) != -DBL_MAX-DBL_MAX*I) {
-		operations[count++] = dequeue(&out);
-	}
-	operations = (cplx*)realloc(operations, count*sizeof(cplx));
-	printf("count: %d\n", count);
-	for(int i = 0; i < count; i++) {
-		printf("%d: ", i);
-		if( cimag(operations[i]) == DBL_MAX) {
-			if( creal(operations[i]) == DBL_MAX) {
-				/* s_push(&s, val); */
-				printf("z\n", creal(operations[i]),  cimag(operations[i]));
-			}
-			else {
-				printf("|%s|\n", funcTable[(int)creal(operations[i])]);
-			}
-		}
-		else if( cimag(operations[i]) == -DBL_MAX ) {
-			switch((int)creal(operations[i])) {
-				case 0:
-					//add
-					printf("+\n");
-					break;
-
-				case 1:
-					//sub
-					printf("-\n");
-					break;
-
-				case 2:
-					//mult
-					printf("*\n");
-					break;
-
-				case 3:
-					//div
-					printf("/\n");
-					break;
-
-				case 4:
-					//pow
-					printf("^\n");
-					break;
-
-				case 5:
-					//-
-					printf("-\n");
-					break;
-			}
-		}
-		else {
-			/* s_push(&s, op[i]); */
-			printf("%lf%+lfi\n", creal(operations[i]),  cimag(operations[i]));
-		}
-		/* printf("%d: %lf%+lfi\n", i, creal(operations[i]) , cimag(operations[i])); */
-	}
-
-	//SDL
-	//The window we'll be rendering to
-    SDL_Window* SDLwindow = NULL;
-	int SDLwindowID;
-    
-    //The surface contained by the window
-    SDL_Surface* screenSurface = NULL;
-
-	if( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
-		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
-		return 1;
-	}
-	TTF_Init();
-
-	SDLwindow = SDL_CreateWindow( "SDL Window", 250, 200, 800, 600, SDL_WINDOW_SHOWN );
-	SDLwindowID = SDL_GetWindowID(SDLwindow);
-	screenSurface = SDL_GetWindowSurface(SDLwindow);
-	/* SDL_FillRect(screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0x12, 0x67, 0xBF ) ); */
-	SDL_UpdateWindowSurface( SDLwindow );
-
-	//renderer
-	SDL_Renderer* SDLMainWindowRenderer = SDL_CreateRenderer(SDLwindow, -1, 0);
-
-	//quit code
-	int closeApp = 0;
-	SDL_Event events;
-
-	//Text code;
-	char textBoxString[2048] = "Enter a function";
-
-	TTF_Font* gFont = TTF_OpenFont("../comp-mod/cmunrm.ttf", 20);
-	if(gFont == NULL) {
-		printf("font no exist\n");
-	}
-
-	SDL_Color textBoxColour = { 255, 255, 255, 255 };
-
-	SDL_Surface* textBoxSurface = TTF_RenderText_Solid(gFont, textBoxString, textBoxColour);
-	if(textBoxSurface == NULL) {
-		printf("Surface render error\n");
-	}
-
-	SDL_Texture* textBoxTexture = SDL_CreateTextureFromSurface(SDLMainWindowRenderer, textBoxSurface);
-	if(textBoxTexture == NULL) {
-		printf("Texture render error: %s\n", SDL_GetError());
-	}
-
-	int size[2] = {0, 0};
-	SDL_QueryTexture(textBoxTexture, NULL, NULL, &size[0], &size[1]);
-	SDL_Rect dstrect = { 0, 0, size[0], size[1] };
-
-	/* SDL_StartTextInput(); */
-
-	//SDL OpenGL code
-	SDL_GLContext displayContext;
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-	SDL_Window* display = SDL_CreateWindow("Display", 1050, 200, 600, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
-	int displayID = SDL_GetWindowID(display);
-	
-	displayContext = SDL_GL_CreateContext(display);
-
-	SDL_GL_MakeCurrent(display, displayContext);
-
-	SDL_GL_SetSwapInterval(1);
-
-	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-	{
-		return -1;
-	}
- 
-	SDL_GL_SwapWindow(display);
-	SDL_GL_MakeCurrent(display, displayContext);
-
-	glViewport(0, 0, 800, 600);
-
-	//Points
-	glEnable(GL_PROGRAM_POINT_SIZE);
-
-	//VBO
-	GLuint shaderProgram;
-	GLuint vboVert, vboFrag;
-	char *vertSource, *fragSource;
-
-	vertSource = filetobuf("vertShad.vert");
-	vboVert = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vboVert, 1, (const GLchar**)&vertSource, 0);
-	glCompileShader(vboVert);
-
-	GLint vertSuccess;
-	glGetShaderiv(vboVert, GL_COMPILE_STATUS, &vertSuccess);
-	if(vertSuccess != GL_TRUE) {
-		printf("Error: compile error for shader vboVert: \n");
-	}
-
-	fragSource = filetobuf("fragShad.frag");
-	vboFrag = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(vboFrag, 1, (const GLchar**)&fragSource, 0);
-	glCompileShader(vboFrag);
-
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vboVert);
-	glAttachShader(shaderProgram, vboFrag);
-
-	glLinkProgram(shaderProgram);
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &vertSuccess);
-	if(vertSuccess != GL_TRUE) {
-		printf("Error: compile error for program shaderProgram: \n");
-	}
-	glUseProgram(shaderProgram);
-
-	GLuint vao;
-	GLuint triangleVBO;
-	float* posData;
-	float posOffset[2] = {0, 0};
-	GLfloat* colors;
-	/* int width = 1600; */
-	/* int height = 2000; */
-	/* double interval = 0.001; */
-	int width = 800;
-	int height = 1000;
-	double interval = 0.002;
-	int n = width * height;
-	double zoom = 10;
-	/* float zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5; */
-	float zoomc = 0.001;
-	printf("zoomc: %f\n", zoomc);
-	glPointSize(interval * 500);
-
-    size_t posSize = sizeof(float) * 2 * n;
-    size_t colorSize = sizeof(GLfloat) * 3 * n;
-
-	posData = malloc(posSize);
-	colors = malloc(colorSize);
-
-	for(int i = 0; i < width; i++) {
-		for(int j = 0; j < height*2; j+=2) {
-			posData[i*height*2+j] = -1.0 + i*interval;
-			posData[i*height*2+j+1] = -1.0 + (j/2)*interval;
-		}
-	}
-
-	//OpenCL code;
-
-    // Device input buffers
-    cl_mem posBuffer;
-	cl_mem opBuffer;
-    // Device output buffer
-    cl_mem colorBuffer;
- 
-    cl_platform_id cpPlatform;        // OpenCL platform
-    cl_device_id device_id;           // device ID
-    cl_context context;               // context
-    cl_command_queue queue;           // command queue
-    cl_program program;               // program
-    cl_kernel kernel;                 // kernel
- 
-    size_t globalSize, localSize;
-    cl_int err;
- 
-    // Number of work items in each local work group
-    localSize = 512;
- 
-    // Number of total work items - localSize must be divisor
-    globalSize = ceil(n/(float)localSize)*localSize;
- 
-    // Bind to platform
-    err = clGetPlatformIDs(1, &cpPlatform, NULL);
- 
-	if(err != CL_SUCCESS) {
-		printf("error: %d\n", err);
-	}
-
-    // Get ID for the device
-    err = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 1, &device_id, NULL);
-	if(err != CL_SUCCESS) {
-		printf("error: %d\n", err);
-	}
-
-    // Create a context  
-    context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
-	if(err != CL_SUCCESS) {
-		printf("error: %d\n", err);
-	}
- 
-    // Create a command queue 
-    queue = clCreateCommandQueueWithProperties(context, device_id, 0, &err);
-
-	/* printf("BR: 0\n"); */
-
-    // Create the compute program from the source buffer
-	char kernelSource[16384];
-	memset(kernelSource, '\0', 16384);
-	FILE* kernelFile;
-#ifdef test
-		kernelFile = fopen("ctest.cl", "r");
-#else 
-		kernelFile = fopen("graph.cl", "r");
-#endif
-	char kTemp[512];
-	while(fgets(kTemp, 512, kernelFile) != NULL) {
-		strcat(kernelSource, kTemp);
-	}
-	fclose(kernelFile);
-	/* printf("|%s|", kernelSource); */
-	/* printf("\n\n"); */
-
-
-	const char* kSrcPtr = kernelSource;
-    program = clCreateProgramWithSource(context, 1, (const char **)&kSrcPtr, NULL, &err);
-
-	if(err != CL_SUCCESS) {
-		printf("program build failed\n");
-		printf("error: %d\n", err);
-	}
- 
-    // Build the program executable 
-    err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
-	if(err != CL_SUCCESS) {
-		printf("build error: %d\n", err);
-		size_t errorSize;
-		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &errorSize);
-		
-		char* log = malloc(errorSize);
-		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, errorSize, log, NULL);
-
-		printf("|%s|\n", log);
-	}
-
-    // Create the compute kernel in the program we wish to run
-    kernel = clCreateKernel(program, "graph", &err);
-	if(err != CL_SUCCESS) {
-		printf("link error: %d\n", err);
-	}
-
-	printf("count*sizeof(cplx): %ld\n", count * sizeof(cplx));
- 
-    // Create the input and output arrays in device memory for our calculation
-    posBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, posSize, NULL, NULL);
-	opBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, count*sizeof(cplx), NULL, NULL);
-
-    colorBuffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, colorSize, NULL, NULL);
- 
-    // Write our data set into the input array in device memory
-    err = clEnqueueWriteBuffer(queue, posBuffer, CL_TRUE, 0, posSize, posData, 0, NULL, NULL);
-    err |= clEnqueueWriteBuffer(queue, opBuffer, CL_TRUE, 0, count*sizeof(cplx), operations, 0, NULL, NULL);
-
-    // Set the arguments to our compute kernel
-    err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &posBuffer);
-    err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &colorBuffer);
-    err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &opBuffer);
-    err |= clSetKernelArg(kernel, 3, sizeof(int), &count);
-    err |= clSetKernelArg(kernel, 4, sizeof(double), &zoom);
-    err |= clSetKernelArg(kernel, 5, sizeof(float), &zoomc);
-    err |= clSetKernelArg(kernel, 6, sizeof(float)*2, &posOffset);
-    err |= clSetKernelArg(kernel, 7, sizeof(unsigned int), &n);
- 
-    // Execute the kernel over the entire range of the data set  
-    err = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &globalSize, &localSize, 0, NULL, NULL);
- 
-    // Wait for the command queue to get serviced before reading back results
-    clFinish(queue);
- 
-    // Read the results from the device
-    clEnqueueReadBuffer(queue, colorBuffer, CL_TRUE, 0, colorSize, colors, 0, NULL, NULL);
-
-#ifdef test
-	cplx ret = -1.23 + 2.01*I;
-	cplx ctestTemp;
-	for(int i = 0; i < 26 * 3; i += 3) {
-		switch(i/3) {
-			case 0:
-				ctestTemp = ret + ret;
-				break;
-
-			case 1:
-				ctestTemp = ret - ret;
-				break;
-
-			case 2:
-				ctestTemp = ret * ret;
-				break;
-
-			case 3:
-				ctestTemp = ret / (12.3 - 3 * I);
-				break;
-
-			case 4:
-				ctestTemp = creal(ret);
-				break;
-
-			case 5:
-				ctestTemp = cimag(ret);
-				break;
-
-			case 6:
-				ctestTemp = conj(ret);
-				break;
-
-			case 7:
-				ctestTemp = carg(ret);
-				break;
-
-			case 8:
-				ctestTemp = cproj(ret);
-				break;
-
-			case 9:
-				ctestTemp = cabs(ret);
-				break;
-
-			case 10:
-				ctestTemp = cexp(ret);
-				break;
-
-			case 11:
-				ctestTemp = clog(ret);
-				break;
-
-			case 12:
-				ctestTemp = cpow(ret, ret);
-				break;
-
-			case 13:
-				ctestTemp = csqrt(ret);
-				break;
-
-			case 14:
-				ctestTemp = csin(ret);
-				break;
-
-			case 15:
-				ctestTemp = ccos(ret);
-				break;
-
-			case 16:
-				ctestTemp = ctan(ret);
-				break;
-
-			case 17:
-				ctestTemp = csinh(ret);
-				break;
-
-			case 18:
-				ctestTemp = ccosh(ret);
-				break;
-
-			case 19:
-				ctestTemp = ctanh(ret);
-				break;
-
-			case 20:
-				ctestTemp = casinh(ret);
-				break;
-
-			case 21:
-				ctestTemp = cacosh(ret);
-				break;
-
-			case 22:
-				ctestTemp = catanh(ret);
-				break;
-
-			case 23:
-				ctestTemp = casin(ret);
-				break;
-
-			case 24:
-				ctestTemp = cacos(ret);
-				break;
-
-			case 25:
-				ctestTemp = catan(ret);
-					break;
-		}
-
-		printf("%d SHADER: %f%+fi\n", i/3, colors[i] , colors[i+1] );
-		printf("%d COMPLX: %lf%+lfi\n", i/3, creal(ctestTemp) , cimag(ctestTemp));
-		printf("%d: %f%+fi\n\n", i/3, colors[i] - creal(ctestTemp) , colors[i+1] - cimag(ctestTemp));
-	}
-#else
-	printf("%f\n", posData[0]);
-	printf("%f\n", posData[1]);
-	printf("%f\n", colors[0]);
-	printf("%f\n", colors[1]);
-	printf("%f\n", colors[2]);
-	printf("%f\n", colors[3]);
-	printf("%f\n", colors[4]);
-	printf("%f\n", colors[5]);
-	printf("%f\n", colors[3*n-3]);
-	printf("%f\n", colors[3*n-2]);
-	printf("%f\n", colors[3*n-1]);
-#endif
-
-	/* for(int i = 0; i < width; i++) { */
-	/* 	for(int j = 0; j < height*2; j+=2) { */
-			/* printf("%1.2f, %1.2f  ", posData[i*height+j], posData[i*height+j+1]); */
-			/* printf("%1.3f,   ", posData[i*height*2+j]); */
-			/* printf("%1.3f,   ", posData[i*height*2+j+1]); */
-		/* } */
-		/* printf("\n"); */
-	/* } */
-
-	/* for(int i = 0; i < width * 4; i++) { */
-	/* 	printf("(%d) %1.3f\n", i, posData[i]); */
-	/* } */
-
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	glGenBuffers(1, &triangleVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height + sizeof(GLfloat) * 3 * width * height, NULL, GL_DYNAMIC_DRAW);
-
-	/* printf("GLfloat: %ld, float: %ld\n", sizeof(GLfloat), sizeof(float)); */
-
-	//Position
-	GLint posAttrb = glGetAttribLocation(shaderProgram, "position");
-
-	glVertexAttribPointer(posAttrb, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glEnableVertexAttribArray(posAttrb);
-
-	//Color
-	printf("colors size: %ld\n", sizeof(GLfloat) * 3 * width * height);
-
-	GLint colorAttrb = glGetAttribLocation(shaderProgram, "color");
-
-	glVertexAttribPointer(colorAttrb, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(float) * 2 * width * height));
-
-	glEnableVertexAttribArray(colorAttrb);
-
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 2 * width * height, posData);
-
-	/* glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); */
-
-	glOrtho(-300, 300, -300, 300, 0, 0);
-
-	int graphDrawn = 0;
-
-	/* printf("SDL_DEFAULT_REPEAT_DELAY: %d\n", SDL_DEFAULT_REPEAT_DELAY); */
-	/* SDL_EnableKeyRepeat(1, 1); */
-
-	/* SDL_EnableUNICODE(SDL_ENABLE); */
-    SDL_StartTextInput();
-	Uint8* keystates;
-
-	while(!closeApp) {
-		//input
-		//SDL query keyboard state
-		Uint8* keystates = SDL_GetKeyboardState( NULL );
-		//SDL query events (mainly only using window events)
-		SDL_PollEvent(&events);
-
-		switch (events.type) {
-			case SDL_QUIT:
-				closeApp = 1;
-				break;
-
-			case SDL_WINDOWEVENT:
-				if(events.window.windowID == SDLwindowID) {
-					if(events.window.event == SDL_WINDOWEVENT_CLOSE) {
-						closeApp = 1;
-					}
-				}
-
-				if(events.window.windowID == displayID) {
-					if(events.window.event == SDL_WINDOWEVENT_CLOSE) {
-						SDL_MinimizeWindow(display);
-					}
-				}
-				break;
-
-			default:
-				break;
-		}
-
-		if(keystates[SDL_SCANCODE_COMMA]) {
-			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				zoom += zoom/5;
-			}
-			else {
-				zoom += zoom/20;
-			}
-			zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
-			/* printf("zoomc: %.10f\n", zoomc); */
-			graphDrawn = 0;
-		}
-
-		if(keystates[SDL_SCANCODE_PERIOD]) {
-			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				zoom -= zoom/5;
-			}
-			else {
-				zoom -= zoom/20;
-			}
-			zoomc = zoom < 1.0 ? powl(0.001, 2.0-zoom) : 0.001;
-			/* printf("zoomc: %.10f\n", zoomc); */
-			graphDrawn = 0;
-		}
-
-		if(keystates[SDL_SCANCODE_UP]) {
-			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				posOffset[1] += fabs(zoom) / 10;
-			}
-			else {
-				posOffset[1] += fabs(zoom) / 100;
-			}
-			graphDrawn = 0;
-		}
-
-		if(keystates[SDL_SCANCODE_DOWN]) {
-			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				posOffset[1] -= fabs(zoom) / 10;
-			}
-			else {
-				posOffset[1] -= fabs(zoom) / 100;
-			}
-			graphDrawn = 0;
-		}
-
-		if(keystates[SDL_SCANCODE_LEFT]) {
-			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				posOffset[0] -= fabs(zoom) / 10;
-			}
-			else {
-				posOffset[0] -= fabs(zoom) / 100;
-			}
-			graphDrawn = 0;
-		}
-
-		if(keystates[SDL_SCANCODE_RIGHT]) {
-			if(keystates[SDL_SCANCODE_LSHIFT]) {
-				posOffset[0] += fabs(zoom) / 10;
-			}
-			else {
-				posOffset[0] += fabs(zoom) / 100;
-			}
-			graphDrawn = 0;
-		}
-
-		if(keystates[SDL_SCANCODE_SPACE]) {
-			posOffset[0] = 0;
-			posOffset[1] = 0;
-			zoom = 10;
-			graphDrawn = 0;
-		}
-
-		//render if graph not drawn, and then set drawn to true
-		if(!graphDrawn) {
-			err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &posBuffer);
-			err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &colorBuffer);
-			err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &opBuffer);
-			err |= clSetKernelArg(kernel, 3, sizeof(int), &count);
-			err |= clSetKernelArg(kernel, 4, sizeof(double), &zoom);
-			err |= clSetKernelArg(kernel, 5, sizeof(float), &zoomc);
-			err |= clSetKernelArg(kernel, 6, sizeof(float)*2, &posOffset);
-			err |= clSetKernelArg(kernel, 7, sizeof(unsigned int), &n);
-		 
-			// Execute the kernel over the entire range of the data set  
-			err = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &globalSize, &localSize, 0, NULL, NULL);
-		 
-			// Wait for the command queue to get serviced before reading back results
-			clFinish(queue);
-		 
-			// Read the results from the device
-			clEnqueueReadBuffer(queue, colorBuffer, CL_TRUE, 0, colorSize, colors, 0, NULL, NULL);
-			/* drawGraph(posData, operations, count, colors, height, width, zoom); */
-			glBufferSubData(GL_ARRAY_BUFFER, posSize, colorSize, colors);
-			graphDrawn = 1;
-		}
-
-		//Draw Textbox
-		SDL_RenderCopy(SDLMainWindowRenderer, textBoxTexture, NULL, &dstrect);
-		SDL_RenderPresent(SDLMainWindowRenderer);
-		
-		//Events
-		SDL_UpdateWindowSurface(SDLwindow);
-		SDL_RenderPresent(SDLMainWindowRenderer);
-		/* glfwSwapBuffers(display); */
-
-		SDL_GL_MakeCurrent(display, displayContext);
-
-		/* SDL_SetRenderDrawColor( SDLMainWindowRenderer, 0x12, 0x67, 0xBF, 0xFF ); */
-		/* SDL_RenderClear( SDLMainWindowRenderer); */
-
-		//draw VBO
-		glBindVertexArray(vao);
-		glDrawArrays(GL_POINTS, 0, width * height);
-
-		SDL_GL_SwapWindow(display);
-
-		/* printf(""); */
-	}
-
-	/* glfwTerminate(); */
-
-    // release OpenCL resources
-    clReleaseMemObject(posBuffer);
-	clReleaseMemObject(opBuffer);
-    clReleaseMemObject(colorBuffer);
-    clReleaseProgram(program);
-    clReleaseKernel(kernel);
-    clReleaseCommandQueue(queue);
-    clReleaseContext(context);
-
-	//release SDL resources
-	SDL_GL_DeleteContext(displayContext);
-	SDL_DestroyTexture(textBoxTexture);
-	SDL_FreeSurface(screenSurface);
-	SDL_FreeSurface(textBoxSurface);
-	SDL_DestroyRenderer(SDLMainWindowRenderer);
-	SDL_DestroyWindow(SDLwindow);
-	SDL_DestroyWindow(display);
-	TTF_CloseFont(gFont);
-	/* SDL_FreeSurface(screenSurface); */
-
-	TTF_Quit();
-	SDL_Quit();
-
-	// Exit on failure if there were errors.
-	return 0;
+int main(int argc, char* argv[]) {
+/* #ifdef test */
+/* 	setenv("CUDA_CACHE_DISABLE", "1", 1); */
+/* #endif */
+
+/* 	FILE* sample = fopen("input.txt", "r"); */
+/* 	/1* FILE* sample = fopen("input3.txt", "r"); *1/ */
+/* 	char function[1024]; */
+/* 	fgets(function, 1024, sample); */
+/* 	printf("|%s|\n", function); */
+/* 	fclose(sample); */
+
+/* 	// Possibly enable parser runtime debugging. */
+/* 	yydebug = !!getenv("YYDEBUG"); */
+/* 	queue out = queueInit(); */
+/* 	result res = parse_string(function, &out); */
+/* 	if( res.nerrs ) { */
+/* 		exit(0); */
+/* 	} */
+/* 	cplx* operations = (cplx*)malloc(128*sizeof(cplx)); */
+
+/* 	int count = 0; */
+/* 	while(front(out) != -DBL_MAX-DBL_MAX*I) { */
+/* 		operations[count++] = dequeue(&out); */
+/* 	} */
+/* 	operations = (cplx*)realloc(operations, count*sizeof(cplx)); */
+/* 	printf("count: %d\n", count); */
+
+	GtkApplication *app;
+	int app_status;
+
+	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
+	g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+	printf("DB: 0\n");
+	app_status = g_application_run(G_APPLICATION(app), argc, argv);
+	printf("DB: 2\n");
+	g_object_unref(app);
+
+	return app_status;
 }
+
+static void activate (GtkApplication *app, gpointer user_data) {
+	//Windows
+	gtkWindow *window;
+	gtkWindow *display;
+
+	//CSS style elements
+	GtkStyleContext *context;
+	GtkCssProvider *cssProvider = gtk_css_provider_new();
+	gtk_css_provider_load_from_path(cssProvider, "entry.css", NULL);
+
+	//GLarea
+	gtkGLArea* GLdisplay;
+	GtkWidget* GLdisplay_box;
+
+	//UI elements
+	gtkButton *button;
+	GtkWidget *button_box;
+
+	gtkEntry *funcInput;
+	GtkEntryBuffer *funcBuffer;
+	gtkBox *funcBox;
+
+	GLdisplay = gtk_gl_area_new();
+	gtk_widget_set_name(GLdisplay, "GLdisplay");
+	//
+	//
+	g_signal_connect(GLdisplay, "render", G_CALLBACK (render), NULL);
+	g_signal_connect(GLdisplay, "realize", G_CALLBACK (on_realise), GLdisplay);
+
+	display = gtk_application_window_new(app);
+	gtk_window_set_title(GTK_WINDOW(display), "display");
+	gtk_window_set_default_size(GTK_WINDOW(display), 600, 600);
+
+	gtk_widget_show_all(display);
+
+	window = gtk_application_window_new (app);
+	gtk_window_set_title (GTK_WINDOW (window), "Window");
+	gtk_window_set_default_size (GTK_WINDOW (window), 800, 600);
+
+	/* button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL); */
+	/* gtk_container_add (GTK_CONTAINER (window), button_box); */
+
+	/* button = gtk_button_new_with_label ("Hello World"); */
+	/* g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL); */
+	/* g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window); */
+	/* gtk_container_add (GTK_CONTAINER (button_box), button); */
+
+	funcBuffer = gtk_entry_buffer_new("", 0);
+
+	funcBox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+	gtk_container_add(GTK_CONTAINER(window), funcBox);
+
+	GLdisplay_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+	gtk_container_add(GTK_CONTAINER(display), GLdisplay_box);
+
+	gtk_container_add(GTK_CONTAINER(GLdisplay_box), GLdisplay);
+
+	funcInput = gtk_entry_new_with_buffer(funcBuffer);
+	gtk_widget_set_name((funcInput), "funcIn");
+	gtk_entry_set_max_width_chars(GTK_ENTRY(funcInput), 256);
+	gtk_entry_set_placeholder_text(GTK_ENTRY(funcInput), "Enter function here");
+	/* gtk_entry_set_has_frame(funcInput, 1); */
+	g_signal_connect(funcInput, "activate", G_CALLBACK(on_activate), NULL);
+
+	context = gtk_widget_get_style_context(funcInput);
+	gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	gtk_container_add(GTK_CONTAINER(funcBox), funcInput);
+
+	gtk_widget_show_all(window);
+	gtk_widget_show_all(display);
+	printf("DB: 1\n");
+}
+
+static void on_activate(GtkEntry* entry, gpointer user_data) {
+	const char *name;
+	name = gtk_entry_get_text(entry);
+
+	g_print("\nHello %s!\n\n", name);
+}
+
+static void on_realise(GtkGLArea *area) {
+	gtk_gl_area_make_current(area);
+	if(gtk_gl_area_get_error(area) != NULL) {
+		printf("Could not get area\n");
+		return;
+	}
+	/* gtk_gl_area_set_required_version(area, 3, 3); */
+	return;
+	/* GError *internal_error = NULL; */
+	/* init_buffer_objects(&internal_error); */
+	/* if (internal_error != NULL) { */
+	/* 	gtk_gl_area_set_error(area, internal_error); */
+	/* 	g_error_free(internal_error); */
+	/* 	return; */
+	/* } */
+
+	/* init_shaders(&internal_error); */
+	/* if(internal_error != NULL) { */
+	/* 	gtk_gl_area_set_error(area, internal_error); */
+	/* 	g_error_free(internal_error); */
+	/* 	return; */
+	/* } */
+}
+
+static gboolean render (GtkGLArea *area, GdkGLContext *context) {
+	/* gtk_gl_area_set_required_version(area, 3, 3); */
+	// we can start by clearing the buffer
+	/* printf("you spastic\n"); */
+	glClearColor(0, 23, 23, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	return TRUE;
+}
+
+
+//457 lines
+/* 	//SDL */
+/* 	//The window we'll be rendering to */
+/* 	/1* SDL_StartTextInput(); *1/ */
+
+/* 	//SDL OpenGL code */
+/* 	SDL_GLContext displayContext; */
+
+/* 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3); */
+/*     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3); */
+/* 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); */
+/*     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); */
+
+/* 	SDL_Window* display = SDL_CreateWindow("Display", 1050, 200, 600, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN); */
+/* 	int displayID = SDL_GetWindowID(display); */
+	
+/* 	displayContext = SDL_GL_CreateContext(display); */
+
+/* 	SDL_GL_MakeCurrent(display, displayContext); */
+
+/* 	SDL_GL_SetSwapInterval(1); */
+
+/* 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) */
+/* 	{ */
+/* 		return -1; */
+/* 	} */
+ 
+/* 	SDL_GL_SwapWindow(display); */
+/* 	SDL_GL_MakeCurrent(display, displayContext); */
+
+/* 	glViewport(0, 0, 800, 600); */
+
+/* 	//Points */
+/* 	glEnable(GL_PROGRAM_POINT_SIZE); */
+
+/* 	//VBO */
+/* 	GLuint shaderProgram; */
+/* 	GLuint vboVert, vboFrag; */
+/* 	char *vertSource, *fragSource; */
+
+/* 	vertSource = filetobuf("vertShad.vert"); */
+/* 	vboVert = glCreateShader(GL_VERTEX_SHADER); */
+/* 	glShaderSource(vboVert, 1, (const GLchar**)&vertSource, 0); */
+/* 	glCompileShader(vboVert); */
+
+/* 	GLint vertSuccess; */
+/* 	glGetShaderiv(vboVert, GL_COMPILE_STATUS, &vertSuccess); */
+/* 	if(vertSuccess != GL_TRUE) { */
+/* 		printf("Error: compile error for shader vboVert: \n"); */
+/* 	} */
+
+/* 	fragSource = filetobuf("fragShad.frag"); */
+/* 	vboFrag = glCreateShader(GL_FRAGMENT_SHADER); */
+/* 	glShaderSource(vboFrag, 1, (const GLchar**)&fragSource, 0); */
+/* 	glCompileShader(vboFrag); */
+
+/* 	shaderProgram = glCreateProgram(); */
+/* 	glAttachShader(shaderProgram, vboVert); */
+/* 	glAttachShader(shaderProgram, vboFrag); */
+
+/* 	glLinkProgram(shaderProgram); */
+/* 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &vertSuccess); */
+/* 	if(vertSuccess != GL_TRUE) { */
+/* 		printf("Error: compile error for program shaderProgram: \n"); */
+/* 	} */
+/* 	glUseProgram(shaderProgram); */
+
+/* 	GLuint vao; */
+/* 	GLuint triangleVBO; */
+/* 	float* posData; */
+/* 	float posOffset[2] = {0, 0}; */
+/* 	GLfloat* colors; */
+/* 	/1* int width = 1600; *1/ */
+/* 	/1* int height = 2000; *1/ */
+/* 	/1* double interval = 0.001; *1/ */
+/* 	int width = 800; */
+/* 	int height = 1000; */
+/* 	double interval = 0.002; */
+/* 	int n = width * height; */
+/* 	double zoom = 10; */
+/* 	/1* float zoomc = zoom > 1.0 ? (1.0/4.0)*((1.0/2.0)+(1.0/log(zoom+(cpowl(M_E, 2.0/3.0)+1.0)-1.0))) : 0.5; *1/ */
+/* 	float zoomc = 0.001; */
+/* 	printf("zoomc: %f\n", zoomc); */
+/* 	glPointSize(interval * 500); */
+
+/*     size_t posSize = sizeof(float) * 2 * n; */
+/*     size_t colorSize = sizeof(GLfloat) * 3 * n; */
+
+/* 	posData = malloc(posSize); */
+/* 	colors = malloc(colorSize); */
+
+/* 	for(int i = 0; i < width; i++) { */
+/* 		for(int j = 0; j < height*2; j+=2) { */
+/* 			posData[i*height*2+j] = -1.0 + i*interval; */
+/* 			posData[i*height*2+j+1] = -1.0 + (j/2)*interval; */
+/* 		} */
+/* 	} */
+
+/* 	//OpenCL code; */
+
+/*     // Device input buffers */
+/*     cl_mem posBuffer; */
+/* 	cl_mem opBuffer; */
+/*     // Device output buffer */
+/*     cl_mem colorBuffer; */
+ 
+/*     cl_platform_id cpPlatform;        // OpenCL platform */
+/*     cl_device_id device_id;           // device ID */
+/*     cl_context context;               // context */
+/*     cl_command_queue queue;           // command queue */
+/*     cl_program program;               // program */
+/*     cl_kernel kernel;                 // kernel */
+ 
+/*     size_t globalSize, localSize; */
+/*     cl_int err; */
+ 
+/*     // Number of work items in each local work group */
+/*     localSize = 512; */
+ 
+/*     // Number of total work items - localSize must be divisor */
+/*     globalSize = ceil(n/(float)localSize)*localSize; */
+ 
+/*     // Bind to platform */
+/*     err = clGetPlatformIDs(1, &cpPlatform, NULL); */
+ 
+/* 	if(err != CL_SUCCESS) { */
+/* 		printf("error: %d\n", err); */
+/* 	} */
+
+/*     // Get ID for the device */
+/*     err = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 1, &device_id, NULL); */
+/* 	if(err != CL_SUCCESS) { */
+/* 		printf("error: %d\n", err); */
+/* 	} */
+
+/*     // Create a context */  
+/*     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err); */
+/* 	if(err != CL_SUCCESS) { */
+/* 		printf("error: %d\n", err); */
+/* 	} */
+ 
+/*     // Create a command queue */ 
+/*     queue = clCreateCommandQueueWithProperties(context, device_id, 0, &err); */
+
+/* 	/1* printf("BR: 0\n"); *1/ */
+
+/*     // Create the compute program from the source buffer */
+/* 	char kernelSource[16384]; */
+/* 	memset(kernelSource, '\0', 16384); */
+/* 	FILE* kernelFile; */
+/* #ifdef test */
+/* 		kernelFile = fopen("ctest.cl", "r"); */
+/* #else */ 
+/* 		kernelFile = fopen("graph.cl", "r"); */
+/* #endif */
+/* 	char kTemp[512]; */
+/* 	while(fgets(kTemp, 512, kernelFile) != NULL) { */
+/* 		strcat(kernelSource, kTemp); */
+/* 	} */
+/* 	fclose(kernelFile); */
+/* 	/1* printf("|%s|", kernelSource); *1/ */
+/* 	/1* printf("\n\n"); *1/ */
+
+
+/* 	const char* kSrcPtr = kernelSource; */
+/*     program = clCreateProgramWithSource(context, 1, (const char **)&kSrcPtr, NULL, &err); */
+
+/* 	if(err != CL_SUCCESS) { */
+/* 		printf("program build failed\n"); */
+/* 		printf("error: %d\n", err); */
+/* 	} */
+ 
+/*     // Build the program executable */ 
+/*     err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL); */
+/* 	if(err != CL_SUCCESS) { */
+/* 		printf("build error: %d\n", err); */
+/* 		size_t errorSize; */
+/* 		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &errorSize); */
+		
+/* 		char* log = malloc(errorSize); */
+/* 		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, errorSize, log, NULL); */
+
+/* 		printf("|%s|\n", log); */
+/* 	} */
+
+/*     // Create the compute kernel in the program we wish to run */
+/*     kernel = clCreateKernel(program, "graph", &err); */
+/* 	if(err != CL_SUCCESS) { */
+/* 		printf("link error: %d\n", err); */
+/* 	} */
+
+/* 	printf("count*sizeof(cplx): %ld\n", count * sizeof(cplx)); */
+ 
+/*     // Create the input and output arrays in device memory for our calculation */
+/*     posBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, posSize, NULL, NULL); */
+/* 	opBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY, count*sizeof(cplx), NULL, NULL); */
+
+/*     colorBuffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, colorSize, NULL, NULL); */
+ 
+/*     // Write our data set into the input array in device memory */
+/*     err = clEnqueueWriteBuffer(queue, posBuffer, CL_TRUE, 0, posSize, posData, 0, NULL, NULL); */
+/*     err |= clEnqueueWriteBuffer(queue, opBuffer, CL_TRUE, 0, count*sizeof(cplx), operations, 0, NULL, NULL); */
+
+/*     // Set the arguments to our compute kernel */
+/*     err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &posBuffer); */
+/*     err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &colorBuffer); */
+/*     err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &opBuffer); */
+/*     err |= clSetKernelArg(kernel, 3, sizeof(int), &count); */
+/*     err |= clSetKernelArg(kernel, 4, sizeof(double), &zoom); */
+/*     err |= clSetKernelArg(kernel, 5, sizeof(float), &zoomc); */
+/*     err |= clSetKernelArg(kernel, 6, sizeof(float)*2, &posOffset); */
+/*     err |= clSetKernelArg(kernel, 7, sizeof(unsigned int), &n); */
+ 
+/*     // Execute the kernel over the entire range of the data set */  
+/*     err = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &globalSize, &localSize, 0, NULL, NULL); */
+ 
+/*     // Wait for the command queue to get serviced before reading back results */
+/*     clFinish(queue); */
+ 
+/*     // Read the results from the device */
+/*     clEnqueueReadBuffer(queue, colorBuffer, CL_TRUE, 0, colorSize, colors, 0, NULL, NULL); */
+
+/* #ifdef test */
+/* 	cplx ret = -1.23 + 2.01*I; */
+/* 	cplx ctestTemp; */
+/* 	for(int i = 0; i < 26 * 3; i += 3) { */
+/* 		switch(i/3) { */
+/* 			case 0: */
+/* 				ctestTemp = ret + ret; */
+/* 				break; */
+
+/* 			case 1: */
+/* 				ctestTemp = ret - ret; */
+/* 				break; */
+
+/* 			case 2: */
+/* 				ctestTemp = ret * ret; */
+/* 				break; */
+
+/* 			case 3: */
+/* 				ctestTemp = ret / (12.3 - 3 * I); */
+/* 				break; */
+
+/* 			case 4: */
+/* 				ctestTemp = creal(ret); */
+/* 				break; */
+
+/* 			case 5: */
+/* 				ctestTemp = cimag(ret); */
+/* 				break; */
+
+/* 			case 6: */
+/* 				ctestTemp = conj(ret); */
+/* 				break; */
+
+/* 			case 7: */
+/* 				ctestTemp = carg(ret); */
+/* 				break; */
+
+/* 			case 8: */
+/* 				ctestTemp = cproj(ret); */
+/* 				break; */
+
+/* 			case 9: */
+/* 				ctestTemp = cabs(ret); */
+/* 				break; */
+
+/* 			case 10: */
+/* 				ctestTemp = cexp(ret); */
+/* 				break; */
+
+/* 			case 11: */
+/* 				ctestTemp = clog(ret); */
+/* 				break; */
+
+/* 			case 12: */
+/* 				ctestTemp = cpow(ret, ret); */
+/* 				break; */
+
+/* 			case 13: */
+/* 				ctestTemp = csqrt(ret); */
+/* 				break; */
+
+/* 			case 14: */
+/* 				ctestTemp = csin(ret); */
+/* 				break; */
+
+/* 			case 15: */
+/* 				ctestTemp = ccos(ret); */
+/* 				break; */
+
+/* 			case 16: */
+/* 				ctestTemp = ctan(ret); */
+/* 				break; */
+
+/* 			case 17: */
+/* 				ctestTemp = csinh(ret); */
+/* 				break; */
+
+/* 			case 18: */
+/* 				ctestTemp = ccosh(ret); */
+/* 				break; */
+
+/* 			case 19: */
+/* 				ctestTemp = ctanh(ret); */
+/* 				break; */
+
+/* 			case 20: */
+/* 				ctestTemp = casinh(ret); */
+/* 				break; */
+
+/* 			case 21: */
+/* 				ctestTemp = cacosh(ret); */
+/* 				break; */
+
+/* 			case 22: */
+/* 				ctestTemp = catanh(ret); */
+/* 				break; */
+
+/* 			case 23: */
+/* 				ctestTemp = casin(ret); */
+/* 				break; */
+
+/* 			case 24: */
+/* 				ctestTemp = cacos(ret); */
+/* 				break; */
+
+/* 			case 25: */
+/* 				ctestTemp = catan(ret); */
+/* 					break; */
+/* 		} */
+
+/* 		printf("%d SHADER: %f%+fi\n", i/3, colors[i] , colors[i+1] ); */
+/* 		printf("%d COMPLX: %lf%+lfi\n", i/3, creal(ctestTemp) , cimag(ctestTemp)); */
+/* 		printf("%d: %f%+fi\n\n", i/3, colors[i] - creal(ctestTemp) , colors[i+1] - cimag(ctestTemp)); */
+/* 	} */
+/* #else */
+/* 	printf("%f\n", posData[0]); */
+/* 	printf("%f\n", posData[1]); */
+/* 	printf("%f\n", colors[0]); */
+/* 	printf("%f\n", colors[1]); */
+/* 	printf("%f\n", colors[2]); */
+/* 	printf("%f\n", colors[3]); */
+/* 	printf("%f\n", colors[4]); */
+/* 	printf("%f\n", colors[5]); */
+/* 	printf("%f\n", colors[3*n-3]); */
+/* 	printf("%f\n", colors[3*n-2]); */
+/* 	printf("%f\n", colors[3*n-1]); */
+/* #endif */
+
+/* 	/1* for(int i = 0; i < width; i++) { *1/ */
+/* 	/1* 	for(int j = 0; j < height*2; j+=2) { *1/ */
+/* 			/1* printf("%1.2f, %1.2f  ", posData[i*height+j], posData[i*height+j+1]); *1/ */
+/* 			/1* printf("%1.3f,   ", posData[i*height*2+j]); *1/ */
+/* 			/1* printf("%1.3f,   ", posData[i*height*2+j+1]); *1/ */
+/* 		/1* } *1/ */
+/* 		/1* printf("\n"); *1/ */
+/* 	/1* } *1/ */
+
+/* 	/1* for(int i = 0; i < width * 4; i++) { *1/ */
+/* 	/1* 	printf("(%d) %1.3f\n", i, posData[i]); *1/ */
+/* 	/1* } *1/ */
+
+/* 	glGenVertexArrays(1, &vao); */
+/* 	glBindVertexArray(vao); */
+
+/* 	glGenBuffers(1, &triangleVBO); */
+/* 	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO); */
+/* 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * width * height + sizeof(GLfloat) * 3 * width * height, NULL, GL_DYNAMIC_DRAW); */
+
+/* 	/1* printf("GLfloat: %ld, float: %ld\n", sizeof(GLfloat), sizeof(float)); *1/ */
+
+/* 	//Position */
+/* 	GLint posAttrb = glGetAttribLocation(shaderProgram, "position"); */
+
+/* 	glVertexAttribPointer(posAttrb, 2, GL_FLOAT, GL_FALSE, 0, 0); */
+
+/* 	glEnableVertexAttribArray(posAttrb); */
+
+/* 	//Color */
+/* 	printf("colors size: %ld\n", sizeof(GLfloat) * 3 * width * height); */
+
+/* 	GLint colorAttrb = glGetAttribLocation(shaderProgram, "color"); */
+
+/* 	glVertexAttribPointer(colorAttrb, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(float) * 2 * width * height)); */
+
+/* 	glEnableVertexAttribArray(colorAttrb); */
+
+/* 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 2 * width * height, posData); */
+
+/* 	/1* glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); *1/ */
+
+/* 	glOrtho(-300, 300, -300, 300, 0, 0); */
+
+/* 	int graphDrawn = 0; */
+
+/* 	while(!closeApp) { */
+/* 		//input */
+
+/* 		//render if graph not drawn, and then set drawn to true */
+		/* if(!graphDrawn) { */
+		/* 	err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &posBuffer); */
+		/* 	err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &colorBuffer); */
+		/* 	err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &opBuffer); */
+		/* 	err |= clSetKernelArg(kernel, 3, sizeof(int), &count); */
+		/* 	err |= clSetKernelArg(kernel, 4, sizeof(double), &zoom); */
+		/* 	err |= clSetKernelArg(kernel, 5, sizeof(float), &zoomc); */
+		/* 	err |= clSetKernelArg(kernel, 6, sizeof(float)*2, &posOffset); */
+		/* 	err |= clSetKernelArg(kernel, 7, sizeof(unsigned int), &n); */
+		 
+		/* 	// Execute the kernel over the entire range of the data set */  
+		/* 	err = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &globalSize, &localSize, 0, NULL, NULL); */
+		 
+		/* 	// Wait for the command queue to get serviced before reading back results */
+		/* 	clFinish(queue); */
+		 
+		/* 	// Read the results from the device */
+		/* 	clEnqueueReadBuffer(queue, colorBuffer, CL_TRUE, 0, colorSize, colors, 0, NULL, NULL); */
+		/* 	/1* drawGraph(posData, operations, count, colors, height, width, zoom); *1/ */
+		/* 	glBufferSubData(GL_ARRAY_BUFFER, posSize, colorSize, colors); */
+		/* 	graphDrawn = 1; */
+		/* } */
+
+		/* //Draw Textbox */
+		/* /1* SDL_RenderCopy(SDLMainWindowRenderer, textBoxTexture, NULL, &dstrect); *1/ */
+		/* /1* SDL_RenderPresent(SDLMainWindowRenderer); *1/ */
+		
+		/* /1* //Events *1/ */
+		/* /1* SDL_UpdateWindowSurface(SDLwindow); *1/ */
+		/* /1* SDL_RenderPresent(SDLMainWindowRenderer); *1/ */
+		/* /1* /2* glfwSwapBuffers(display); *2/ *1/ */
+
+		/* /1* SDL_GL_MakeCurrent(display, displayContext); *1/ */
+
+		/* /1* /2* SDL_SetRenderDrawColor( SDLMainWindowRenderer, 0x12, 0x67, 0xBF, 0xFF ); *2/ *1/ */
+		/* /1* /2* SDL_RenderClear( SDLMainWindowRenderer); *2/ *1/ */
+
+		/* /1* //draw VBO *1/ */
+		/* /1* glBindVertexArray(vao); *1/ */
+		/* /1* glDrawArrays(GL_POINTS, 0, width * height); *1/ */
+
+		/* /1* SDL_GL_SwapWindow(display); *1/ */
+
+		/* /1* printf(""); *1/ */
+	/* } */
+
+	/* /1* glfwTerminate(); *1/ */
+
+    /* // release OpenCL resources */
+    /* clReleaseMemObject(posBuffer); */
+	/* clReleaseMemObject(opBuffer); */
+    /* clReleaseMemObject(colorBuffer); */
+    /* clReleaseProgram(program); */
+    /* clReleaseKernel(kernel); */
+    /* clReleaseCommandQueue(queue); */
+    /* clReleaseContext(context); */
+
+	/* // Exit on failure if there were errors. */
+/* } */
 
 char* filetobuf(char *file) {
     FILE *fptr;
