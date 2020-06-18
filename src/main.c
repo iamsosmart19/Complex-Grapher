@@ -32,6 +32,8 @@ int main(int argc, char* argv[]) {
 	GlApplication glMainApp;
 	int app_status;
 
+	glMainApp.clProg = create_cl_program();
+
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), &glMainApp);
 	app_status = g_application_run(G_APPLICATION(app), argc, argv);
@@ -237,7 +239,7 @@ out:
 		glDeleteShader (fragment);
 	}
 
-	if (program != NULL) {
+	if (program) {
 		*programExt = &program;
 	}
 

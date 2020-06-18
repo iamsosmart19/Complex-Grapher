@@ -67,7 +67,7 @@ typedef struct GlApplication_struct_decl {
 	int opSize;
 
 	//OPENCL
-	ClProgram gpuProg;
+	ClProgram clProg;
 
 	//OPENGL
 	gtkGLArea* area;
