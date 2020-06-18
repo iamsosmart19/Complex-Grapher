@@ -1,9 +1,12 @@
 #include "main.h"
-
-int main(int argc, char* argv[]) {
 #ifdef test
 	setenv("CUDA_CACHE_DISABLE", "1", 1);
 #endif
+
+int main(int argc, char* argv[]) {
+	GtkApplication *app;
+	GlApplication glMainApp;
+	int app_status;
 
 	FILE* sample = fopen("input.txt", "r");
 	/* FILE* sample = fopen("input3.txt", "r"); */
@@ -19,18 +22,15 @@ int main(int argc, char* argv[]) {
 	if( res.nerrs ) {
 		exit(0);
 	}
-	cplx* operations = (cplx*)malloc(128*sizeof(cplx));
+	printf("DB: 0\n");
+	glMainApp.operations = (cplx*)malloc(128*sizeof(cplx));
 
-	int count = 0;
+	glMainApp.opSize = 0;
 	while(front(out) != -DBL_MAX-DBL_MAX*I) {
-		operations[count++] = dequeue(&out);
+		glMainApp.operations[glMainApp.opSize++] = dequeue(&out);
 	}
-	operations = (cplx*)realloc(operations, count*sizeof(cplx));
-	printf("count: %d\n", count);
-
-	GtkApplication *app;
-	GlApplication glMainApp;
-	int app_status;
+	glMainApp.operations = (cplx*)realloc(glMainApp.operations, glMainApp.opSize*sizeof(cplx));
+	printf("count: %d\n", glMainApp.opSize);
 
 	glMainApp.clProg = create_cl_program();
 
@@ -198,11 +198,11 @@ static gboolean init_shader(guint** programExt) {
 	GError* error;
 
 	source = g_resources_lookup_data("/io/s1m7u/cplxgrapher/glfiles/vertShad.vert", 0, NULL);
-	create_shader(GL_VERTEX_SHADER, g_bytes_get_data(source, NULL), error, &vertex);
+	create_shader(GL_VERTEX_SHADER, g_bytes_get_data(source, NULL), &error, &vertex);
 	g_bytes_unref(source);
 
 	source = g_resources_lookup_data("/io/s1m7u/cplxgrapher/glfiles/fragShad.frag", 0, NULL);
-	create_shader(GL_FRAGMENT_SHADER, g_bytes_get_data(source, NULL), error, &fragment);
+	create_shader(GL_FRAGMENT_SHADER, g_bytes_get_data(source, NULL), &error, &fragment);
 	g_bytes_unref(source);
 
 	program = glCreateProgram();
