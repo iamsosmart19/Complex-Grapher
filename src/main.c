@@ -56,18 +56,19 @@ static void activate (GtkApplication *app, gpointer user_data) {
 	/* Glprogram shaderProgram; */
 
 	//UI elements
-	gtkButton *button;
-	GtkWidget *button_box;
+	/* gtkButton *button; */
+	/* GtkWidget *button_box; */
 
 	gtkEntry *funcInput;
 	GtkEntryBuffer *funcBuffer;
 	gtkBox *funcBox;
 
 	glMainApp.area = gtk_gl_area_new();
-	gtk_gl_area_set_required_version(glMainApp.area, 3, 3);
-	gtk_widget_set_name(glMainApp.area, "glMainApp.area");
-	g_signal_connect(glMainApp.area, "render", G_CALLBACK (render), NULL);
+	gtk_gl_area_set_required_version(GTK_GL_AREA(glMainApp.area), 3, 3);
+	gtk_widget_set_name(glMainApp.area, "display");
 	g_signal_connect(glMainApp.area, "realize", G_CALLBACK (on_realise), &glMainApp);
+	g_signal_connect(glMainApp.area, "unrealize", G_CALLBACK (on_unrealise), &glMainApp);
+	g_signal_connect(glMainApp.area, "render", G_CALLBACK (render), NULL);
 	gtk_widget_set_size_request(glMainApp.area, 600, 600);
 
 	window = gtk_application_window_new (app);
@@ -79,7 +80,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
 	gtk_window_set_title(GTK_WINDOW(display), "display");
 	gtk_window_set_default_size(GTK_WINDOW(display), 600, 600);
 	gtk_window_set_type_hint((GtkWindow*)display, GDK_WINDOW_TYPE_HINT_DIALOG);
-	gtk_window_set_keep_above(display, TRUE);
+	gtk_window_set_keep_above(GTK_WINDOW(display), TRUE);
 
 	gtk_widget_show_all(display);
 
@@ -122,22 +123,30 @@ static void activate (GtkApplication *app, gpointer user_data) {
 }
 
 static void on_activate(GtkEntry* entry, gpointer user_data) {
-	char *name;
+	const char *name;
 	name = gtk_entry_get_text(entry);
 
 	g_print("\nHello %s+%c\n\n", name, 'b');
 }
 
-static void on_realise(GlApplication *app) {
-	gtkGLArea* area = app->area;
+static void on_realise(GtkGLArea *area, GlApplication *app) {
+	/* gtkGLArea* area = (app->area); */
+	g_print("app->area: %d\n", app->area);
+	guint* program = &(app->prog);
 
-	gtk_gl_area_make_current(area);
-	if(gtk_gl_area_get_error(area) != NULL) {
+	g_print("hello\n");
+	gtk_gl_area_make_current(GTK_GL_AREA(area));
+	g_print("world\n");
+	if(gtk_gl_area_get_error(GTK_GL_AREA(area)) != NULL) {
 		printf("Could not get area\n");
 		return;
 	}
-	return;
-	/* GError *internal_error = NULL; */
+	GError *internal_error = NULL;
+
+	g_print("DB: 0");
+	init_shader(&program);
+	g_print("DB: 1");
+
 	/* init_buffer_objects(&internal_error); */
 	/* if (internal_error != NULL) { */
 	/* 	gtk_gl_area_set_error(area, internal_error); */
@@ -151,6 +160,25 @@ static void on_realise(GlApplication *app) {
 	/* 	g_error_free(internal_error); */
 	/* 	return; */
 	/* } */
+	return;
+}
+
+static void on_unrealise(GtkGLArea *area, GlApplication *app) {
+	/* gtkGLArea** area = &app->area; */
+	guint* program = &(app->prog);
+
+	gtk_gl_area_make_current(GTK_GL_AREA(area));
+
+	if (gtk_gl_area_get_error(GTK_GL_AREA(area)) != NULL) {
+		return;
+	}
+
+	if (app->vao != 0) {
+		glDeleteVertexArrays(1, &app->vao);
+	}
+	if (program != 0) {
+		glDeleteProgram(program);
+	}
 }
 
 static gboolean render (GtkGLArea *area, GdkGLContext *context) {
@@ -164,6 +192,223 @@ static gboolean render (GtkGLArea *area, GdkGLContext *context) {
 	return TRUE;
 }
 
+//GTK GL FUNCTIONS
+
+static gboolean init_shader(guint** programExt) {
+	GBytes* source;
+	guint program = 0;
+	guint vertex = 0, fragment = 0;
+	GError* error;
+
+	source = g_resources_lookup_data("/io/s1m7u/cplxgrapher/glfiles/vertShad.vert", 0, NULL);
+	create_shader(GL_VERTEX_SHADER, g_bytes_get_data(source, NULL), error, &vertex);
+	g_bytes_unref(source);
+
+	source = g_resources_lookup_data("/io/s1m7u/cplxgrapher/glfiles/fragShad.frag", 0, NULL);
+	g_print("WWWWWWWWWWWWWWW\n");
+	create_shader(GL_FRAGMENT_SHADER, g_bytes_get_data(source, NULL), error, &fragment);
+	g_print("EEEEEEEEEEEEEEE\n");
+	g_bytes_unref(source);
+
+	program = glCreateProgram();
+	glAttachShader(program, vertex);
+	glAttachShader(program, fragment);
+	glLinkProgram(program);
+
+	int status = 0;
+	glGetProgramiv (program, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE) {
+		int log_len = 0;
+		glGetProgramiv (program, GL_INFO_LOG_LENGTH, &log_len);
+
+		char *buffer = g_malloc (log_len + 1);
+		glGetProgramInfoLog (program, log_len, NULL, buffer);
+
+		/* g_set_error (error, GLAREA_ERROR, GLAREA_ERROR_SHADER_LINK, */
+		/* 		"Linking failure in program: %s", buffer); */
+		g_print("Linking failure in progam %s", buffer);
+
+		g_free (buffer);
+
+		glDeleteProgram (program);
+		program = 0;
+
+		goto out;
+	}
+out:
+
+	if (vertex != 0) {
+		glDeleteShader (vertex);
+	}
+	if (fragment != 0) {
+		glDeleteShader (fragment);
+	}
+
+	if (program != NULL) {
+		*programExt = &program;
+	}
+
+	return program != 0;
+}
+
+static guint create_shader(int shader_type, const char *source, GError **error, guint *shader_out) {
+	g_print("QQQQQQQQQQQQQQQQ");
+	guint shader = glCreateShader(shader_type);
+	g_print("HHHHHHHHHHHHHHHH");
+	glShaderSource(shader, 1, &source, NULL);
+	glCompileShader(shader);
+
+	int status;
+	glGetShaderiv (shader, GL_COMPILE_STATUS, &status);
+	if (status == GL_FALSE) {
+		int log_len;
+		glGetShaderiv (shader, GL_INFO_LOG_LENGTH, &log_len);
+
+		char *buffer = g_malloc (log_len + 1);
+		glGetShaderInfoLog (shader, log_len, NULL, buffer);
+
+		/* g_set_error(error, GLAREA_ERROR, GLAREA_ERROR_SHADER_COMPILATION, */
+		/* 		"Compilation failure in %s shader: %s", */
+		/* 		shader_type == GL_VERTEX_SHADER ? "vertex" : "fragment", */
+		/* 		buffer); */
+
+		g_free (buffer);
+
+		glDeleteShader (shader);
+		shader = 0;
+	}
+
+	if (shader_out != NULL) {
+		*shader_out = shader;
+	}
+
+	return shader != 0;
+}
+
+//UNFINISHED
+
+ClProgram create_cl_program() {
+	ClProgram clProg;
+
+	int width = 800;
+	int height = 1000;
+	double interval = 0.002;
+	int n = width * height;
+
+    size_t colorSize = sizeof(GLfloat) * 3 * n;
+    size_t posSize = sizeof(float) * 2 * n;
+
+    size_t globalSize, localSize;
+    cl_int err;
+
+    // Number of work items in each local work group
+    localSize = 512;
+
+    // Number of total work items - localSize must be divisor
+    globalSize = ceil(n/(float)localSize)*localSize;
+
+    // Bind to platform
+    err = clGetPlatformIDs(1, &(clProg.cpPlatform), NULL);
+
+	if(err != CL_SUCCESS) {
+		printf("error: %d\n", err);
+	}
+
+    // Get ID for the device
+    err = clGetDeviceIDs(clProg.cpPlatform, CL_DEVICE_TYPE_GPU, 1, &(clProg.device_id), NULL);
+	if(err != CL_SUCCESS) {
+		printf("error: %d\n", err);
+	}
+
+    // Create a clProg.context  
+    clProg.context = clCreateContext(0, 1, &(clProg.device_id), NULL, NULL, &err);
+	if(err != CL_SUCCESS) {
+		printf("error: %d\n", err);
+	}
+ 
+    // Create a command clProg.queue 
+    clProg.queue = clCreateCommandQueueWithProperties(clProg.context, clProg.device_id, 0, &err);
+
+	/* printf("BR: 0\n"); */
+
+    // Create the compute clProg.program from the source buffer
+	char kernelSource[16384];
+	memset(kernelSource, '\0', 16384);
+	FILE* kernelFile;
+#ifdef test
+		kernelFile = fopen("ctest.cl", "r");
+#else 
+		kernelFile = fopen("graph.cl", "r");
+#endif
+	char kTemp[512];
+	while(fgets(kTemp, 512, kernelFile) != NULL) {
+		strcat(kernelSource, kTemp);
+	}
+	fclose(kernelFile);
+	const char* kSrcPtr = kernelSource;
+    clProg.program = clCreateProgramWithSource(clProg.context, 1, (const char **)&kSrcPtr, NULL, &err);
+
+	if(err != CL_SUCCESS) {
+		printf("clProg.program build failed\n");
+		printf("error: %d\n", err);
+	}
+ 
+    // Build the clProg.program executable 
+    err = clBuildProgram(clProg.program, 0, NULL, NULL, NULL, NULL);
+	if(err != CL_SUCCESS) {
+		printf("build error: %d\n", err);
+		size_t errorSize;
+		clGetProgramBuildInfo(clProg.program, clProg.device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &errorSize);
+		
+		char* log = malloc(errorSize);
+		clGetProgramBuildInfo(clProg.program, clProg.device_id, CL_PROGRAM_BUILD_LOG, errorSize, log, NULL);
+
+		printf("|%s|\n", log);
+	}
+
+    // Create the compute clProg.kernel in the clProg.program we wish to run
+    clProg.kernel = clCreateKernel(clProg.program, "graph", &err);
+	if(err != CL_SUCCESS) {
+		printf("link error: %d\n", err);
+	}
+
+	/* printf("count*sizeof(cplx): %ld\n", count * sizeof(cplx)); */
+ 
+    // Create the input and output arrays in device memory for our calculation
+    clProg.posBuffer = clCreateBuffer(clProg.context, CL_MEM_READ_ONLY, posSize, NULL, NULL);
+	clProg.opBuffer = clCreateBuffer(clProg.context, CL_MEM_READ_ONLY, 256*sizeof(cplx), NULL, NULL);
+
+    clProg.colorBuffer = clCreateBuffer(clProg.context, CL_MEM_WRITE_ONLY, colorSize, NULL, NULL);
+ 
+}
+	/*-----------------------------------------------------------
+	 * Code after this point should be pulled into when entry is typed into
+	 */
+//23 comment
+
+
+/*     // Write our data set into the input array in device memory */
+/*     err = clEnclProg.queueWriteBuffer(clProg.queue, clProg.posBuffer, CL_TRUE, 0, posSize, posData, 0, NULL, NULL); */
+/*     err |= clEnclProg.queueWriteBuffer(clProg.queue, clProg.opBuffer, CL_TRUE, 0, count*sizeof(cplx), operations, 0, NULL, NULL); */
+
+/*     // Set the arguments to our compute clProg.kernel */
+/*     err  = clSetKernelArg(clProg.kernel, 0, sizeof(cl_mem), &(clProg.posBuffer)); */
+/*     err |= clSetKernelArg(clProg.kernel, 1, sizeof(cl_mem), &(clProg.colorBuffer)); */
+/*     err |= clSetKernelArg(clProg.kernel, 2, sizeof(cl_mem), &(clProg.opBuffer)); */
+/*     err |= clSetKernelArg(clProg.kernel, 3, sizeof(int), &count); */
+/*     err |= clSetKernelArg(clProg.kernel, 4, sizeof(double), &zoom); */
+/*     err |= clSetKernelArg(clProg.kernel, 5, sizeof(float), &zoomc); */
+/*     err |= clSetKernelArg(clProg.kernel, 6, sizeof(float)*2, &posOffset); */
+/*     err |= clSetKernelArg(clProg.kernel, 7, sizeof(unsigned int), &n); */
+ 
+/*     // Execute the clProg.kernel over the entire range of the data set */  
+/*     err = clEnclProg.queueNDRangeKernel(clProg.queue, clProg.kernel, 1, NULL, &globalSize, &localSize, 0, NULL, NULL); */
+ 
+/*     // Wait for the command clProg.queue to get serviced before reading back results */
+/*     clFinish(clProg.queue); */
+ 
+/*     // Read the results from the device */
+/* }; */
 
 //457 lines
 /* 	//SDL */
@@ -180,7 +425,7 @@ static gboolean render (GtkGLArea *area, GdkGLContext *context) {
 
 /* 	SDL_Window* display = SDL_CreateWindow("Display", 1050, 200, 600, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN); */
 /* 	int displayID = SDL_GetWindowID(display); */
-	
+
 /* 	displayContext = SDL_GL_CreateContext(display); */
 
 /* 	SDL_GL_MakeCurrent(display, displayContext); */
@@ -191,7 +436,7 @@ static gboolean render (GtkGLArea *area, GdkGLContext *context) {
 /* 	{ */
 /* 		return -1; */
 /* 	} */
- 
+
 /* 	SDL_GL_SwapWindow(display); */
 /* 	SDL_GL_MakeCurrent(display, displayContext); */
 
@@ -270,26 +515,26 @@ static gboolean render (GtkGLArea *area, GdkGLContext *context) {
 /* 	cl_mem opBuffer; */
 /*     // Device output buffer */
 /*     cl_mem colorBuffer; */
- 
+
 /*     cl_platform_id cpPlatform;        // OpenCL platform */
 /*     cl_device_id device_id;           // device ID */
 /*     cl_context context;               // context */
 /*     cl_command_queue queue;           // command queue */
 /*     cl_program program;               // program */
 /*     cl_kernel kernel;                 // kernel */
- 
+
 /*     size_t globalSize, localSize; */
 /*     cl_int err; */
- 
+
 /*     // Number of work items in each local work group */
 /*     localSize = 512; */
- 
+
 /*     // Number of total work items - localSize must be divisor */
 /*     globalSize = ceil(n/(float)localSize)*localSize; */
- 
+
 /*     // Bind to platform */
 /*     err = clGetPlatformIDs(1, &cpPlatform, NULL); */
- 
+
 /* 	if(err != CL_SUCCESS) { */
 /* 		printf("error: %d\n", err); */
 /* 	} */
