@@ -86,7 +86,8 @@ static void on_unrealise(GtkGLArea *area, GlApplication *app);
 
 static gboolean render(GtkGLArea *area, GdkGLContext *context);
 
-static void activate (GtkApplication *app, gpointer user_data);
+/* static void activate (GtkApplication *app, gpointer user_data); */
+static void activate (GtkApplication *app, GlApplication* glMainApp);
 
 //GL functions
 static gboolean init_shader(guint** program);

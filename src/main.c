@@ -29,18 +29,19 @@ int main(int argc, char* argv[]) {
 	printf("count: %d\n", count);
 
 	GtkApplication *app;
+	GlApplication glMainApp;
 	int app_status;
 
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
-	g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+	g_signal_connect(app, "activate", G_CALLBACK(activate), &glMainApp);
 	app_status = g_application_run(G_APPLICATION(app), argc, argv);
 	g_object_unref(app);
 
 	return app_status;
 }
 
-static void activate (GtkApplication *app, gpointer user_data) {
-	GlApplication glMainApp;
+static void activate (GtkApplication *app, GlApplication* glMainApp) {
+	/* GlApplication glMainApp; */
 	
 	//Windows
 	gtkWindow *window;
@@ -63,13 +64,13 @@ static void activate (GtkApplication *app, gpointer user_data) {
 	GtkEntryBuffer *funcBuffer;
 	gtkBox *funcBox;
 
-	glMainApp.area = gtk_gl_area_new();
-	gtk_gl_area_set_required_version(GTK_GL_AREA(glMainApp.area), 3, 3);
-	gtk_widget_set_name(glMainApp.area, "display");
-	g_signal_connect(glMainApp.area, "realize", G_CALLBACK (on_realise), &glMainApp);
-	g_signal_connect(glMainApp.area, "unrealize", G_CALLBACK (on_unrealise), &glMainApp);
-	g_signal_connect(glMainApp.area, "render", G_CALLBACK (render), NULL);
-	gtk_widget_set_size_request(glMainApp.area, 600, 600);
+	glMainApp->area = gtk_gl_area_new();
+	gtk_gl_area_set_required_version(GTK_GL_AREA(glMainApp->area), 3, 3);
+	gtk_widget_set_name(glMainApp->area, "display");
+	g_signal_connect(glMainApp->area, "realize", G_CALLBACK (on_realise), glMainApp);
+	g_signal_connect(glMainApp->area, "unrealize", G_CALLBACK (on_unrealise), glMainApp);
+	g_signal_connect(glMainApp->area, "render", G_CALLBACK (render), NULL);
+	gtk_widget_set_size_request(glMainApp->area, 600, 600);
 
 	window = gtk_application_window_new (app);
 	gtk_window_set_title (GTK_WINDOW (window), "Window");
@@ -101,7 +102,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
 	gtk_widget_set_size_request(GLdispla_box, 600, 600);
 	gtk_container_add(GTK_CONTAINER(display), GLdispla_box);
 
-	gtk_container_add(GTK_CONTAINER(GLdispla_box), glMainApp.area);
+	gtk_container_add(GTK_CONTAINER(GLdispla_box), glMainApp->area);
 
 	funcInput = gtk_entry_new_with_buffer(funcBuffer);
 	gtk_widget_set_name((funcInput), "funcIn");
@@ -130,22 +131,16 @@ static void on_activate(GtkEntry* entry, gpointer user_data) {
 }
 
 static void on_realise(GtkGLArea *area, GlApplication *app) {
-	/* gtkGLArea* area = (app->area); */
-	g_print("app->area: %d\n", app->area);
 	guint* program = &(app->prog);
 
-	g_print("hello\n");
 	gtk_gl_area_make_current(GTK_GL_AREA(area));
-	g_print("world\n");
 	if(gtk_gl_area_get_error(GTK_GL_AREA(area)) != NULL) {
 		printf("Could not get area\n");
 		return;
 	}
 	GError *internal_error = NULL;
 
-	g_print("DB: 0");
 	init_shader(&program);
-	g_print("DB: 1");
 
 	/* init_buffer_objects(&internal_error); */
 	/* if (internal_error != NULL) { */
@@ -177,7 +172,7 @@ static void on_unrealise(GtkGLArea *area, GlApplication *app) {
 		glDeleteVertexArrays(1, &app->vao);
 	}
 	if (program != 0) {
-		glDeleteProgram(program);
+		glDeleteProgram(&program);
 	}
 }
 
@@ -205,9 +200,7 @@ static gboolean init_shader(guint** programExt) {
 	g_bytes_unref(source);
 
 	source = g_resources_lookup_data("/io/s1m7u/cplxgrapher/glfiles/fragShad.frag", 0, NULL);
-	g_print("WWWWWWWWWWWWWWW\n");
 	create_shader(GL_FRAGMENT_SHADER, g_bytes_get_data(source, NULL), error, &fragment);
-	g_print("EEEEEEEEEEEEEEE\n");
 	g_bytes_unref(source);
 
 	program = glCreateProgram();
@@ -252,9 +245,7 @@ out:
 }
 
 static guint create_shader(int shader_type, const char *source, GError **error, guint *shader_out) {
-	g_print("QQQQQQQQQQQQQQQQ");
 	guint shader = glCreateShader(shader_type);
-	g_print("HHHHHHHHHHHHHHHH");
 	glShaderSource(shader, 1, &source, NULL);
 	glCompileShader(shader);
 
@@ -380,6 +371,7 @@ ClProgram create_cl_program() {
 
     clProg.colorBuffer = clCreateBuffer(clProg.context, CL_MEM_WRITE_ONLY, colorSize, NULL, NULL);
  
+	return clProg;
 }
 	/*-----------------------------------------------------------
 	 * Code after this point should be pulled into when entry is typed into
