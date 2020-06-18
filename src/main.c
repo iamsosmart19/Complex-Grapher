@@ -172,7 +172,7 @@ static void on_unrealise(GtkGLArea *area, GlApplication *app) {
 		glDeleteVertexArrays(1, &app->vao);
 	}
 	if (program != 0) {
-		glDeleteProgram(&program);
+		glDeleteProgram(*program);
 	}
 }
 
