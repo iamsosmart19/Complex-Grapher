@@ -12,12 +12,14 @@ int main(int argc, char* argv[]) {
 	GlApplication glMainApp;
 	int app_status;
 
-	FILE* sample = fopen("input.txt", "r");
-	/* FILE* sample = fopen("input3.txt", "r"); */
-	char function[1024];
-	fgets(function, 1024, sample);
-	printf("|%s|\n", function);
-	fclose(sample);
+	/* FILE* sample = fopen("input.txt", "r"); */
+	/* /1* FILE* sample = fopen("input3.txt", "r"); *1/ */
+	/* char function[1024]; */
+	/* fgets(function, 1024, sample); */
+	/* printf("|%s|\n", function); */
+	/* fclose(sample); */
+
+	char function[1024] = "z\n\0";
 
 	// Possibly enable parser runtime debugging.
 	queue out = queueInit();
@@ -119,8 +121,8 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 	gtk_widget_show_all(glMainApp->display);
 	gtk_widget_show_all(window);
-	gtk_window_move(GTK_WINDOW(window), 120, 200);
-	gtk_window_move(GTK_WINDOW(glMainApp->display), 950, 200);
+	/* gtk_window_move(GTK_WINDOW(window), 120, 200); */
+	/* gtk_window_move(GTK_WINDOW(glMainApp->display), 950, 200); */
 }
 
 static void on_activate(GtkEntry* entry, GlApplication *app) {
@@ -138,9 +140,6 @@ static void on_activate(GtkEntry* entry, GlApplication *app) {
 		app->opSize = 0;
 		while(front(out) != -DBL_MAX-DBL_MAX*I) {
 			app->operations[app->opSize++] = dequeue(&out);
-		}
-		for(int i = 0; i < app->opSize; i++) {
-			printf("%lf%+lfi\n", creal(app->operations[i]), cimag(app->operations[i]));
 		}
 	}
 	else {
@@ -173,7 +172,8 @@ static void on_activate(GtkEntry* entry, GlApplication *app) {
 /* }; */
 	/* g_print("\nHello %s+%c\n\n", name, 'b'); */
 
-	gtk_window_present_with_time(app->display, GDK_CURRENT_TIME);
+	gtk_window_present_with_time(GTK_WINDOW(app->display), GDK_CURRENT_TIME);
+	/* gtk_window_present_with_time((app->display), GDK_CURRENT_TIME); */
 
 	printf("on_activate: end\n");
 }
@@ -224,7 +224,7 @@ static void on_realise(GtkGLArea *area, GlApplication *app) {
 	glVertexAttribPointer(colorAttrb, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(float) * 2 * app->width * app->height));
 	glEnableVertexAttribArray(colorAttrb);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 2 * app->width * app->height, app->posData);
- 
+
 	gtk_widget_queue_draw(app->area);
 
 	printf("on_realise: end\n");
@@ -252,18 +252,6 @@ static void on_unrealise(GtkGLArea *area, GlApplication *app) {
 }
 
 static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* app) {
-
-	/* g_print("width: %d\n", (*app).width); */
-	/* printf("%f\n", app->colors[0]); */
-	/* printf("%f\n", app->colors[1]); */
-	/* printf("%f\n", app->colors[2]); */
-	/* printf("%f\n", app->colors[3]); */
-	/* printf("%f\n", app->colors[4]); */
-	/* printf("%f\n", app->colors[5]); */
-	/* printf("%f\n", app->colors[3*app->n-3]); */
-	/* printf("%f\n", app->colors[3*app->n-2]); */
-	/* printf("%f\n", app->colors[3*app->n-1]); */
-
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -272,14 +260,9 @@ static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* ap
 	glBufferSubData(GL_ARRAY_BUFFER, app->posSize, app->colorSize, app->colors);
 	glBindVertexArray(app->vao);
 	glDrawArrays(GL_POINTS, 0, app->width * app->height);
-	/* gtk_gl_area_set_required_version(area, 3, 3); */
-	// we can start by clearing the buffer
-	/* printf("you spastic\n"); */
-	/* glClearColor(0, 0, 0, 0); */
-	/* glClear(GL_COLOR_BUFFER_BIT); */
+
 	glFlush();
 
-	/* gtk_widget_queue_draw(app->area); */
 	return FALSE;
 }
 
