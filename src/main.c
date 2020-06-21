@@ -3,7 +3,11 @@
 	setenv("CUDA_CACHE_DISABLE", "1", 1);
 #endif
 
+	//Trigger on when enter is pressed on text input
+
 int main(int argc, char* argv[]) {
+	yydebug = !!getenv("YYDEBUG");
+
 	GtkApplication *app;
 	GlApplication glMainApp;
 	int app_status;
@@ -16,23 +20,20 @@ int main(int argc, char* argv[]) {
 	fclose(sample);
 
 	// Possibly enable parser runtime debugging.
-	yydebug = !!getenv("YYDEBUG");
 	queue out = queueInit();
 	result res = parse_string(function, &out);
-	if( res.nerrs ) {
-		exit(0);
-	}
-	printf("DB: 0\n");
-	glMainApp.operations = (cplx*)malloc(128*sizeof(cplx));
+	if( !res.nerrs ) {
+		glMainApp.operations = (cplx*)malloc(128*sizeof(cplx));
 
-	glMainApp.opSize = 0;
-	while(front(out) != -DBL_MAX-DBL_MAX*I) {
-		glMainApp.operations[glMainApp.opSize++] = dequeue(&out);
+		glMainApp.opSize = 0;
+		while(front(out) != -DBL_MAX-DBL_MAX*I) {
+			glMainApp.operations[glMainApp.opSize++] = dequeue(&out);
+		}
+		/* glMainApp.operations = (cplx*)realloc(glMainApp.operations, glMainApp.opSize*sizeof(cplx)); */
+		printf("count: %d\n", glMainApp.opSize);
 	}
-	glMainApp.operations = (cplx*)realloc(glMainApp.operations, glMainApp.opSize*sizeof(cplx));
-	printf("count: %d\n", glMainApp.opSize);
 
-	glMainApp.clProg = create_cl_program();
+	glMainApp.clProg = create_cl_program(&glMainApp);
 
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), &glMainApp);
@@ -112,7 +113,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_entry_set_placeholder_text(GTK_ENTRY(funcInput), "Enter function here");
 	/* gtk_entry_set_has_frame(funcInput, 1); */
 	/* char c = 'b'; */
-	g_signal_connect(funcInput, "activate", G_CALLBACK(on_activate), NULL);
+	g_signal_connect(funcInput, "activate", G_CALLBACK(on_activate), glMainApp);
 
 	context = gtk_widget_get_style_context(funcInput);
 	gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -125,11 +126,54 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_window_move(GTK_WINDOW(display), 950, 200);
 }
 
-static void on_activate(GtkEntry* entry, gpointer user_data) {
-	const char *name;
-	name = gtk_entry_get_text(entry);
+static void on_activate(GtkEntry* entry, GlApplication *app) {
+	ClProgram* clProg = &app->clProg;
 
-	g_print("\nHello %s+%c\n\n", name, 'b');
+	const char *funcString;
+	funcString = gtk_entry_get_text(entry);
+
+	queue out = queueInit();
+	result res = parse_string(funcString, &out);
+	if( !res.nerrs ) {
+		app->operations = (cplx*)malloc(128*sizeof(cplx));
+
+		app->opSize = 0;
+		while(front(out) != -DBL_MAX-DBL_MAX*I) {
+			app->operations[app->opSize++] = dequeue(&out);
+		}
+		for(int i = 0; i < app->opSize; i++) {
+			printf("%lf%+lfi\n", creal(app->operations[i]), cimag(app->operations[i]));
+		}
+	}
+	else {
+		/* warning popup: "with error message"*/
+		return;
+	}
+
+    cl_int err;
+    err = clEnqueueWriteBuffer(clProg->queue, clProg->posBuffer, CL_TRUE, 0, app->posSize, app->posData, 0, NULL, NULL);
+    err |= clEnqueueWriteBuffer(clProg->queue, clProg->opBuffer, CL_TRUE, 0, app->opSize*sizeof(cplx), app->operations, 0, NULL, NULL);
+
+    // Set the arguments to our compute clProg->kernel
+    err  = clSetKernelArg(clProg->kernel, 0, sizeof(cl_mem), &(clProg->posBuffer));
+    err |= clSetKernelArg(clProg->kernel, 1, sizeof(cl_mem), &(clProg->colorBuffer));
+    err |= clSetKernelArg(clProg->kernel, 2, sizeof(cl_mem), &(clProg->opBuffer));
+    err |= clSetKernelArg(clProg->kernel, 3, sizeof(int), &app->opSize);
+    err |= clSetKernelArg(clProg->kernel, 4, sizeof(double), &app->zoom);
+    err |= clSetKernelArg(clProg->kernel, 5, sizeof(float), &app->zoomc);
+    err |= clSetKernelArg(clProg->kernel, 6, sizeof(float)*2, &app->posOffset);
+    err |= clSetKernelArg(clProg->kernel, 7, sizeof(unsigned int), &app->n);
+ 
+    // Execute the clProg->kernel over the entire range of the data set  
+    err = clEnqueueNDRangeKernel(clProg->queue, clProg->kernel, 1, NULL, &app->globalSize, &app->localSize, 0, NULL, NULL);
+ 
+    // Wait for the command clProg->queue to get serviced before reading back results
+    clFinish(clProg->queue);
+ 
+    // Read the results from the device
+    clEnqueueReadBuffer(clProg->queue, clProg->colorBuffer, CL_TRUE, 0, app->colorSize, app->colors, 0, NULL, NULL);
+/* }; */
+	/* g_print("\nHello %s+%c\n\n", name, 'b'); */
 }
 
 static void on_realise(GtkGLArea *area, GlApplication *app) {
@@ -183,7 +227,7 @@ static gboolean render (GtkGLArea *area, GdkGLContext *context) {
 	/* gtk_gl_area_set_required_version(area, 3, 3); */
 	// we can start by clearing the buffer
 	/* printf("you spastic\n"); */
-	glClearColor(0, 23, 23, 0);
+	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	return TRUE;
@@ -280,25 +324,32 @@ static guint create_shader(int shader_type, const char *source, GError **error, 
 
 //UNFINISHED
 
-ClProgram create_cl_program() {
+ClProgram create_cl_program(GlApplication* app) {
 	ClProgram clProg;
 
-	int width = 800;
-	int height = 1000;
-	double interval = 0.002;
-	int n = width * height;
+	app->width = 800;
+	app->height = 1000;
+	app->interval = 0.002;
+	app->n = app->width * app->height;
 
-    size_t colorSize = sizeof(GLfloat) * 3 * n;
-    size_t posSize = sizeof(float) * 2 * n;
+    app->colorSize = sizeof(GLfloat) * 3 * app->n;
+    app->posSize = sizeof(float) * 2 * app->n;
 
-    size_t globalSize, localSize;
+	app->posData = malloc(app->posSize);
+	app->colors = malloc(app->colorSize);
+
+	app->posOffset[0] = 0;
+	app->posOffset[1] = 0;
+	app->zoom = 10;
+	app->zoomc = 0.001;
+
     cl_int err;
 
     // Number of work items in each local work group
-    localSize = 512;
+    app->localSize = 512;
 
     // Number of total work items - localSize must be divisor
-    globalSize = ceil(n/(float)localSize)*localSize;
+    app->globalSize = ceil(app->n/(float)app->localSize)*app->localSize;
 
     // Bind to platform
     err = clGetPlatformIDs(1, &(clProg.cpPlatform), NULL);
@@ -318,6 +369,7 @@ ClProgram create_cl_program() {
 	if(err != CL_SUCCESS) {
 		printf("error: %d\n", err);
 	}
+	printf("context: %d\n", clProg.context);
  
     // Create a command clProg.queue 
     clProg.queue = clCreateCommandQueueWithProperties(clProg.context, clProg.device_id, 0, &err);
@@ -368,17 +420,17 @@ ClProgram create_cl_program() {
 	/* printf("count*sizeof(cplx): %ld\n", count * sizeof(cplx)); */
  
     // Create the input and output arrays in device memory for our calculation
-    clProg.posBuffer = clCreateBuffer(clProg.context, CL_MEM_READ_ONLY, posSize, NULL, NULL);
+    clProg.posBuffer = clCreateBuffer(clProg.context, CL_MEM_READ_ONLY, app->posSize, NULL, NULL);
 	clProg.opBuffer = clCreateBuffer(clProg.context, CL_MEM_READ_ONLY, 256*sizeof(cplx), NULL, NULL);
 
-    clProg.colorBuffer = clCreateBuffer(clProg.context, CL_MEM_WRITE_ONLY, colorSize, NULL, NULL);
+    clProg.colorBuffer = clCreateBuffer(clProg.context, CL_MEM_WRITE_ONLY, app->colorSize, NULL, NULL);
  
 	return clProg;
 }
 	/*-----------------------------------------------------------
 	 * Code after this point should be pulled into when entry is typed into
 	 */
-//23 comment
+//24 comment
 
 
 /*     // Write our data set into the input array in device memory */
@@ -402,6 +454,7 @@ ClProgram create_cl_program() {
 /*     clFinish(clProg.queue); */
  
 /*     // Read the results from the device */
+/*     clEnqueueReadBuffer(queue, colorBuffer, CL_TRUE, 0, colorSize, colors, 0, NULL, NULL); */
 /* }; */
 
 //457 lines

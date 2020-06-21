@@ -26,24 +26,6 @@ void hsv2rgb(long double H, long double S, long double V, GLfloat* ret);
 
 void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int height, int width, long double zoom);
 
-//OPENCL STRUCT
-typedef struct ClProgram_struct_decl {
-    cl_mem posBuffer;
-	cl_mem opBuffer;
-    cl_mem colorBuffer;
-
-    cl_platform_id cpPlatform;        // OpenCL platform
-    cl_device_id device_id;           // device ID
-    cl_context context;               // context
-    cl_command_queue queue;           // command queue
-    cl_program program;               // program
-    cl_kernel kernel;                 // kernel
-} ClProgram;
-
-//OPENCL FUNCTIONS
-
-ClProgram create_cl_program();
-
 //GTK TYPEDEFS
 
 typedef GtkWidget gtkWindow;
@@ -61,6 +43,20 @@ typedef enum {
   GLAREA_ERROR_SHADER_LINK
 } GlareaError;
 
+//OPENCL STRUCT
+typedef struct ClProgram_struct_decl {
+    cl_mem posBuffer;
+	cl_mem opBuffer;
+    cl_mem colorBuffer;
+
+    cl_platform_id cpPlatform;        // OpenCL platform
+    cl_device_id device_id;           // device ID
+    cl_context context;               // context
+    cl_command_queue queue;           // command queue
+    cl_program program;               // program
+    cl_kernel kernel;                 // kernel
+} ClProgram;
+
 typedef struct GlApplication_struct_decl {
 	//FUNCTION
 	cplx* operations;
@@ -71,14 +67,30 @@ typedef struct GlApplication_struct_decl {
 
 	//OPENGL
 	gtkGLArea* area;
+	int width, height;
+	double interval;
+	int n;
+
+    size_t colorSize, posSize;
+    size_t globalSize, localSize;
+	float* posData;
+	GLfloat* colors;
+
+	float posOffset[2];
+	double zoom;
+	float zoomc;
 
 	guint vao;
 	guint prog;
 } GlApplication;
 
+//OPENCL FUNCTIONS
+
+ClProgram create_cl_program(GlApplication* app);
+
 //GTK FUNCTIONS
 
-static void on_activate(GtkEntry* entry, gpointer user_data);
+static void on_activate(GtkEntry* entry, GlApplication *app);
 
 static void on_realise(GtkGLArea *area, GlApplication *app);
 
