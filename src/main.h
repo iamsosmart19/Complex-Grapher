@@ -66,6 +66,7 @@ typedef struct GlApplication_struct_decl {
 	ClProgram clProg;
 
 	//OPENGL
+	gtkWindow* display;
 	gtkGLArea* area;
 	int width, height;
 	double interval;

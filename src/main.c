@@ -46,7 +46,6 @@ int main(int argc, char* argv[]) {
 static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	//Windows
 	gtkWindow *window;
-	gtkWindow *display;
 
 	//CSS style elements
 	GtkStyleContext *context;
@@ -78,13 +77,13 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 600);
 	gtk_window_set_type_hint((GtkWindow*)window, GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	display = gtk_application_window_new(app);
-	gtk_window_set_title(GTK_WINDOW(display), "display");
-	gtk_window_set_default_size(GTK_WINDOW(display), 600, 600);
-	gtk_window_set_type_hint((GtkWindow*)display, GDK_WINDOW_TYPE_HINT_DIALOG);
-	gtk_window_set_keep_above(GTK_WINDOW(display), TRUE);
+	glMainApp->display = gtk_application_window_new(app);
+	gtk_window_set_title(GTK_WINDOW(glMainApp->display), "display");
+	gtk_window_set_default_size(GTK_WINDOW(glMainApp->display), 600, 600);
+	gtk_window_set_type_hint((GtkWindow*)glMainApp->display, GDK_WINDOW_TYPE_HINT_DIALOG);
+	gtk_window_set_keep_above(GTK_WINDOW(glMainApp->display), TRUE);
 
-	gtk_widget_show_all(display);
+	gtk_widget_show_all(glMainApp->display);
 
 	/* button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL); */
 	/* gtk_container_add (GTK_CONTAINER (window), button_box); */
@@ -101,7 +100,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 	GLdispla_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_set_size_request(GLdispla_box, 600, 600);
-	gtk_container_add(GTK_CONTAINER(display), GLdispla_box);
+	gtk_container_add(GTK_CONTAINER(glMainApp->display), GLdispla_box);
 
 	gtk_container_add(GTK_CONTAINER(GLdispla_box), glMainApp->area);
 
@@ -118,10 +117,10 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 	gtk_container_add(GTK_CONTAINER(funcBox), funcInput);
 
-	gtk_widget_show_all(display);
+	gtk_widget_show_all(glMainApp->display);
 	gtk_widget_show_all(window);
 	gtk_window_move(GTK_WINDOW(window), 120, 200);
-	gtk_window_move(GTK_WINDOW(display), 950, 200);
+	gtk_window_move(GTK_WINDOW(glMainApp->display), 950, 200);
 }
 
 static void on_activate(GtkEntry* entry, GlApplication *app) {
@@ -173,6 +172,8 @@ static void on_activate(GtkEntry* entry, GlApplication *app) {
     clEnqueueReadBuffer(clProg->queue, clProg->colorBuffer, CL_TRUE, 0, app->colorSize, app->colors, 0, NULL, NULL);
 /* }; */
 	/* g_print("\nHello %s+%c\n\n", name, 'b'); */
+
+	gtk_window_present_with_time(app->display, GDK_CURRENT_TIME);
 
 	printf("on_activate: end\n");
 }
@@ -251,7 +252,6 @@ static void on_unrealise(GtkGLArea *area, GlApplication *app) {
 }
 
 static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* app) {
-	printf("on_render: start\n");
 
 	/* g_print("width: %d\n", (*app).width); */
 	/* printf("%f\n", app->colors[0]); */
@@ -267,7 +267,6 @@ static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* ap
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	g_print("render: app: %d\n", app);
 	glUseProgram(app->prog);
 
 	glBufferSubData(GL_ARRAY_BUFFER, app->posSize, app->colorSize, app->colors);
@@ -281,7 +280,6 @@ static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* ap
 	glFlush();
 
 	/* gtk_widget_queue_draw(app->area); */
-	printf("on_render: end\n");
 	return FALSE;
 }
 
