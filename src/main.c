@@ -365,7 +365,7 @@ ClProgram create_cl_program(GlApplication* app) {
 	printf("create_cl_program: start\n");
 	ClProgram clProg;
 
-	app->width = 800;
+	app->width = 1000;
 	app->height = 1000;
 	app->interval = 0.002;
 	app->n = app->width * app->height;
