@@ -72,7 +72,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_widget_set_name(glMainApp->area, "display");
 	g_signal_connect(glMainApp->area, "realize", G_CALLBACK (on_realise), glMainApp);
 	g_signal_connect(glMainApp->area, "unrealize", G_CALLBACK (on_unrealise), glMainApp);
-	g_signal_connect(glMainApp->area, "render", G_CALLBACK (render), NULL);
+	g_signal_connect(glMainApp->area, "render", G_CALLBACK (render), glMainApp);
 	gtk_widget_set_size_request(glMainApp->area, 600, 600);
 
 	window = gtk_application_window_new (app);
@@ -184,9 +184,43 @@ static void on_realise(GtkGLArea *area, GlApplication *app) {
 		printf("Could not get area\n");
 		return;
 	}
+
+	/* for(int i = 0; i < app->width * 4; i++) { */
+	/* 	printf("(%d) %1.3f\n", i, app->posData[i]); */
+	/* } */
+
 	GError *internal_error = NULL;
 
+	glViewport(0, 0, 800, 600);
+
+	//Points
+	glEnable(GL_PROGRAM_POINT_SIZE);
+	glPointSize(app->interval * 500);
+
 	init_shader(&program);
+
+	glUseProgram(*program);
+
+	glGenVertexArrays(1, &app->vao);
+	glBindVertexArray(app->vao);
+
+	glGenBuffers(1, &app->triangleVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, app->triangleVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * app->width * app->height + sizeof(GLfloat) * 3 * app->width * app->height, NULL, GL_DYNAMIC_DRAW);
+
+	/* printf("GLfloat: %ld, float: %ld\n", sizeof(GLfloat), sizeof(float)); */
+
+	//Position
+	GLint posAttrb = glGetAttribLocation(*program, "position");
+	glVertexAttribPointer(posAttrb, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(posAttrb);
+
+	//Color
+	printf("colors size: %ld\n", sizeof(GLfloat) * 3 * app->width * app->height);
+	GLint colorAttrb = glGetAttribLocation(*program, "color");
+	glVertexAttribPointer(colorAttrb, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(float) * 2 * app->width * app->height));
+	glEnableVertexAttribArray(colorAttrb);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 2 * app->width * app->height, app->posData);
 
 	/* init_buffer_objects(&internal_error); */
 	/* if (internal_error != NULL) { */
@@ -222,13 +256,16 @@ static void on_unrealise(GtkGLArea *area, GlApplication *app) {
 	}
 }
 
-static gboolean render (GtkGLArea *area, GdkGLContext *context) {
+static gboolean render(GtkGLArea *area, GlApplication* app) {
 	glEnable(GL_PROGRAM_POINT_SIZE);
+	glBufferSubData(GL_ARRAY_BUFFER, app->posSize, app->colorSize, app->colors);
+	glBindVertexArray(app->vao);
+	glDrawArrays(GL_POINTS, 0, app->width * app->height);
 	/* gtk_gl_area_set_required_version(area, 3, 3); */
 	// we can start by clearing the buffer
 	/* printf("you spastic\n"); */
-	glClearColor(0, 0, 0, 0);
-	glClear(GL_COLOR_BUFFER_BIT);
+	/* glClearColor(0, 0, 0, 0); */
+	/* glClear(GL_COLOR_BUFFER_BIT); */
 
 	return TRUE;
 }
@@ -338,6 +375,13 @@ ClProgram create_cl_program(GlApplication* app) {
 	app->posData = malloc(app->posSize);
 	app->colors = malloc(app->colorSize);
 
+	for(int i = 0; i < app->width; i++) {
+		for(int j = 0; j < app->height*2; j+=2) {
+			app->posData[i*app->height*2+j] = -1.0 + i*app->interval;
+			app->posData[i*app->height*2+j+1] = -1.0 + (j/2)*app->interval;
+		}
+	}
+
 	app->posOffset[0] = 0;
 	app->posOffset[1] = 0;
 	app->zoom = 10;
@@ -369,7 +413,6 @@ ClProgram create_cl_program(GlApplication* app) {
 	if(err != CL_SUCCESS) {
 		printf("error: %d\n", err);
 	}
-	printf("context: %d\n", clProg.context);
  
     // Create a command clProg.queue 
     clProg.queue = clCreateCommandQueueWithProperties(clProg.context, clProg.device_id, 0, &err);

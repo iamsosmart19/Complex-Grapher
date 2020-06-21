@@ -80,7 +80,8 @@ typedef struct GlApplication_struct_decl {
 	double zoom;
 	float zoomc;
 
-	guint vao;
+	GLuint vao;
+	GLuint triangleVBO;
 	guint prog;
 } GlApplication;
 
@@ -96,7 +97,7 @@ static void on_realise(GtkGLArea *area, GlApplication *app);
 
 static void on_unrealise(GtkGLArea *area, GlApplication *app);
 
-static gboolean render(GtkGLArea *area, GdkGLContext *context);
+static gboolean render(GtkGLArea *area, GlApplication* app);
 
 /* static void activate (GtkApplication *app, gpointer user_data); */
 static void activate (GtkApplication *app, GlApplication* glMainApp);
