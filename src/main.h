@@ -102,6 +102,8 @@ static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* ap
 
 static void activate (GtkApplication *app, GlApplication* glMainApp);
 
+static gboolean display_controls(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
+
 static gboolean send_window_to_back(GtkWindow* window, GdkEvent* event, GtkWindow* forward);
 
 static gboolean close_application(GtkWindow* window, GdkEvent* event, GtkWindow* display);

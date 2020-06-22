@@ -85,6 +85,9 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_window_set_type_hint((GtkWindow*)glMainApp->display, GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_keep_above(GTK_WINDOW(glMainApp->display), TRUE);
 
+	gtk_widget_add_events(glMainApp->display, GDK_KEY_PRESS_MASK);
+	g_signal_connect(G_OBJECT(glMainApp->display), "key_press_event", G_CALLBACK(display_controls), NULL);
+
 	//Modify to bring window to focus
 	g_signal_connect(glMainApp->display, "delete_event", G_CALLBACK(send_window_to_back), (window));
 
@@ -481,6 +484,11 @@ ClProgram create_cl_program(GlApplication* app) {
  
 	printf("create_cl_program: end\n");
 	return clProg;
+}
+
+static gboolean display_controls(GtkWidget* widget, GdkEventKey* event, GlApplication* app) {
+	printf("event->keyval: %d\n", event->keyval);
+	return FALSE;
 }
 
 static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, GtkWindow* forward) {
