@@ -79,9 +79,6 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 600);
 	gtk_window_set_type_hint((GtkWindow*)window, GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	//Modify to closing the entire application
-	/* g_signal_connect(window, "delete_event", G_CALLBACK(gtk_window_iconify), NULL); */
-
 	glMainApp->display = gtk_application_window_new(app);
 	gtk_window_set_title(GTK_WINDOW(glMainApp->display), "display");
 	gtk_window_set_default_size(GTK_WINDOW(glMainApp->display), 600, 600);
@@ -89,7 +86,10 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_window_set_keep_above(GTK_WINDOW(glMainApp->display), TRUE);
 
 	//Modify to bring window to focus
-	/* g_signal_connect(glMainApp->display, "delete_event", G_CALLBACK(gtk_window_iconify), NULL); */
+	g_signal_connect(glMainApp->display, "delete_event", G_CALLBACK(send_window_to_back), (window));
+
+	//Modify to closing the entire application
+	g_signal_connect(window, "delete_event", G_CALLBACK(close_application), glMainApp->display);
 
 	gtk_widget_show_all(glMainApp->display);
 
@@ -481,4 +481,14 @@ ClProgram create_cl_program(GlApplication* app) {
  
 	printf("create_cl_program: end\n");
 	return clProg;
+}
+
+static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, GtkWindow* forward) {
+	gtk_window_present_with_time(GTK_WINDOW(forward), GDK_CURRENT_TIME);
+	return TRUE;
+}
+
+static gboolean close_application(GtkWindow* window, GdkEvent* event, GtkWindow* display) {
+	gtk_widget_destroy(display);
+	return FALSE;
 }

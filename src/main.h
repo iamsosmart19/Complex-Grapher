@@ -100,8 +100,11 @@ static void on_unrealise(GtkGLArea *area, GlApplication *app);
 
 static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* app);
 
-/* static void activate (GtkApplication *app, gpointer user_data); */
 static void activate (GtkApplication *app, GlApplication* glMainApp);
+
+static gboolean send_window_to_back(GtkWindow* window, GdkEvent* event, GtkWindow* forward);
+
+static gboolean close_application(GtkWindow* window, GdkEvent* event, GtkWindow* display);
 
 //GL functions
 static gboolean init_shader(guint** program);
