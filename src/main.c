@@ -52,7 +52,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	//CSS style elements
 	GtkStyleContext *context;
 	GtkCssProvider *cssProvider = gtk_css_provider_new();
-	gtk_css_provider_load_from_path(cssProvider, "entry.css", NULL);
+	gtk_css_provider_load_from_resource(cssProvider, "/io/s1m7u/cplxgrapher/entry.css");
 
 	//GLarea
 	GtkWidget* GLdispla_box;
@@ -79,11 +79,17 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 600);
 	gtk_window_set_type_hint((GtkWindow*)window, GDK_WINDOW_TYPE_HINT_DIALOG);
 
+	//Modify to closing the entire application
+	/* g_signal_connect(window, "delete_event", G_CALLBACK(gtk_window_iconify), NULL); */
+
 	glMainApp->display = gtk_application_window_new(app);
 	gtk_window_set_title(GTK_WINDOW(glMainApp->display), "display");
 	gtk_window_set_default_size(GTK_WINDOW(glMainApp->display), 600, 600);
 	gtk_window_set_type_hint((GtkWindow*)glMainApp->display, GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_keep_above(GTK_WINDOW(glMainApp->display), TRUE);
+
+	//Modify to bring window to focus
+	/* g_signal_connect(glMainApp->display, "delete_event", G_CALLBACK(gtk_window_iconify), NULL); */
 
 	gtk_widget_show_all(glMainApp->display);
 
@@ -421,20 +427,24 @@ ClProgram create_cl_program(GlApplication* app) {
 	/* printf("BR: 0\n"); */
 
     // Create the compute clProg.program from the source buffer
-	char kernelSource[16384];
-	memset(kernelSource, '\0', 16384);
-	FILE* kernelFile;
-#ifdef test
-		kernelFile = fopen("ctest.cl", "r");
-#else 
-		kernelFile = fopen("graph.cl", "r");
-#endif
-	char kTemp[512];
-	while(fgets(kTemp, 512, kernelFile) != NULL) {
-		strcat(kernelSource, kTemp);
-	}
-	fclose(kernelFile);
-	const char* kSrcPtr = kernelSource;
+	/* char kernelSource[16384]; */
+	/* memset(kernelSource, '\0', 16384); */
+	/* FILE* kernelFile; */
+/* #ifdef test */
+	/* 	kernelFile = fopen("ctest.cl", "r"); */
+/* #else */ 
+	/* 	kernelFile = fopen("graph.cl", "r"); */
+/* #endif */
+	/* char kTemp[512]; */
+	/* while(fgets(kTemp, 512, kernelFile) != NULL) { */
+	/* 	strcat(kernelSource, kTemp); */
+	/* } */
+	/* fclose(kernelFile); */
+
+	GBytes* kernelSource;
+	kernelSource = g_resources_lookup_data("/io/s1m7u/cplxgrapher/clfiles/graph.cl", 0, NULL);
+	const char* kSrcPtr = g_bytes_get_data(kernelSource, NULL);
+
     clProg.program = clCreateProgramWithSource(clProg.context, 1, (const char **)&kSrcPtr, NULL, &err);
 
 	if(err != CL_SUCCESS) {

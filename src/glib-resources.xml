@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
 	<gresource prefix="/io/s1m7u/cplxgrapher">
+		<file>entry.css</file>
 		<file>glfiles/fragShad.frag</file>
 		<file>glfiles/vertShad.vert</file>
+		<file>clfiles/stack.h</file>
+		<file>clfiles/complex.h</file>
+		<file>clfiles/graph.cl</file>
 	</gresource>
 </gresources>
