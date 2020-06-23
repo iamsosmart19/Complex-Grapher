@@ -86,7 +86,9 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_window_set_keep_above(GTK_WINDOW(glMainApp->display), TRUE);
 
 	gtk_widget_add_events(glMainApp->display, GDK_KEY_PRESS_MASK);
-	g_signal_connect(G_OBJECT(glMainApp->display), "key_press_event", G_CALLBACK(display_controls), NULL);
+	gtk_widget_add_events(glMainApp->display, GDK_KEY_RELEASE_MASK);
+	g_signal_connect(G_OBJECT(glMainApp->display), "key_press_event", G_CALLBACK(display_controls_press), glMainApp);
+	g_signal_connect(G_OBJECT(glMainApp->display), "key_release_event", G_CALLBACK(display_controls_release), glMainApp);
 
 	//Modify to bring window to focus
 	g_signal_connect(glMainApp->display, "delete_event", G_CALLBACK(send_window_to_back), (window));
@@ -486,8 +488,34 @@ ClProgram create_cl_program(GlApplication* app) {
 	return clProg;
 }
 
-static gboolean display_controls(GtkWidget* widget, GdkEventKey* event, GlApplication* app) {
-	printf("event->keyval: %d\n", event->keyval);
+static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, GlApplication* app) {
+	if(event->keyval == GDK_KEY_Shift_L) {
+		app->shift_pressed = TRUE;
+		g_print("shift pressed\n");
+		return FALSE;
+	}
+	switch(event->keyval) {
+		case GDK_KEY_:
+			break;
+
+		case GDK_KEY_leftarrow:
+
+			break;
+
+		default:
+			break;
+	}
+	printf("PRESS: event->keyval: %d\n", event->keyval);
+	return FALSE;
+}
+
+static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, GlApplication* app) {
+	if(event->keyval == GDK_KEY_Shift_L) {
+		app->shift_pressed = FALSE;
+		g_print("shift released\n");
+		return FALSE;
+	}
+	printf("RELEASE: event->keyval: %d\n", event->keyval);
 	return FALSE;
 }
 

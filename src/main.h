@@ -84,6 +84,9 @@ typedef struct GlApplication_struct_decl {
 	GLuint vao;
 	GLuint triangleVBO;
 	guint prog;
+
+	//Controls
+	gboolean shift_pressed;
 } GlApplication;
 
 //OPENCL FUNCTIONS
@@ -102,7 +105,11 @@ static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* ap
 
 static void activate (GtkApplication *app, GlApplication* glMainApp);
 
-static gboolean display_controls(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
+
+static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
+
+static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
+
 
 static gboolean send_window_to_back(GtkWindow* window, GdkEvent* event, GtkWindow* forward);
 
