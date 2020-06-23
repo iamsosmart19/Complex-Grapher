@@ -158,30 +158,7 @@ static void on_activate(GtkEntry* entry, GlApplication *app) {
 		return;
 	}
 
-    cl_int err;
-    err = clEnqueueWriteBuffer(clProg->queue, clProg->posBuffer, CL_TRUE, 0, app->posSize, app->posData, 0, NULL, NULL);
-    err |= clEnqueueWriteBuffer(clProg->queue, clProg->opBuffer, CL_TRUE, 0, app->opSize*sizeof(cplx), app->operations, 0, NULL, NULL);
-
-    // Set the arguments to our compute clProg->kernel
-    err  = clSetKernelArg(clProg->kernel, 0, sizeof(cl_mem), &(clProg->posBuffer));
-    err |= clSetKernelArg(clProg->kernel, 1, sizeof(cl_mem), &(clProg->colorBuffer));
-    err |= clSetKernelArg(clProg->kernel, 2, sizeof(cl_mem), &(clProg->opBuffer));
-    err |= clSetKernelArg(clProg->kernel, 3, sizeof(int), &app->opSize);
-    err |= clSetKernelArg(clProg->kernel, 4, sizeof(double), &app->zoom);
-    err |= clSetKernelArg(clProg->kernel, 5, sizeof(float), &app->zoomc);
-    err |= clSetKernelArg(clProg->kernel, 6, sizeof(float)*2, &app->posOffset);
-    err |= clSetKernelArg(clProg->kernel, 7, sizeof(unsigned int), &app->n);
- 
-    // Execute the clProg->kernel over the entire range of the data set  
-    err = clEnqueueNDRangeKernel(clProg->queue, clProg->kernel, 1, NULL, &app->globalSize, &app->localSize, 0, NULL, NULL);
- 
-    // Wait for the command clProg->queue to get serviced before reading back results
-    clFinish(clProg->queue);
- 
-    // Read the results from the device
-    clEnqueueReadBuffer(clProg->queue, clProg->colorBuffer, CL_TRUE, 0, app->colorSize, app->colors, 0, NULL, NULL);
-/* }; */
-	/* g_print("\nHello %s+%c\n\n", name, 'b'); */
+	write_to_clBuffer(app);
 
 	gtk_window_present_with_time(GTK_WINDOW(app->display), GDK_CURRENT_TIME);
 	/* gtk_window_present_with_time((app->display), GDK_CURRENT_TIME); */
@@ -489,17 +466,48 @@ ClProgram create_cl_program(GlApplication* app) {
 }
 
 static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, GlApplication* app) {
+	ClProgram* clProg = &app->clProg;
 	if(event->keyval == GDK_KEY_Shift_L) {
 		app->shift_pressed = TRUE;
-		g_print("shift pressed\n");
 		return FALSE;
 	}
 	switch(event->keyval) {
-		case GDK_KEY_:
+		/* case GDK_KEY_: */
+		/* 	break; */
+
+		case GDK_KEY_comma:
+			printf("comma, zoom: %lf\n", app->zoom);
+			app->zoom += app->zoom/20;
+			app->zoomc = app->zoom < 1.0 ? powl(0.001, 2.0-app->zoom) : 0.001;
+			write_to_clBuffer(app);
+			g_print("hi\n");
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
+			g_print("bye\n");
+			break;
+
+		case GDK_KEY_less:
+			app->zoom += app->zoom/5;
+			app->zoomc = app->zoom < 1.0 ? powl(0.001, 2.0-app->zoom) : 0.001;
+			write_to_clBuffer(app);
+			g_signal_emit_by_name(app->area, "render", gtk_gl_area_get_context(app->area), app);
+			break;
+
+		case GDK_KEY_period:
+			printf("period\n");
+			app->zoom -= app->zoom/20;
+			app->zoomc = app->zoom < 1.0 ? powl(0.001, 2.0-app->zoom) : 0.001;
+			write_to_clBuffer(app);
+			g_signal_emit_by_name(app->area, "render", gtk_gl_area_get_context(app->area), app);
+			break;
+
+		case GDK_KEY_greater:
+			app->zoom += app->zoom/5;
+			app->zoomc = app->zoom < 1.0 ? powl(0.001, 2.0-app->zoom) : 0.001;
+			write_to_clBuffer(app);
+			g_signal_emit_by_name(app->area, "render", gtk_gl_area_get_context(app->area), app);
 			break;
 
 		case GDK_KEY_leftarrow:
-
 			break;
 
 		default:
@@ -517,6 +525,33 @@ static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, 
 	}
 	printf("RELEASE: event->keyval: %d\n", event->keyval);
 	return FALSE;
+}
+
+void write_to_clBuffer(GlApplication* app) {
+	ClProgram* clProg = &app->clProg;
+
+    cl_int err;
+    err = clEnqueueWriteBuffer(clProg->queue, clProg->posBuffer, CL_TRUE, 0, app->posSize, app->posData, 0, NULL, NULL);
+    err |= clEnqueueWriteBuffer(clProg->queue, clProg->opBuffer, CL_TRUE, 0, app->opSize*sizeof(cplx), app->operations, 0, NULL, NULL);
+
+    // Set the arguments to our compute clProg->kernel
+    err  = clSetKernelArg(clProg->kernel, 0, sizeof(cl_mem), &(clProg->posBuffer));
+    err |= clSetKernelArg(clProg->kernel, 1, sizeof(cl_mem), &(clProg->colorBuffer));
+    err |= clSetKernelArg(clProg->kernel, 2, sizeof(cl_mem), &(clProg->opBuffer));
+    err |= clSetKernelArg(clProg->kernel, 3, sizeof(int), &app->opSize);
+    err |= clSetKernelArg(clProg->kernel, 4, sizeof(double), &app->zoom);
+    err |= clSetKernelArg(clProg->kernel, 5, sizeof(float), &app->zoomc);
+    err |= clSetKernelArg(clProg->kernel, 6, sizeof(float)*2, &app->posOffset);
+    err |= clSetKernelArg(clProg->kernel, 7, sizeof(unsigned int), &app->n);
+ 
+    // Execute the clProg->kernel over the entire range of the data set  
+    err = clEnqueueNDRangeKernel(clProg->queue, clProg->kernel, 1, NULL, &app->globalSize, &app->localSize, 0, NULL, NULL);
+ 
+    // Wait for the command clProg->queue to get serviced before reading back results
+    clFinish(clProg->queue);
+ 
+    // Read the results from the device
+    clEnqueueReadBuffer(clProg->queue, clProg->colorBuffer, CL_TRUE, 0, app->colorSize, app->colors, 0, NULL, NULL);
 }
 
 static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, GtkWindow* forward) {

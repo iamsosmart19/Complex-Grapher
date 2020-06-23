@@ -93,6 +93,8 @@ typedef struct GlApplication_struct_decl {
 
 ClProgram create_cl_program(GlApplication* app);
 
+void write_to_clBuffer(GlApplication* app);
+
 //GTK FUNCTIONS
 
 static void on_activate(GtkEntry* entry, GlApplication *app);
