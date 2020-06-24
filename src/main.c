@@ -60,12 +60,11 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	/* Glprogram shaderProgram; */
 
 	//UI elements
-	/* gtkButton *button; */
-	/* GtkWidget *button_box; */
-
-	gtkEntry *funcInput;
-	GtkEntryBuffer *funcBuffer;
-	gtkBox *funcBox;
+	gtkLabel* funcLabel;
+	gtkBox* funcLabelBox;
+	gtkEntry* funcInput;
+	GtkEntryBuffer* funcBuffer;
+	gtkBox* funcInputBox;
 
 	glMainApp->area = gtk_gl_area_new();
 	gtk_gl_area_set_required_version(GTK_GL_AREA(glMainApp->area), 3, 3);
@@ -97,6 +96,12 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	//Modify to closing the entire application
 	g_signal_connect(window, "delete_event", G_CALLBACK(close_application), glMainApp->display);
 
+	GLdisplay_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_set_size_request(GLdisplay_box, 600, 600);
+	gtk_container_add(GTK_CONTAINER(glMainApp->display), GLdisplay_box);
+
+	gtk_container_add(GTK_CONTAINER(GLdisplay_box), glMainApp->area);
+
 	gtk_widget_show_all(glMainApp->display);
 
 	/* button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL); */
@@ -107,13 +112,13 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	/* g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window); */
 	/* gtk_container_add (GTK_CONTAINER (button_box), button); */
 
+	funcLabel = gtk_label_new("Enter a function below (Format described in guide page)");
+	funcLabelBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_size_request(funcLabel, 400, 34);
+	gtk_container_add(GTK_CONTAINER(funcLabelBox), funcLabel);
+	gtk_fixed_put(GTK_FIXED(windowFixed), funcLabelBox, 400 - 200, 120 - 34);
+
 	funcBuffer = gtk_entry_buffer_new("", 0);
-
-	GLdisplay_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_widget_set_size_request(GLdisplay_box, 600, 600);
-	gtk_container_add(GTK_CONTAINER(glMainApp->display), GLdisplay_box);
-
-	gtk_container_add(GTK_CONTAINER(GLdisplay_box), glMainApp->area);
 
 	funcInput = gtk_entry_new_with_buffer(funcBuffer);
 	gtk_widget_set_name((funcInput), "funcIn");
@@ -121,10 +126,10 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_entry_set_placeholder_text(GTK_ENTRY(funcInput), "Enter function here");
 	g_signal_connect(funcInput, "activate", G_CALLBACK(on_activate), glMainApp);
 
-	funcBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_set_size_request(funcBox, 400, 34);
-	gtk_container_add(GTK_CONTAINER(funcBox), funcInput);
-	gtk_fixed_put(GTK_FIXED(windowFixed), funcBox, 400 - 200, 120);
+	funcInputBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_size_request(funcInputBox, 400, 34);
+	gtk_container_add(GTK_CONTAINER(funcInputBox), funcInput);
+	gtk_fixed_put(GTK_FIXED(windowFixed), funcInputBox, 400 - 200, 120);
 
 	context = gtk_widget_get_style_context(funcInput);
 	gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -613,8 +618,4 @@ static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindo
 static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow* display) {
 	gtk_widget_destroy(display);
 	return FALSE;
-}
-
-static void get_size(GtkWidget *widget, GtkAllocation *allocation, gpointer data) {
-    printf("width = %d, height = %d\n", allocation->width, allocation->height);
 }

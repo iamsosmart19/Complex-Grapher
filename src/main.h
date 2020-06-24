@@ -31,6 +31,7 @@ void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int
 typedef GtkWidget gtkWindow;
 typedef GtkWidget gtkButton;
 typedef GtkWidget gtkEntry;
+typedef GtkWidget gtkLabel;
 typedef GtkWidget gtkBox;
 typedef GtkWidget gtkGLArea;
 typedef GtkWidget gtkFixed;
@@ -117,8 +118,6 @@ static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, 
 static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindow* forward);
 
 static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow* display);
-
-static void get_size(GtkWidget *widget, GtkAllocation *allocation, gpointer data);
 
 //GL functions
 static gboolean init_shader(guint** program);
