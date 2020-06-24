@@ -33,6 +33,7 @@ typedef GtkWidget gtkButton;
 typedef GtkWidget gtkEntry;
 typedef GtkWidget gtkBox;
 typedef GtkWidget gtkGLArea;
+typedef GtkWidget gtkFixed;
 
 //GTK GL WRAPPERS
 
@@ -113,9 +114,9 @@ static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, Gl
 static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
 
 
-static gboolean send_window_to_back(GtkWindow* window, GdkEvent* event, GtkWindow* forward);
+static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindow* forward);
 
-static gboolean close_application(GtkWindow* window, GdkEvent* event, GtkWindow* display);
+static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow* display);
 
 //GL functions
 static gboolean init_shader(guint** program);
