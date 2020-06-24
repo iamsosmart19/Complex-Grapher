@@ -118,6 +118,8 @@ static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindo
 
 static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow* display);
 
+static void get_size(GtkWidget *widget, GtkAllocation *allocation, gpointer data);
+
 //GL functions
 static gboolean init_shader(guint** program);
 

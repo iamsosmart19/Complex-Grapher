@@ -48,6 +48,7 @@ int main(int argc, char* argv[]) {
 static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	//Windows
 	gtkWindow *window;
+	gtkFixed* windowFixed = gtk_fixed_new();
 
 	//CSS style elements
 	GtkStyleContext *context;
@@ -62,7 +63,6 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	/* gtkButton *button; */
 	/* GtkWidget *button_box; */
 
-	gtkFixed* funcFixed;
 	gtkEntry *funcInput;
 	GtkEntryBuffer *funcBuffer;
 	gtkBox *funcBox;
@@ -77,7 +77,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 	window = gtk_application_window_new (app);
 	gtk_window_set_title (GTK_WINDOW (window), "Complex Function Grapher");
-	gtk_window_set_default_size (GTK_WINDOW (window), 800, 600);
+	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
 	gtk_window_set_type_hint((GtkWindow*)window, GDK_WINDOW_TYPE_HINT_DIALOG);
 
 	glMainApp->display = gtk_application_window_new(app);
@@ -107,11 +107,9 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	/* g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window); */
 	/* gtk_container_add (GTK_CONTAINER (button_box), button); */
 
-	funcFixed = gtk_fixed_new();
-
 	funcBuffer = gtk_entry_buffer_new("", 0);
 
-	GLdisplay_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+	GLdisplay_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_set_size_request(GLdisplay_box, 600, 600);
 	gtk_container_add(GTK_CONTAINER(glMainApp->display), GLdisplay_box);
 
@@ -121,15 +119,17 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_widget_set_name((funcInput), "funcIn");
 	gtk_entry_set_max_width_chars(GTK_ENTRY(funcInput), 256);
 	gtk_entry_set_placeholder_text(GTK_ENTRY(funcInput), "Enter function here");
-	/* gtk_entry_set_has_frame(funcInput, 1); */
-	/* char c = 'b'; */
 	g_signal_connect(funcInput, "activate", G_CALLBACK(on_activate), glMainApp);
-	gtk_fixed_put(GTK_FIXED(funcFixed), funcInput, 100, 100);
+
+	funcBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_size_request(funcBox, 100, 100);
+	gtk_container_add(GTK_CONTAINER(funcBox), funcInput);
+	gtk_fixed_put(GTK_FIXED(windowFixed), funcBox, 10, 10);
 
 	context = gtk_widget_get_style_context(funcInput);
-	gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+	gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
 
-	gtk_container_add(GTK_CONTAINER(window), funcFixed);
+	gtk_container_add(GTK_CONTAINER(window), windowFixed);
 
 	gtk_widget_show_all(glMainApp->display);
 	gtk_widget_show_all(window);
@@ -279,21 +279,21 @@ static gboolean init_shader(guint** programExt) {
 	glLinkProgram(program);
 
 	int status = 0;
-	glGetProgramiv (program, GL_LINK_STATUS, &status);
+	glGetProgramiv(program, GL_LINK_STATUS, &status);
 	if (status == GL_FALSE) {
 		int log_len = 0;
-		glGetProgramiv (program, GL_INFO_LOG_LENGTH, &log_len);
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_len);
 
-		char *buffer = g_malloc (log_len + 1);
-		glGetProgramInfoLog (program, log_len, NULL, buffer);
+		char *buffer = g_malloc(log_len + 1);
+		glGetProgramInfoLog(program, log_len, NULL, buffer);
 
 		/* g_set_error (error, GLAREA_ERROR, GLAREA_ERROR_SHADER_LINK, */
 		/* 		"Linking failure in program: %s", buffer); */
 		g_print("Linking failure in progam %s", buffer);
 
-		g_free (buffer);
+		g_free(buffer);
 
-		glDeleteProgram (program);
+		glDeleteProgram(program);
 		program = 0;
 
 		goto out;
@@ -322,22 +322,22 @@ static guint create_shader(int shader_type, const char *source, GError **error, 
 	glCompileShader(shader);
 
 	int status;
-	glGetShaderiv (shader, GL_COMPILE_STATUS, &status);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 	if (status == GL_FALSE) {
 		int log_len;
-		glGetShaderiv (shader, GL_INFO_LOG_LENGTH, &log_len);
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_len);
 
-		char *buffer = g_malloc (log_len + 1);
-		glGetShaderInfoLog (shader, log_len, NULL, buffer);
+		char *buffer = g_malloc(log_len + 1);
+		glGetShaderInfoLog(shader, log_len, NULL, buffer);
 
 		/* g_set_error(error, GLAREA_ERROR, GLAREA_ERROR_SHADER_COMPILATION, */
 		/* 		"Compilation failure in %s shader: %s", */
 		/* 		shader_type == GL_VERTEX_SHADER ? "vertex" : "fragment", */
 		/* 		buffer); */
 
-		g_free (buffer);
+		g_free(buffer);
 
-		glDeleteShader (shader);
+		glDeleteShader(shader);
 		shader = 0;
 	}
 
@@ -613,4 +613,8 @@ static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindo
 static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow* display) {
 	gtk_widget_destroy(display);
 	return FALSE;
+}
+
+static void get_size(GtkWidget *widget, GtkAllocation *allocation, gpointer data) {
+    printf("width = %d, height = %d\n", allocation->width, allocation->height);
 }
