@@ -240,6 +240,7 @@ static void on_unrealise(GtkGLArea *area, GlApplication *app) {
 }
 
 static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* app) {
+	g_print("render: start\n");
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -475,55 +476,104 @@ static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, Gl
 		/* case GDK_KEY_: */
 		/* 	break; */
 
+		case GDK_KEY_space:
+			app->posOffset[0] = 0;
+			app->posOffset[1] = 0;
+			app->zoom = 10;
+			write_to_clBuffer(app);
+			/* g_signal_emit_by_name(GTK_GL_AREA(app->area), "render", app); */
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
+			break;
+
 		case GDK_KEY_comma:
-			printf("comma, zoom: %lf\n", app->zoom);
 			app->zoom += app->zoom/20;
 			app->zoomc = app->zoom < 1.0 ? powl(0.001, 2.0-app->zoom) : 0.001;
 			write_to_clBuffer(app);
-			g_print("hi\n");
 			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
-			g_print("bye\n");
 			break;
 
 		case GDK_KEY_less:
 			app->zoom += app->zoom/5;
 			app->zoomc = app->zoom < 1.0 ? powl(0.001, 2.0-app->zoom) : 0.001;
 			write_to_clBuffer(app);
-			g_signal_emit_by_name(app->area, "render", gtk_gl_area_get_context(app->area), app);
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
 			break;
 
 		case GDK_KEY_period:
-			printf("period\n");
 			app->zoom -= app->zoom/20;
 			app->zoomc = app->zoom < 1.0 ? powl(0.001, 2.0-app->zoom) : 0.001;
 			write_to_clBuffer(app);
-			g_signal_emit_by_name(app->area, "render", gtk_gl_area_get_context(app->area), app);
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
 			break;
 
 		case GDK_KEY_greater:
-			app->zoom += app->zoom/5;
+			app->zoom -= app->zoom/5;
 			app->zoomc = app->zoom < 1.0 ? powl(0.001, 2.0-app->zoom) : 0.001;
 			write_to_clBuffer(app);
-			g_signal_emit_by_name(app->area, "render", gtk_gl_area_get_context(app->area), app);
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
+			break;
+
+		case GDK_KEY_uparrow:
+		case GDK_KEY_Up:
+			if(app->shift_pressed) {
+				app->posOffset[1] += fabs(app->zoom) / 10;
+			}
+			else {
+				app->posOffset[1] += fabs(app->zoom) / 100;
+			}
+			write_to_clBuffer(app);
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
+			break;
+
+		case GDK_KEY_downarrow:
+		case GDK_KEY_Down:
+			if(app->shift_pressed) {
+				app->posOffset[1] -= fabs(app->zoom) / 10;
+			}
+			else {
+				app->posOffset[1] -= fabs(app->zoom) / 100;
+			}
+			write_to_clBuffer(app);
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
+			break;
+
+		case GDK_KEY_rightarrow:
+		case GDK_KEY_Right:
+			if(app->shift_pressed) {
+				app->posOffset[0] += fabs(app->zoom) / 10;
+			}
+			else {
+				app->posOffset[0] += fabs(app->zoom) / 100;
+			}
+			write_to_clBuffer(app);
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
 			break;
 
 		case GDK_KEY_leftarrow:
+		case GDK_KEY_Left:
+			if(app->shift_pressed) {
+				app->posOffset[0] -= fabs(app->zoom) / 10;
+			}
+			else {
+				app->posOffset[0] -= fabs(app->zoom) / 100;
+			}
+			write_to_clBuffer(app);
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
 			break;
 
 		default:
 			break;
 	}
-	printf("PRESS: event->keyval: %d\n", event->keyval);
 	return FALSE;
 }
 
 static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, GlApplication* app) {
 	if(event->keyval == GDK_KEY_Shift_L) {
 		app->shift_pressed = FALSE;
-		g_print("shift released\n");
+		/* g_print("shift released\n"); */
 		return FALSE;
 	}
-	printf("RELEASE: event->keyval: %d\n", event->keyval);
+	/* printf("RELEASE: event->keyval: %d\n", event->keyval); */
 	return FALSE;
 }
 
@@ -560,6 +610,6 @@ static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, GtkWindo
 }
 
 static gboolean close_application(GtkWindow* window, GdkEvent* event, GtkWindow* display) {
-	gtk_widget_destroy(display);
+	gtk_widget_destroy(GTK_WINDOW(display));
 	return FALSE;
 }
