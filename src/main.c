@@ -122,9 +122,9 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	g_signal_connect(funcInput, "activate", G_CALLBACK(on_activate), glMainApp);
 
 	funcBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_set_size_request(funcBox, 100, 100);
+	gtk_widget_set_size_request(funcBox, 400, 34);
 	gtk_container_add(GTK_CONTAINER(funcBox), funcInput);
-	gtk_fixed_put(GTK_FIXED(windowFixed), funcBox, 10, 10);
+	gtk_fixed_put(GTK_FIXED(windowFixed), funcBox, 400 - 200, 120);
 
 	context = gtk_widget_get_style_context(funcInput);
 	gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
