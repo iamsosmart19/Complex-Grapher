@@ -50,6 +50,11 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtkWindow *window;
 	gtkFixed* windowFixed = gtk_fixed_new();
 
+	//Screen Switcher
+	gtkStack* gStack;
+	gtkStackSwitcher* screenSwitch;
+	gtkLabel* menuLabel[4];
+
 	//CSS style elements
 	GtkStyleContext *context;
 	GtkCssProvider *cssProvider = gtk_css_provider_new();
@@ -60,6 +65,8 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	/* Glprogram shaderProgram; */
 
 	//UI elements
+	gtkFrame* funcFrame;
+	gtkFixed* funcFixed = gtk_fixed_new();
 	gtkLabel* funcLabel;
 	gtkBox* funcLabelBox;
 	gtkEntry* funcInput;
@@ -102,8 +109,6 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 	gtk_container_add(GTK_CONTAINER(GLdisplay_box), glMainApp->area);
 
-	gtk_widget_show_all(glMainApp->display);
-
 	/* button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL); */
 	/* gtk_container_add (GTK_CONTAINER (window), button_box); */
 
@@ -112,11 +117,11 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	/* g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window); */
 	/* gtk_container_add (GTK_CONTAINER (button_box), button); */
 
-	funcLabel = gtk_label_new("Enter a function below (Format described in guide page)");
+	funcLabel = gtk_label_new("Enter a function below (format described in guide page)");
 	funcLabelBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request(funcLabel, 400, 34);
 	gtk_container_add(GTK_CONTAINER(funcLabelBox), funcLabel);
-	gtk_fixed_put(GTK_FIXED(windowFixed), funcLabelBox, 400 - 200, 120 - 34);
+	gtk_fixed_put(GTK_FIXED(funcFixed), funcLabelBox, 400 - 200, 120 - 34);
 
 	funcBuffer = gtk_entry_buffer_new("", 0);
 
@@ -129,10 +134,64 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	funcInputBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request(funcInputBox, 400, 34);
 	gtk_container_add(GTK_CONTAINER(funcInputBox), funcInput);
-	gtk_fixed_put(GTK_FIXED(windowFixed), funcInputBox, 400 - 200, 120);
+	gtk_fixed_put(GTK_FIXED(funcFixed), funcInputBox, 400 - 200, 120);
 
 	context = gtk_widget_get_style_context(funcInput);
 	gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+	funcFrame = gtk_frame_new(NULL);
+	gtk_container_add(GTK_CONTAINER(funcFrame), funcFixed);
+	/* gtk_fixed_put(GTK_FIXED(windowFixed), funcFrame, 0, 0); */
+
+	//Screen switchers
+	gStack = gtk_stack_new();
+	gtk_stack_set_transition_type(GTK_STACK(gStack), GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT);
+
+	screenSwitch = gtk_stack_switcher_new();
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(screenSwitch), GTK_ORIENTATION_VERTICAL);
+	gtk_stack_switcher_set_stack(GTK_STACK_SWITCHER(screenSwitch), GTK_STACK(gStack));
+
+	char menuLabelName[32];
+	/* gtkButton* = */ 
+	for(int i = 0; i < 4; i++) {
+		switch(i) {
+			case 0:
+				sprintf(menuLabelName, "Start");
+				/* gtk_stack_add_titled(GTK_STACK(gStack), funcLabel, menuLabelName, menuLabelName); */
+				gtk_stack_add_named(GTK_STACK(gStack), funcFrame, menuLabelName);
+				/* gtk_container_child_set_property(GTK_CONTAINER(gStack), funcFrame, ); */
+				continue;
+				break;
+
+			case 1:
+				sprintf(menuLabelName, "Guide");
+				menuLabel[i] = gtk_label_new(menuLabelName);
+
+				gtkButton* newButton = gtk_button_new_with_label(menuLabel[i]);
+				gtk_stack_add_named(GTK_STACK(gStack), newButton, menuLabelName);
+				continue;
+				break;
+
+			case 2:
+				sprintf(menuLabelName, "Settings");
+				break;
+
+			case 3:
+				sprintf(menuLabelName, "Quit");
+				break;
+		}
+		menuLabel[i] = gtk_label_new(menuLabelName);
+		gtk_stack_add_named(GTK_STACK(gStack), menuLabel[i], menuLabelName);
+		g_print("DB: 0\n");
+		gtk_container_child_set(GTK_CONTAINER(gStack), menuLabel[i], "title", menuLabelName, NULL);
+		g_print("DB: 1\n");
+	}
+
+	gtk_widget_set_size_request(screenSwitch, 50, 200);
+
+	gtk_fixed_put(GTK_FIXED(windowFixed), screenSwitch, 0, 0);
+	/* gtk_fixed_put(GTK_FIXED(windowFixed), screenSwitch, 400 - 50, 220); */
+	/* gtk_widget_set_halign(screenSwitch, GTK_ALIGN_CENTER); */
 
 	gtk_container_add(GTK_CONTAINER(window), windowFixed);
 

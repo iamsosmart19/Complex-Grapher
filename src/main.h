@@ -29,6 +29,9 @@ void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int
 //GTK TYPEDEFS
 
 typedef GtkWidget gtkWindow;
+typedef GtkWidget gtkFrame;
+typedef GtkWidget gtkStack;
+typedef GtkWidget gtkStackSwitcher;
 typedef GtkWidget gtkButton;
 typedef GtkWidget gtkEntry;
 typedef GtkWidget gtkLabel;
