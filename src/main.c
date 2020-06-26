@@ -464,19 +464,19 @@ ClProgram create_cl_program(GlApplication* app) {
     err = clGetPlatformIDs(1, &(clProg.cpPlatform), NULL);
 
 	if(err != CL_SUCCESS) {
-		printf("error: %d\n", err);
+		printf("platform error: %d\n", err);
 	}
 
     // Get ID for the device
     err = clGetDeviceIDs(clProg.cpPlatform, CL_DEVICE_TYPE_GPU, 1, &(clProg.device_id), NULL);
 	if(err != CL_SUCCESS) {
-		printf("error: %d\n", err);
+		printf("device error: %d\n", err);
 	}
 
     // Create a clProg.context  
     clProg.context = clCreateContext(0, 1, &(clProg.device_id), NULL, NULL, &err);
 	if(err != CL_SUCCESS) {
-		printf("error: %d\n", err);
+		printf("context error: %d\n", err);
 	}
  
     // Create a command clProg.queue 
