@@ -52,7 +52,10 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 	//Screen Switcher
 	gtkStack* gStack;
-	gtkStackSwitcher* screenSwitch;
+	/* gtkStackSwitcher* screenSwitch; */
+	gtkStackSidebar* stackSidebar = gtk_stack_sidebar_new();
+	GtkWidget* stackSeperator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+	gtkBox* stackBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtkLabel* menuLabel[4];
 
 	//CSS style elements
@@ -73,6 +76,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	GtkEntryBuffer* funcBuffer;
 	gtkBox* funcInputBox;
 
+	//GTK_GL_AREA INITIALISATION
 	glMainApp->area = gtk_gl_area_new();
 	gtk_gl_area_set_required_version(GTK_GL_AREA(glMainApp->area), 3, 3);
 	gtk_widget_set_name(glMainApp->area, "display");
@@ -81,17 +85,21 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	g_signal_connect(glMainApp->area, "render", G_CALLBACK (render), glMainApp);
 	gtk_widget_set_size_request(glMainApp->area, 600, 600);
 
+	//WINDOW INITILISATION
+	//window
 	window = gtk_application_window_new (app);
 	gtk_window_set_title (GTK_WINDOW (window), "Complex Function Grapher");
 	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
 	gtk_window_set_type_hint((GtkWindow*)window, GDK_WINDOW_TYPE_HINT_DIALOG);
 
+	//display
 	glMainApp->display = gtk_application_window_new(app);
 	gtk_window_set_title(GTK_WINDOW(glMainApp->display), "display");
 	gtk_window_set_default_size(GTK_WINDOW(glMainApp->display), 600, 600);
 	gtk_window_set_type_hint((GtkWindow*)glMainApp->display, GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_keep_above(GTK_WINDOW(glMainApp->display), TRUE);
 
+	//WINDOW SIGNALS
 	gtk_widget_add_events(glMainApp->display, GDK_KEY_PRESS_MASK);
 	gtk_widget_add_events(glMainApp->display, GDK_KEY_RELEASE_MASK);
 	g_signal_connect(G_OBJECT(glMainApp->display), "key_press_event", G_CALLBACK(display_controls_press), glMainApp);
@@ -105,9 +113,8 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 	GLdisplay_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_set_size_request(GLdisplay_box, 600, 600);
-	gtk_container_add(GTK_CONTAINER(glMainApp->display), GLdisplay_box);
-
 	gtk_container_add(GTK_CONTAINER(GLdisplay_box), glMainApp->area);
+	gtk_container_add(GTK_CONTAINER(glMainApp->display), GLdisplay_box);
 
 	/* button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL); */
 	/* gtk_container_add (GTK_CONTAINER (window), button_box); */
@@ -117,6 +124,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	/* g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window); */
 	/* gtk_container_add (GTK_CONTAINER (button_box), button); */
 
+	//FUNC INPUT
 	funcLabel = gtk_label_new("Enter a function below (format described in guide page)");
 	funcLabelBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request(funcLabel, 400, 34);
@@ -136,9 +144,6 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_container_add(GTK_CONTAINER(funcInputBox), funcInput);
 	gtk_fixed_put(GTK_FIXED(funcFixed), funcInputBox, 400 - 200, 120);
 
-	context = gtk_widget_get_style_context(funcInput);
-	gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
-
 	funcFrame = gtk_frame_new(NULL);
 	gtk_container_add(GTK_CONTAINER(funcFrame), funcFixed);
 	/* gtk_fixed_put(GTK_FIXED(windowFixed), funcFrame, 0, 0); */
@@ -147,9 +152,12 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gStack = gtk_stack_new();
 	gtk_stack_set_transition_type(GTK_STACK(gStack), GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT);
 
-	screenSwitch = gtk_stack_switcher_new();
-	gtk_orientable_set_orientation(GTK_ORIENTABLE(screenSwitch), GTK_ORIENTATION_VERTICAL);
-	gtk_stack_switcher_set_stack(GTK_STACK_SWITCHER(screenSwitch), GTK_STACK(gStack));
+	/* gtk_orientable_set_orientation(GTK_ORIENTABLE(screenSwitch), GTK_ORIENTATION_VERTICAL); */
+	/* gtk_stack_switcher_set_stack(GTK_STACK_SWITCHER(screenSwitch), GTK_STACK(gStack)); */
+	gtk_stack_sidebar_set_stack(GTK_STACK_SIDEBAR(stackSidebar), GTK_STACK(gStack));
+	gtk_box_pack_start(GTK_BOX(stackBox), stackSidebar, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(stackBox), stackSeperator, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(stackBox), gStack, TRUE, TRUE, 0);
 
 	char menuLabelName[32];
 	/* gtkButton* = */ 
@@ -187,13 +195,12 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 		g_print("DB: 1\n");
 	}
 
-	gtk_widget_set_size_request(screenSwitch, 50, 200);
-
-	gtk_fixed_put(GTK_FIXED(windowFixed), screenSwitch, 0, 0);
+	/* gtk_fixed_put(GTK_FIXED(windowFixed), screenSwitch, 0, 0); */
 	/* gtk_fixed_put(GTK_FIXED(windowFixed), screenSwitch, 400 - 50, 220); */
 	/* gtk_widget_set_halign(screenSwitch, GTK_ALIGN_CENTER); */
 
-	gtk_container_add(GTK_CONTAINER(window), windowFixed);
+	/* gtk_container_add(GTK_CONTAINER(window), windowFixed); */
+	gtk_container_add(GTK_CONTAINER(window), stackBox);
 
 	gtk_widget_show_all(glMainApp->display);
 	gtk_widget_show_all(window);

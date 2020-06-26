@@ -32,6 +32,7 @@ typedef GtkWidget gtkWindow;
 typedef GtkWidget gtkFrame;
 typedef GtkWidget gtkStack;
 typedef GtkWidget gtkStackSwitcher;
+typedef GtkWidget gtkStackSidebar;
 typedef GtkWidget gtkButton;
 typedef GtkWidget gtkEntry;
 typedef GtkWidget gtkLabel;
