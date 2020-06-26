@@ -50,6 +50,9 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtkWindow *window;
 	gtkFixed* windowFixed = gtk_fixed_new();
 
+	//Header
+	GtkWidget* header = gtk_header_bar_new();
+
 	//Screen Switcher
 	gtkStack* gStack;
 	/* gtkStackSwitcher* screenSwitch; */
@@ -116,13 +119,9 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_container_add(GTK_CONTAINER(GLdisplay_box), glMainApp->area);
 	gtk_container_add(GTK_CONTAINER(glMainApp->display), GLdisplay_box);
 
-	/* button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL); */
-	/* gtk_container_add (GTK_CONTAINER (window), button_box); */
-
-	/* button = gtk_button_new_with_label ("Hello World"); */
-	/* g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL); */
-	/* g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window); */
-	/* gtk_container_add (GTK_CONTAINER (button_box), button); */
+	//HEADER
+	gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header), TRUE);
+	gtk_window_set_titlebar(GTK_WINDOW(window), header);
 
 	//FUNC INPUT
 	funcLabel = gtk_label_new("Enter a function below (format described in guide page)");
@@ -165,8 +164,10 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 		switch(i) {
 			case 0:
 				sprintf(menuLabelName, "Start");
+				menuLabel[i] = gtk_label_new(menuLabelName);
 				/* gtk_stack_add_titled(GTK_STACK(gStack), funcLabel, menuLabelName, menuLabelName); */
 				gtk_stack_add_named(GTK_STACK(gStack), funcFrame, menuLabelName);
+				gtk_container_child_set(GTK_CONTAINER(gStack), funcFrame, "title", menuLabelName, NULL);
 				/* gtk_container_child_set_property(GTK_CONTAINER(gStack), funcFrame, ); */
 				continue;
 				break;
@@ -177,6 +178,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 				gtkButton* newButton = gtk_button_new_with_label(menuLabel[i]);
 				gtk_stack_add_named(GTK_STACK(gStack), newButton, menuLabelName);
+				gtk_container_child_set(GTK_CONTAINER(gStack), newButton, "title", menuLabelName, NULL);
 				continue;
 				break;
 
