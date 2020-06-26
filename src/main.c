@@ -138,6 +138,9 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_entry_set_placeholder_text(GTK_ENTRY(funcInput), "Enter function here");
 	g_signal_connect(funcInput, "activate", G_CALLBACK(on_activate), glMainApp);
 
+	context = gtk_widget_get_style_context(funcInput);
+	gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+
 	funcInputBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request(funcInputBox, 400, 34);
 	gtk_container_add(GTK_CONTAINER(funcInputBox), funcInput);
@@ -176,7 +179,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				sprintf(menuLabelName, "Guide");
 				menuLabel[i] = gtk_label_new(menuLabelName);
 
-				gtkButton* newButton = gtk_button_new_with_label(menuLabel[i]);
+				gtkButton* newButton = gtk_button_new_with_label(menuLabelName);
 				gtk_stack_add_named(GTK_STACK(gStack), newButton, menuLabelName);
 				gtk_container_child_set(GTK_CONTAINER(gStack), newButton, "title", menuLabelName, NULL);
 				continue;
@@ -192,9 +195,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 		}
 		menuLabel[i] = gtk_label_new(menuLabelName);
 		gtk_stack_add_named(GTK_STACK(gStack), menuLabel[i], menuLabelName);
-		g_print("DB: 0\n");
 		gtk_container_child_set(GTK_CONTAINER(gStack), menuLabel[i], "title", menuLabelName, NULL);
-		g_print("DB: 1\n");
 	}
 
 	/* gtk_fixed_put(GTK_FIXED(windowFixed), screenSwitch, 0, 0); */
@@ -480,23 +481,6 @@ ClProgram create_cl_program(GlApplication* app) {
  
     // Create a command clProg.queue 
     clProg.queue = clCreateCommandQueueWithProperties(clProg.context, clProg.device_id, 0, &err);
-
-	/* printf("BR: 0\n"); */
-
-    // Create the compute clProg.program from the source buffer
-	/* char kernelSource[16384]; */
-	/* memset(kernelSource, '\0', 16384); */
-	/* FILE* kernelFile; */
-/* #ifdef test */
-	/* 	kernelFile = fopen("ctest.cl", "r"); */
-/* #else */ 
-	/* 	kernelFile = fopen("graph.cl", "r"); */
-/* #endif */
-	/* char kTemp[512]; */
-	/* while(fgets(kTemp, 512, kernelFile) != NULL) { */
-	/* 	strcat(kernelSource, kTemp); */
-	/* } */
-	/* fclose(kernelFile); */
 
 	GBytes* kernelSource;
 	kernelSource = g_resources_lookup_data("/io/s1m7u/cplxgrapher/clfiles/graph.cl", 0, NULL);
