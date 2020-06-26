@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
 
 	GtkApplication *app;
 	GlApplication glMainApp;
-	int app_status;
+	int gtk_app_status;
 
 	/* FILE* sample = fopen("input.txt", "r"); */
 	/* /1* FILE* sample = fopen("input3.txt", "r"); *1/ */
@@ -19,11 +19,11 @@ int main(int argc, char* argv[]) {
 	/* printf("|%s|\n", function); */
 	/* fclose(sample); */
 
-	char function[1024] = "z\n\0";
+	char funcString[1024] = "z\n";
 
 	// Possibly enable parser runtime debugging.
 	queue out = queueInit();
-	result res = parse_string(function, &out);
+	result res = parse_string(funcString, &out);
 	if( !res.nerrs ) {
 		glMainApp.operations = (cplx*)malloc(128*sizeof(cplx));
 
@@ -39,10 +39,10 @@ int main(int argc, char* argv[]) {
 
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), &glMainApp);
-	app_status = g_application_run(G_APPLICATION(app), argc, argv);
+	gtk_app_status = g_application_run(G_APPLICATION(app), argc, argv);
 	g_object_unref(app);
 
-	return app_status;
+	return gtk_app_status;
 }
 
 static void activate (GtkApplication *app, GlApplication* glMainApp) {
@@ -91,7 +91,6 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	//WINDOW INITILISATION
 	//window
 	window = gtk_application_window_new (app);
-	gtk_window_set_title (GTK_WINDOW (window), "Complex Function Grapher");
 	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
 	gtk_window_set_type_hint((GtkWindow*)window, GDK_WINDOW_TYPE_HINT_DIALOG);
 
@@ -122,6 +121,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	//HEADER
 	gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header), TRUE);
 	gtk_window_set_titlebar(GTK_WINDOW(window), header);
+	gtk_window_set_title (GTK_WINDOW (window), "Complex Function Grapher");
 
 	//FUNC INPUT
 	funcLabel = gtk_label_new("Enter a function below (format described in guide page)");

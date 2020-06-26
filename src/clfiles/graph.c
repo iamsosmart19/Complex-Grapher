@@ -157,23 +157,17 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 	int id = get_global_id(0);
 
 	if (id < n) {
-		float3 RGB;
-		float gap = log(sqrt((float)2));
 		float2 input = vload2(0, &a[id*2]);
-		if((input.x < 4*zoomc && input.x > -4*zoomc) || (input.y < 4*zoomc && input.y > -4*zoomc)) {
-			RGB = (float3)(0, 0, 0);
-			vstore3(RGB, 0, &b[id*3]);
-		}
-		else {
-			cplx ret = evalFunc(op, opnum, (cplx)(zoom*(input.x)+offset.x, zoom*(input.y)+offset.y));
-			// float3 DBG = (float3)(ret.x, ret.y, 1);
+		cplx ret = evalFunc(op, opnum, (cplx)(zoom*(input.x)+offset.x, zoom*(input.y)+offset.y));
+		// float3 DBG = (float3)(ret.x, ret.y, 1);
 
-			RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod((float)log(cabs(ret)), gap) + 1 - gap);
-			RGB = hsv2rgb(RGB.x, RGB.y, RGB.z);
-			RGB -= (float3)(fmod(abs((int)((ceil(ret.x/5) + ceil(ret.y/5)))), 2.0)/10);
-			vstore3(RGB, 0, &b[id*3]);
-			//vstore3(DBG, 0, &b[id*3]);
-		}
+		float gap = log(sqrt((float)2));
+		float3 RGB;
+		RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod((float)log(cabs(ret)), gap) + 1 - gap);
+		RGB = hsv2rgb(RGB.x, RGB.y, RGB.z);
+		RGB -= (float3)(fmod(abs((int)((ceil(ret.x/5) + ceil(ret.y/5)))), 2.0)/10);
+		vstore3(RGB, 0, &b[id*3]);
+		//vstore3(DBG, 0, &b[id*3]);
 	}
 }
 
