@@ -160,7 +160,7 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 		float3 RGB;
 		float gap = log(sqrt((float)2));
 		float2 input = vload2(0, &a[id*2]);
-		if((input.x < 4*zoomc && input.x > -4*zoomc) || (input.y < 4*zoomc && input.y > -4*zoomc)) {
+		if((input.x + offset.x/zoom < 4*zoomc && input.x + offset.x/zoom > -4*zoomc) || (input.y + offset.y/zoom < 4*zoomc && input.y + offset.y/zoom > -4*zoomc)) {
 			RGB = (float3)(0, 0, 0);
 			vstore3(RGB, 0, &b[id*3]);
 		}

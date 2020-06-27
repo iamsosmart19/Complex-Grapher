@@ -103,11 +103,11 @@ void write_to_clBuffer(GlApplication* app);
 
 //GTK FUNCTIONS
 
-static void on_activate(GtkEntry* entry, GlApplication *app);
+static void on_entry_activate(GtkEntry* entry, GlApplication *app);
 
-static void on_realise(GtkGLArea *area, GlApplication *app);
+static void on_gl_realise(GtkGLArea *area, GlApplication *app);
 
-static void on_unrealise(GtkGLArea *area, GlApplication *app);
+static void on_gl_unrealise(GtkGLArea *area, GlApplication *app);
 
 static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* app);
 

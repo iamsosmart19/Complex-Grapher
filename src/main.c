@@ -83,8 +83,8 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	glMainApp->area = gtk_gl_area_new();
 	gtk_gl_area_set_required_version(GTK_GL_AREA(glMainApp->area), 3, 3);
 	gtk_widget_set_name(glMainApp->area, "display");
-	g_signal_connect(glMainApp->area, "realize", G_CALLBACK (on_realise), glMainApp);
-	g_signal_connect(glMainApp->area, "unrealize", G_CALLBACK (on_unrealise), glMainApp);
+	g_signal_connect(glMainApp->area, "realize", G_CALLBACK (on_gl_realise), glMainApp);
+	g_signal_connect(glMainApp->area, "unrealize", G_CALLBACK (on_gl_unrealise), glMainApp);
 	g_signal_connect(glMainApp->area, "render", G_CALLBACK (render), glMainApp);
 	gtk_widget_set_size_request(glMainApp->area, 600, 600);
 
@@ -136,7 +136,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_widget_set_name((funcInput), "funcIn");
 	gtk_entry_set_max_width_chars(GTK_ENTRY(funcInput), 256);
 	gtk_entry_set_placeholder_text(GTK_ENTRY(funcInput), "Enter function here");
-	g_signal_connect(funcInput, "activate", G_CALLBACK(on_activate), glMainApp);
+	g_signal_connect(funcInput, "activate", G_CALLBACK(on_entry_activate), glMainApp);
 
 	context = gtk_widget_get_style_context(funcInput);
 	gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -211,8 +211,8 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	/* gtk_window_move(GTK_WINDOW(glMainApp->display), 950, 200); */
 }
 
-static void on_activate(GtkEntry* entry, GlApplication *app) {
-	printf("on_activate: start\n");
+static void on_entry_activate(GtkEntry* entry, GlApplication *app) {
+	printf("on_entry_activate: start\n");
 	ClProgram* clProg = &app->clProg;
 
 	const char *funcString;
@@ -238,11 +238,11 @@ static void on_activate(GtkEntry* entry, GlApplication *app) {
 	gtk_window_present_with_time(GTK_WINDOW(app->display), GDK_CURRENT_TIME);
 	/* gtk_window_present_with_time((app->display), GDK_CURRENT_TIME); */
 
-	printf("on_activate: end\n");
+	printf("on_entry_activate: end\n");
 }
 
-static void on_realise(GtkGLArea *area, GlApplication *app) {
-	printf("on_realise: start\n");
+static void on_gl_realise(GtkGLArea *area, GlApplication *app) {
+	printf("on_gl_realise: start\n");
 	guint* program = &(app->prog);
 
 	gtk_gl_area_make_current(GTK_GL_AREA(area));
@@ -290,12 +290,12 @@ static void on_realise(GtkGLArea *area, GlApplication *app) {
 
 	gtk_widget_queue_draw(app->area);
 
-	printf("on_realise: end\n");
+	printf("on_gl_realise: end\n");
 	return;
 }
 
-static void on_unrealise(GtkGLArea *area, GlApplication *app) {
-	printf("on_unrealise: start\n");
+static void on_gl_unrealise(GtkGLArea *area, GlApplication *app) {
+	printf("on_gl_unrealise: start\n");
 	/* gtkGLArea** area = &app->area; */
 	guint* program = &(app->prog);
 
@@ -311,7 +311,7 @@ static void on_unrealise(GtkGLArea *area, GlApplication *app) {
 	if (program != 0) {
 		glDeleteProgram(*program);
 	}
-	printf("on_unrealise: end\n");
+	printf("on_gl_unrealise: end\n");
 }
 
 static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* app) {
@@ -526,13 +526,12 @@ ClProgram create_cl_program(GlApplication* app) {
 
 static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, GlApplication* app) {
 	ClProgram* clProg = &app->clProg;
-	if(event->keyval == GDK_KEY_Shift_L) {
-		app->shift_pressed = TRUE;
-		return FALSE;
-	}
 	switch(event->keyval) {
 		/* case GDK_KEY_: */
 		/* 	break; */
+		case GDK_KEY_Shift_L:
+			app->shift_pressed = TRUE;
+			return FALSE;
 
 		case GDK_KEY_space:
 			app->posOffset[0] = 0;
