@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 	/* printf("|%s|\n", function); */
 	/* fclose(sample); */
 
-	char funcString[1024] = "sin(z)+z^z\n";
+	char funcString[1024] = "z\n";
 
 	// Possibly enable parser runtime debugging.
 	queue out = queueInit();
@@ -33,15 +33,7 @@ int main(int argc, char* argv[]) {
 		printf("count: %d\n", glMainApp.opSize);
 	}
 
-	for(int i = 0; i < glMainApp.opSize; i++) {
-		printf("%lf%+lfi\n", creal(glMainApp.operations[i]), cimag(glMainApp.operations[i]));
-	}
-
-	char* function = funcToString(glMainApp.operations, glMainApp.opSize);
-
-	printf("|%s|\n", function);
-
-	return 0;
+	glMainApp.funcString = funcToString(glMainApp.operations, glMainApp.opSize);
 
 	glMainApp.clProg = create_cl_program(&glMainApp, 1000);
 
@@ -282,6 +274,11 @@ static void on_entry_activate(GtkEntry* entry, GlApplication *app) {
 		/* warning popup: "with error message"*/
 		return;
 	}
+
+	app->funcString = funcToString(app->operations, app->opSize);
+
+	app->clProg = create_cl_program(app, app->width);
+	g_signal_emit_by_name(app->area, "realize", app);
 
 	write_to_clBuffer(app);
 
@@ -547,7 +544,11 @@ ClProgram create_cl_program(GlApplication* app, int width) {
 
 	GBytes* kernelSource;
 	kernelSource = g_resources_lookup_data("/io/s1m7u/cplxgrapher/clfiles/graph.cl", 0, NULL);
-	const char* kSrcPtr = g_bytes_get_data(kernelSource, NULL);
+	const char* initialkSrcPtr = g_bytes_get_data(kernelSource, NULL);
+	const char* kSrcPtr = malloc(strlen(initialkSrcPtr) + strlen(app->funcString) + 2*sizeof(char) + 1);
+	strcpy(kSrcPtr, initialkSrcPtr);
+	strcat(kSrcPtr, app->funcString);
+	strcat(kSrcPtr, ";}");
 
     clProg.program = clCreateProgramWithSource(clProg.context, 1, (const char **)&kSrcPtr, NULL, &err);
 
@@ -591,7 +592,7 @@ void radio_toggled(GtkWidget* button, GlApplication* app) {
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 		g_print("%s was turned on\n", size);
 		app->clProg = create_cl_program(app, atoi(size));
-		g_signal_emit_by_name(app->area, "realize", app);
+		/* g_signal_emit_by_name(app->area, "realize", app); */
 	}
 }
 

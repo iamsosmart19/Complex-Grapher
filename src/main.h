@@ -72,6 +72,7 @@ typedef struct GlApplication_struct_decl {
 	//FUNCTION
 	cplx* operations;
 	int opSize;
+	char* funcString;
 
 	//OPENCL
 	ClProgram clProg;
