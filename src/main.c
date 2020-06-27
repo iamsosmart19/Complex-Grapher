@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 		printf("count: %d\n", glMainApp.opSize);
 	}
 
-	glMainApp.clProg = create_cl_program(&glMainApp);
+	glMainApp.clProg = create_cl_program(&glMainApp, 4000);
 
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), &glMainApp);
@@ -149,17 +149,17 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_fixed_put(GTK_FIXED(funcFixed), funcInputBox, 320 - 200, 120);
 
 	char level_of_detail_text[64];
-	sprintf(level_of_detail_text, "%d by %d", 100, 100);
+	sprintf(level_of_detail_text, "%d by %d", 500, 500);
 	level_of_detail[0] = gtk_radio_button_new_with_label(NULL, level_of_detail_text);
-	g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[0]), "toggled", G_CALLBACK(radio_toggled), app);
+	g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[0]), "toggled", G_CALLBACK(radio_toggled), glMainApp);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[0]), TRUE);
-	gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[0], 120, 165);
+	gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[0], 95, 165);
 	for(int i = 1; i < 4; i++) {
-		sprintf(level_of_detail_text, "%d by %d", (i+1)*100, (i+1)*100);
+		sprintf(level_of_detail_text, "%d by %d", (int)pow(2,i)*500, (int)pow(2,i)*500);
 		level_of_detail[i] = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(level_of_detail[0]), level_of_detail_text);
-		g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[i]), "toggled", G_CALLBACK(radio_toggled), app);
+		g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[i]), "toggled", G_CALLBACK(radio_toggled), glMainApp);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[i]), FALSE);
-		gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[i], 120 + 100*i, 165);
+		gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[i], 88 + 115*i, 165);
 	}
 
 	funcFrame = gtk_frame_new(NULL);
@@ -187,12 +187,12 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				menu_fixed = gtk_fixed_new();
 
 				char* formatString = "<span size=\"%d\">Complex Function Grapher</span>";
-				int fontsize = 40 * PANGO_SCALE;
+				int fontsize = 38 * PANGO_SCALE;
 				char* final_string = g_markup_printf_escaped(formatString, fontsize);
 
 				menuLabel[i] = gtk_label_new("");
 				gtk_label_set_markup(GTK_LABEL(menuLabel[i]), final_string);
-				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 15, 70);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 7, 70);
 
 				char* instructionString = "<span style=\"italic\">Press start to begin!</span>";
 				gtkLabel* instructionLabel = gtk_label_new("");
@@ -301,6 +301,7 @@ static void on_gl_realise(GtkGLArea *area, GlApplication *app) {
 
 	//Points
 	glPointSize(app->interval * 500);
+	/* glPointSize(12); */
 
 	init_shader(&program);
 
@@ -355,7 +356,7 @@ static void on_gl_unrealise(GtkGLArea *area, GlApplication *app) {
 
 static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* app) {
 	/* g_print("render: start\n"); */
-	glClearColor(0.5, 0.5, 0.5, 1.0);
+	glClearColor(0.2, 0.2, 0.2, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glUseProgram(app->prog);
@@ -464,13 +465,25 @@ static guint create_shader(int shader_type, const char *source, GError **error, 
 
 //UNFINISHED
 
-ClProgram create_cl_program(GlApplication* app) {
+ClProgram create_cl_program(GlApplication* app, int width) {
 	printf("create_cl_program: start\n");
 	ClProgram clProg;
 
-	app->width = 1000;
-	app->height = 1000;
-	app->interval = 0.002;
+	/* app->width = 500; */
+	/* app->height = 500; */
+	/* app->interval = 0.004; */
+	/* app->width = 1000; */
+	/* app->height = 1000; */
+	/* app->interval = 0.002; */
+	/* app->width = 2000; */
+	/* app->height = 2000; */
+	/* app->interval = 0.001; */
+	/* app->width = 4000; */
+	/* app->height = 4000; */
+	/* app->interval = 0.0005; */
+	app->width = width;
+	app->height = width;
+	app->interval = (float)2/(float)width;
 	app->n = app->width * app->height;
 
     app->colorSize = sizeof(GLfloat) * 3 * app->n;
@@ -528,7 +541,6 @@ ClProgram create_cl_program(GlApplication* app) {
     clProg.program = clCreateProgramWithSource(clProg.context, 1, (const char **)&kSrcPtr, NULL, &err);
 
 	if(err != CL_SUCCESS) {
-		printf("clProg.program build failed\n");
 		printf("error: %d\n", err);
 	}
  
@@ -559,7 +571,7 @@ ClProgram create_cl_program(GlApplication* app) {
 
     clProg.colorBuffer = clCreateBuffer(clProg.context, CL_MEM_WRITE_ONLY, app->colorSize, NULL, NULL);
  
-	printf("create_cl_program: end\n");
+	g_print("create_cl_program: end\n");
 	return clProg;
 }
 
@@ -567,9 +579,8 @@ void radio_toggled(GtkWidget* button, GlApplication* app) {
 	const char* size = gtk_button_get_label(GTK_BUTTON(button));
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 		g_print("%s was turned on\n", size);
-	}
-	else {
-		g_print("%s was turned off\n", size);
+		app->clProg = create_cl_program(app, atoi(size));
+		g_signal_emit_by_name(app->area, "realize", app);
 	}
 }
 

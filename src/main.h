@@ -99,7 +99,7 @@ typedef struct GlApplication_struct_decl {
 
 //OPENCL FUNCTIONS
 
-ClProgram create_cl_program(GlApplication* app);
+ClProgram create_cl_program(GlApplication* app, int width);
 
 void write_to_clBuffer(GlApplication* app);
 
