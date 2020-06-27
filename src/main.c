@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 		printf("count: %d\n", glMainApp.opSize);
 	}
 
-	glMainApp.clProg = create_cl_program(&glMainApp, 4000);
+	glMainApp.clProg = create_cl_program(&glMainApp, 1000);
 
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), &glMainApp);
@@ -152,13 +152,16 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	sprintf(level_of_detail_text, "%d by %d", 500, 500);
 	level_of_detail[0] = gtk_radio_button_new_with_label(NULL, level_of_detail_text);
 	g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[0]), "toggled", G_CALLBACK(radio_toggled), glMainApp);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[0]), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[0]), FALSE);
 	gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[0], 95, 165);
 	for(int i = 1; i < 4; i++) {
 		sprintf(level_of_detail_text, "%d by %d", (int)pow(2,i)*500, (int)pow(2,i)*500);
 		level_of_detail[i] = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(level_of_detail[0]), level_of_detail_text);
-		g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[i]), "toggled", G_CALLBACK(radio_toggled), glMainApp);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[i]), FALSE);
+		if(i == 1) {
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[i]), TRUE);
+		}
+		g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[i]), "toggled", G_CALLBACK(radio_toggled), glMainApp);
 		gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[i], 88 + 115*i, 165);
 	}
 
