@@ -116,6 +116,8 @@ static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* ap
 static void activate (GtkApplication *app, GlApplication* glMainApp);
 
 
+void radio_toggled(GtkWidget* button, GlApplication* app);
+
 static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
 
 static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, GlApplication* app);

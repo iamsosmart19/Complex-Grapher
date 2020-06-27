@@ -79,6 +79,8 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	GtkEntryBuffer* funcBuffer;
 	gtkBox* funcInputBox;
 
+	gtkButton* level_of_detail[4];
+
 	//GTK_GL_AREA INITIALISATION
 	glMainApp->area = gtk_gl_area_new();
 	gtk_gl_area_set_required_version(GTK_GL_AREA(glMainApp->area), 3, 3);
@@ -128,7 +130,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	funcLabelBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request(funcLabel, 400, 34);
 	gtk_container_add(GTK_CONTAINER(funcLabelBox), funcLabel);
-	gtk_fixed_put(GTK_FIXED(funcFixed), funcLabelBox, 400 - 200, 120 - 34);
+	gtk_fixed_put(GTK_FIXED(funcFixed), funcLabelBox, 320 - 200, 120 - 34);
 
 	funcBuffer = gtk_entry_buffer_new("", 0);
 
@@ -144,7 +146,21 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	funcInputBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request(funcInputBox, 400, 34);
 	gtk_container_add(GTK_CONTAINER(funcInputBox), funcInput);
-	gtk_fixed_put(GTK_FIXED(funcFixed), funcInputBox, 400 - 200, 120);
+	gtk_fixed_put(GTK_FIXED(funcFixed), funcInputBox, 320 - 200, 120);
+
+	char level_of_detail_text[64];
+	sprintf(level_of_detail_text, "%d by %d", 100, 100);
+	level_of_detail[0] = gtk_radio_button_new_with_label(NULL, level_of_detail_text);
+	g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[0]), "toggled", G_CALLBACK(radio_toggled), app);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[0]), TRUE);
+	gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[0], 120, 165);
+	for(int i = 1; i < 4; i++) {
+		sprintf(level_of_detail_text, "%d by %d", (i+1)*100, (i+1)*100);
+		level_of_detail[i] = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(level_of_detail[0]), level_of_detail_text);
+		g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[i]), "toggled", G_CALLBACK(radio_toggled), app);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[i]), FALSE);
+		gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[i], 120 + 100*i, 165);
+	}
 
 	funcFrame = gtk_frame_new(NULL);
 	gtk_container_add(GTK_CONTAINER(funcFrame), funcFixed);
@@ -167,7 +183,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	for(int i = 0; i < 4; i++) {
 		switch(i) {
 			case 0:
-				sprintf(menuLabelName, "                                      ");
+				sprintf(menuLabelName, "Title screen                          ");
 				menu_fixed = gtk_fixed_new();
 
 				char* formatString = "<span size=\"%d\">Complex Function Grapher</span>";
@@ -176,7 +192,12 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 				menuLabel[i] = gtk_label_new("");
 				gtk_label_set_markup(GTK_LABEL(menuLabel[i]), final_string);
-				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 10, 70);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 15, 70);
+
+				char* instructionString = "<span style=\"italic\">Press start to begin!</span>";
+				gtkLabel* instructionLabel = gtk_label_new("");
+				gtk_label_set_markup(GTK_LABEL(instructionLabel), instructionString);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), instructionLabel, 250, 160);
 
 				gtk_stack_add_named(GTK_STACK(gStack), menu_fixed, menuLabelName);
 				gtk_container_child_set(GTK_CONTAINER(gStack), menu_fixed, "title", menuLabelName, NULL);
@@ -205,17 +226,15 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 			case 3:
 				sprintf(menuLabelName, "Settings");
-				menuLabel[i] = gtk_label_new(menuLabelName);
 				menu_fixed = gtk_fixed_new();
+
+				menuLabel[i] = gtk_label_new(menuLabelName);
 				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 200, 200);
 				gtk_stack_add_named(GTK_STACK(gStack), menu_fixed, menuLabelName);
 				gtk_container_child_set(GTK_CONTAINER(gStack), menu_fixed, "title", menuLabelName, NULL);
 				continue;
 				break;
 		}
-		menuLabel[i] = gtk_label_new(menuLabelName);
-		gtk_stack_add_named(GTK_STACK(gStack), menuLabel[i], menuLabelName);
-		gtk_container_child_set(GTK_CONTAINER(gStack), menuLabel[i], "title", menuLabelName, NULL);
 	}
 
 	/* gtk_fixed_put(GTK_FIXED(windowFixed), screenSwitch, 0, 0); */
@@ -542,6 +561,16 @@ ClProgram create_cl_program(GlApplication* app) {
  
 	printf("create_cl_program: end\n");
 	return clProg;
+}
+
+void radio_toggled(GtkWidget* button, GlApplication* app) {
+	const char* size = gtk_button_get_label(GTK_BUTTON(button));
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
+		g_print("%s was turned on\n", size);
+	}
+	else {
+		g_print("%s was turned off\n", size);
+	}
 }
 
 static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, GlApplication* app) {
