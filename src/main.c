@@ -161,11 +161,29 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_box_pack_start(GTK_BOX(stackBox), stackSeperator, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(stackBox), gStack, TRUE, TRUE, 0);
 
-	char menuLabelName[32];
+	char menuLabelName[64];
+	gtkFixed* menu_fixed = gtk_fixed_new();
 	/* gtkButton* = */ 
 	for(int i = 0; i < 4; i++) {
 		switch(i) {
 			case 0:
+				sprintf(menuLabelName, "                                      ");
+				menu_fixed = gtk_fixed_new();
+
+				char* formatString = "<span size=\"%d\">Complex Function Grapher</span>";
+				int fontsize = 40 * PANGO_SCALE;
+				char* final_string = g_markup_printf_escaped(formatString, fontsize);
+
+				menuLabel[i] = gtk_label_new("");
+				gtk_label_set_markup(GTK_LABEL(menuLabel[i]), final_string);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 10, 70);
+
+				gtk_stack_add_named(GTK_STACK(gStack), menu_fixed, menuLabelName);
+				gtk_container_child_set(GTK_CONTAINER(gStack), menu_fixed, "title", menuLabelName, NULL);
+				continue;
+				break;
+
+			case 1:
 				sprintf(menuLabelName, "Start");
 				menuLabel[i] = gtk_label_new(menuLabelName);
 				/* gtk_stack_add_titled(GTK_STACK(gStack), funcLabel, menuLabelName, menuLabelName); */
@@ -175,7 +193,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				continue;
 				break;
 
-			case 1:
+			case 2:
 				sprintf(menuLabelName, "Guide");
 				menuLabel[i] = gtk_label_new(menuLabelName);
 
@@ -185,12 +203,14 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				continue;
 				break;
 
-			case 2:
-				sprintf(menuLabelName, "Settings");
-				break;
-
 			case 3:
-				sprintf(menuLabelName, "Quit");
+				sprintf(menuLabelName, "Settings");
+				menuLabel[i] = gtk_label_new(menuLabelName);
+				menu_fixed = gtk_fixed_new();
+				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 200, 200);
+				gtk_stack_add_named(GTK_STACK(gStack), menu_fixed, menuLabelName);
+				gtk_container_child_set(GTK_CONTAINER(gStack), menu_fixed, "title", menuLabelName, NULL);
+				continue;
 				break;
 		}
 		menuLabel[i] = gtk_label_new(menuLabelName);

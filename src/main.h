@@ -3,7 +3,9 @@
 #include "parse.h"
 #include "scan.h"
 
-#include "eval.h"
+#include "stack.h"
+#include "complex.h"
+#include "tgmath.h"
 #include <string.h>
 
 //GRAPHICS LIBRARIES

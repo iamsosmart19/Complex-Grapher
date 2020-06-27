@@ -18,13 +18,13 @@ DDIR=dbg
 
 #Dependencies
 IDIR=src
-_DEPS = stack.h queue.h scan.h parse.h eval.h main.h parsetest.h
+_DEPS = stack.h queue.h scan.h parse.h main.h parsetest.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Object files
 ODIR=obj
 # _OBJ = stack.o queue.o scan.o parse.o eval.o parsetest.o 
-_OBJ = stack.o queue.o scan.o parse.o eval.o main.o 
+_OBJ = stack.o queue.o scan.o parse.o main.o 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 GLIB_RESOURCES = glib-resources.h
