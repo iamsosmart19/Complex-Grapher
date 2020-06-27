@@ -8,20 +8,21 @@ strstack strstackInit() {
 	return temp;
 }
 
-void sstr_push(strstack s, const char* val) {
+void sstr_push(strstack *s, char* val) {
 	sstrnode* temp = malloc(sizeof(sstrnode));
-	temp->val = val;
-	temp->next = s.begin->next;
-	s.begin->next = temp;
+	temp->val = malloc(sizeof(char) * 8192);
+	strcpy(temp->val, val);
+	temp->next = s->begin->next;
+	s->begin->next = temp;
 }
 
-char* sstr_pop(strstack s) {
-	if(s.begin->next == NULL) {
+char* sstr_pop(strstack *s) {
+	if(s->begin->next == NULL) {
 		return NULL;
 	}
-	const char* ret = s.begin->next->val;
-	sstrnode* temp = s.begin->next;
-	s.begin->next = s.begin->next->next;
+	const char* ret = s->begin->next->val;
+	sstrnode* temp = s->begin->next;
+	s->begin->next = s->begin->next->next;
 	free(temp);
 	return ret;
 }

@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct stackNodeStruct {
-	const char* val;
-	struct stackNodeStruct* next;
+typedef struct strStackNodeStruct {
+	char* val;
+	struct strStackNodeStruct* next;
 } sstrnode;
 
 typedef struct {
@@ -15,9 +15,9 @@ typedef struct {
 
 strstack strstackInit();
 
-void sstr_push(strstack s, const char* val);
+void sstr_push(strstack *s, char* val);
 
-char* sstr_pop(strstack s);
+char* sstr_pop(strstack *s);
 
 char* sstr_top(strstack s);
 

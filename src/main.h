@@ -3,6 +3,7 @@
 #include "parse.h"
 #include "scan.h"
 
+#include "strstack.h"
 #include "stack.h"
 #include "complex.h"
 #include "tgmath.h"
