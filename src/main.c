@@ -3,156 +3,6 @@
 	setenv("CUDA_CACHE_DISABLE", "1", 1);
 #endif
 
-	//Trigger on when enter is pressed on text input
-char* funcToString(cplx* op, int opnum) {
-
-	char funcTable[25][7] = {
-		"csqrt",
-		"croot",
-		"cln",
-		"clog",
-		"cabs",
-		"floor",
-		"ceil",
-		"casin",
-		"cacos",
-		"catan",
-		"csinh",
-		"ccosh",
-		"ctanh",
-		"csech",
-		"ccsch",
-		"ccoth",
-		"csin",
-		"ccos",
-		"ctan",
-		"csec",
-		"ccsc",
-		"ccot",
-		"creal", 
-		"cimag", 
-		"cabs"
-	};
-
-	strstack s = strstackInit();
-
-	char *oprnd1, *oprnd2, *oprnd3;
-	for(int i = 0; i < opnum; i++) {
-		if( cimag(op[i]) == DBL_MAX) {
-			if( creal(op[i]) == DBL_MAX) {
-				sstr_push(&s, "z");
-			}
-			else {
-				switch((int)creal(op[i])) {
-					case 0:
-					case 2:
-					case 4:
-					case 7:
-					case 8:
-					case 9:
-					case 10:
-					case 11:
-					case 12:
-					case 16:
-					case 17:
-					case 18:
-					case 22:
-					case 23:
-					case 24:
-						oprnd1 = sstr_pop(&s);
-						sstr_push(&s, "");
-						sprintf(sstr_top(s), "%s(%s)", funcTable[(int)creal(op[i])], oprnd1);
-						break;
-
-					case 1:
-						oprnd1 = sstr_pop(&s);
-						oprnd2 = sstr_pop(&s);
-						sstr_push(&s, "");
-						sprintf(sstr_top(s), "cpow((%s), cdiv((cplx)(1,0), (%s)))", oprnd2, oprnd1);
-						break;
-
-					case 3:
-						oprnd1 = sstr_pop(&s);
-						oprnd2 = sstr_pop(&s);
-						sstr_push(&s, "");
-						sprintf(sstr_top(s), "cdiv(clog(%s), clog(%s))", oprnd1, oprnd2);
-						break;
-
-					case 5:
-					case 6:
-						oprnd1 = sstr_pop(&s);
-						sstr_push(&s, "");
-						sprintf(sstr_top(s), "(cplx)(%s(%s), %s(%s))", funcTable[(int)creal(op[i])], oprnd1, funcTable[(int)creal(op[i])], oprnd1);
-						break;
-
-					case 13:
-					case 14:
-					case 15:
-					case 19:
-					case 20:
-					case 21:
-						oprnd1 = sstr_pop(&s);
-						sstr_push(&s, "");
-						sprintf(sstr_top(s), "%s(cdiv((cplx)(1,0), (%s)))", funcTable[(int)creal(op[i])], oprnd1);
-						break;
-				}
-			}
-		}
-		else if( cimag(op[i]) == -DBL_MAX) {
-			switch((int)creal(op[i])) {
-				case 0:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
-					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cadd((%s), (%s))", oprnd2, oprnd1);
-					break;
-
-				case 1:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
-					sstr_push(&s, "");
-					sprintf(sstr_top(s), "csub((%s), (%s))", oprnd2, oprnd1);
-					break;
-
-				case 2:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
-					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cadd((%s), (%s))", oprnd1, oprnd2);
-					break;
-
-				case 3:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
-					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cdiv((%s), (%s))", oprnd2, oprnd1);
-					break;
-
-				case 4:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
-					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cexp((%s), (%s))", oprnd2, oprnd1);
-					break;
-
-				case 5:
-					oprnd1 = sstr_pop(&s);
-					sstr_push(&s, "");
-					sprintf(sstr_top(s), "csub((cplx)(0,0), (%s))", oprnd1);
-					break;
-			}
-		}
-		else {
-			sstr_push(&s, "");
-			sprintf(sstr_top(s), "(cplx)(%.5lf,%.5lf)", creal(op[i]), cimag(op[i]));
-		}
-	}
-
-	return (sstr_pop(&s));
-	// return cpow((cplx)(M_E, 0), (cplx)(1.5, 1.5));
-	// return cpow((cplx)(M_E, 0), val );
-}
-
 int main(int argc, char* argv[]) {
 	yydebug = !!getenv("YYDEBUG");
 
@@ -891,3 +741,153 @@ static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow*
 	gtk_widget_destroy(display);
 	return FALSE;
 }
+
+char* funcToString(cplx* op, int opnum) {
+
+	char funcTable[25][7] = {
+		"csqrt",
+		"croot",
+		"cln",
+		"clog",
+		"cabs",
+		"floor",
+		"ceil",
+		"casin",
+		"cacos",
+		"catan",
+		"csinh",
+		"ccosh",
+		"ctanh",
+		"csech",
+		"ccsch",
+		"ccoth",
+		"csin",
+		"ccos",
+		"ctan",
+		"csec",
+		"ccsc",
+		"ccot",
+		"creal", 
+		"cimag", 
+		"cabs"
+	};
+
+	strstack s = strstackInit();
+
+	char *oprnd1, *oprnd2, *oprnd3;
+	for(int i = 0; i < opnum; i++) {
+		if( cimag(op[i]) == DBL_MAX) {
+			if( creal(op[i]) == DBL_MAX) {
+				sstr_push(&s, "z");
+			}
+			else {
+				switch((int)creal(op[i])) {
+					case 0:
+					case 2:
+					case 4:
+					case 7:
+					case 8:
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+					case 16:
+					case 17:
+					case 18:
+					case 22:
+					case 23:
+					case 24:
+						oprnd1 = sstr_pop(&s);
+						sstr_push(&s, "");
+						sprintf(sstr_top(s), "%s(%s)", funcTable[(int)creal(op[i])], oprnd1);
+						break;
+
+					case 1:
+						oprnd1 = sstr_pop(&s);
+						oprnd2 = sstr_pop(&s);
+						sstr_push(&s, "");
+						sprintf(sstr_top(s), "cpow(%s,cdiv((cplx)(1,0),%s))", oprnd2, oprnd1);
+						break;
+
+					case 3:
+						oprnd1 = sstr_pop(&s);
+						oprnd2 = sstr_pop(&s);
+						sstr_push(&s, "");
+						sprintf(sstr_top(s), "cdiv(clog(%s),clog(%s))", oprnd1, oprnd2);
+						break;
+
+					case 5:
+					case 6:
+						oprnd1 = sstr_pop(&s);
+						sstr_push(&s, "");
+						sprintf(sstr_top(s), "(cplx)(%s(%s),%s(%s))", funcTable[(int)creal(op[i])], oprnd1, funcTable[(int)creal(op[i])], oprnd1);
+						break;
+
+					case 13:
+					case 14:
+					case 15:
+					case 19:
+					case 20:
+					case 21:
+						oprnd1 = sstr_pop(&s);
+						sstr_push(&s, "");
+						sprintf(sstr_top(s), "%s(cdiv((cplx)(1,0),%s))", funcTable[(int)creal(op[i])], oprnd1);
+						break;
+				}
+			}
+		}
+		else if( cimag(op[i]) == -DBL_MAX) {
+			switch((int)creal(op[i])) {
+				case 0:
+					oprnd1 = sstr_pop(&s);
+					oprnd2 = sstr_pop(&s);
+					sstr_push(&s, "");
+					sprintf(sstr_top(s), "cadd(%s,%s)", oprnd2, oprnd1);
+					break;
+
+				case 1:
+					oprnd1 = sstr_pop(&s);
+					oprnd2 = sstr_pop(&s);
+					sstr_push(&s, "");
+					sprintf(sstr_top(s), "csub(%s,%s)", oprnd2, oprnd1);
+					break;
+
+				case 2:
+					oprnd1 = sstr_pop(&s);
+					oprnd2 = sstr_pop(&s);
+					sstr_push(&s, "");
+					sprintf(sstr_top(s), "cadd(%s,%s)", oprnd1, oprnd2);
+					break;
+
+				case 3:
+					oprnd1 = sstr_pop(&s);
+					oprnd2 = sstr_pop(&s);
+					sstr_push(&s, "");
+					sprintf(sstr_top(s), "cdiv(%s,%s)", oprnd2, oprnd1);
+					break;
+
+				case 4:
+					oprnd1 = sstr_pop(&s);
+					oprnd2 = sstr_pop(&s);
+					sstr_push(&s, "");
+					sprintf(sstr_top(s), "cexp(%s,%s)", oprnd2, oprnd1);
+					break;
+
+				case 5:
+					oprnd1 = sstr_pop(&s);
+					sstr_push(&s, "");
+					sprintf(sstr_top(s), "csub((cplx)(0,0),%s)", oprnd1);
+					break;
+			}
+		}
+		else {
+			sstr_push(&s, "");
+			sprintf(sstr_top(s), "(cplx)(%.5lf,%.5lf)", creal(op[i]), cimag(op[i]));
+		}
+	}
+
+	return (sstr_pop(&s));
+	// return cpow((cplx)(M_E, 0), (cplx)(1.5, 1.5));
+	// return cpow((cplx)(M_E, 0), val );
+}
+
