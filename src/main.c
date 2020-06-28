@@ -38,6 +38,10 @@ int main(int argc, char* argv[]) {
 
 	glMainApp.clProg = create_cl_program(&glMainApp, 500);
 
+	glMainApp.gridOn = 1;
+	glMainApp.shadOn = 1;
+	glMainApp.axesOn = 1;
+
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), &glMainApp);
 	gtk_app_status = g_application_run(G_APPLICATION(app), argc, argv);
@@ -178,6 +182,9 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_box_pack_start(GTK_BOX(stackBox), stackSeperator, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(stackBox), gStack, TRUE, TRUE, 0);
 
+	char* formatString;
+	int fontsize;
+	char* final_string;
 	char menuLabelName[64];
 	gtkFixed* menu_fixed = gtk_fixed_new();
 	/* gtkButton* = */ 
@@ -187,9 +194,9 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				sprintf(menuLabelName, "Title screen                          ");
 				menu_fixed = gtk_fixed_new();
 
-				char* formatString = "<span size=\"%d\">Complex Function Grapher</span>";
-				int fontsize = 38 * PANGO_SCALE;
-				char* final_string = g_markup_printf_escaped(formatString, fontsize);
+				formatString = "<span size=\"%d\">Complex Function Grapher</span>";
+				fontsize = 38 * PANGO_SCALE;
+				final_string = g_markup_printf_escaped(formatString, fontsize);
 
 				menuLabel[i] = gtk_label_new("");
 				gtk_label_set_markup(GTK_LABEL(menuLabel[i]), final_string);
@@ -229,8 +236,30 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				sprintf(menuLabelName, "Settings");
 				menu_fixed = gtk_fixed_new();
 
-				menuLabel[i] = gtk_label_new(menuLabelName);
-				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 200, 200);
+				formatString = "<span size=\"%d\">%s</span>";
+				fontsize = 24 * PANGO_SCALE;
+				final_string = g_markup_printf_escaped(formatString, fontsize, menuLabelName);
+
+				menuLabel[i] = gtk_label_new("");
+				gtk_label_set_markup(GTK_LABEL(menuLabel[i]), final_string);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 35, 30);
+
+				gtkButton* buttons;
+				buttons = gtk_check_button_new_with_label("Grid on");
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(buttons), TRUE);
+				g_signal_connect(buttons, "toggled", G_CALLBACK(settings_toggled), glMainApp);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), buttons, 100, 100);
+
+				buttons = gtk_check_button_new_with_label("Shading on");
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(buttons), TRUE);
+				g_signal_connect(buttons, "toggled", G_CALLBACK(settings_toggled), glMainApp);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), buttons, 100, 130);
+
+				buttons = gtk_check_button_new_with_label("Axes on");
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(buttons), TRUE);
+				g_signal_connect(buttons, "toggled", G_CALLBACK(settings_toggled), glMainApp);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), buttons, 100, 160);
+
 				gtk_stack_add_named(GTK_STACK(gStack), menu_fixed, menuLabelName);
 				gtk_container_child_set(GTK_CONTAINER(gStack), menu_fixed, "title", menuLabelName, NULL);
 				continue;
@@ -513,10 +542,6 @@ ClProgram create_cl_program(GlApplication* app, int width) {
 	app->zoom = 10;
 	app->zoomc = 0.001;
 
-	app->gridOn = 0;
-	app->shadOn = 0;
-	app->axesOn = 0;
-
     cl_int err;
 
     // Number of work items in each local work group
@@ -597,6 +622,40 @@ void radio_toggled(GtkWidget* button, GlApplication* app) {
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 		g_print("%s was turned on\n", size);
 		app->clProg = create_cl_program(app, atoi(size));
+	}
+}
+
+void settings_toggled(GtkToggleButton* button, GlApplication* app) {
+	const char* type = gtk_button_get_label(GTK_BUTTON(button));
+	switch(type[0]) {
+		case 'G':
+			app->gridOn = 1 - app->gridOn;
+			if(app->gridOn) {
+				gtk_button_set_label(GTK_BUTTON(button), "Grid on");
+			}
+			else {
+				gtk_button_set_label(GTK_BUTTON(button), "Grid off");
+			}
+			break;
+		case 'S':
+			app->shadOn = 1 - app->shadOn;
+			if(app->shadOn) {
+				gtk_button_set_label(GTK_BUTTON(button), "Shading on");
+			}
+			else {
+				gtk_button_set_label(GTK_BUTTON(button), "Shading off");
+			}
+			break;
+		case 'A':
+			app->axesOn = 1 - app->axesOn;
+			g_print("|%d|\n", app->axesOn);
+			if(app->axesOn) {
+				gtk_button_set_label(GTK_BUTTON(button), "Axes on");
+			}
+			else {
+				gtk_button_set_label(GTK_BUTTON(button), "Axes off");
+			}
+			break;
 	}
 }
 
@@ -729,6 +788,8 @@ void write_to_clBuffer(GlApplication* app) {
     err |= clSetKernelArg(clProg->kernel, 8, sizeof(unsigned int), &app->gridOn);
     err |= clSetKernelArg(clProg->kernel, 9, sizeof(unsigned int), &app->shadOn);
     err |= clSetKernelArg(clProg->kernel, 10, sizeof(unsigned int), &app->axesOn);
+
+	g_print("cl: %d, %d, %d\n", app->gridOn, app->shadOn, app->axesOn);
  
     // Execute the clProg->kernel over the entire range of the data set  
     err = clEnqueueNDRangeKernel(clProg->queue, clProg->kernel, 1, NULL, &app->globalSize, &app->localSize, 0, NULL, NULL);

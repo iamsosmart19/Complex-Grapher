@@ -126,6 +126,8 @@ static void activate (GtkApplication *app, GlApplication* glMainApp);
 
 void radio_toggled(GtkWidget* button, GlApplication* app);
 
+void settings_toggled(GtkToggleButton* button, GlApplication* app);
+
 static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
 
 static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
