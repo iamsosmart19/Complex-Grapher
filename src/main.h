@@ -93,6 +93,10 @@ typedef struct GlApplication_struct_decl {
 	double zoom;
 	float zoomc;
 
+	unsigned int gridOn;
+	unsigned int shadOn;
+	unsigned int axesOn;
+
 	GLuint vao;
 	GLuint triangleVBO;
 	guint prog;

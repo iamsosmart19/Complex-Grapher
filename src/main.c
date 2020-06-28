@@ -1,9 +1,10 @@
 #include "main.h"
-#ifdef test
-	setenv("CUDA_CACHE_DISABLE", "1", 1);
-#endif
+/* #ifdef test */
+/* 	setenv("CUDA_CACHE_DISABLE", "1", 1); */
+/* #endif */
 
 int main(int argc, char* argv[]) {
+	/* setenv("CUDA_CACHE_DISABLE", "1", 1); */
 	yydebug = !!getenv("YYDEBUG");
 
 	GtkApplication *app;
@@ -512,6 +513,10 @@ ClProgram create_cl_program(GlApplication* app, int width) {
 	app->zoom = 10;
 	app->zoomc = 0.001;
 
+	app->gridOn = 0;
+	app->shadOn = 0;
+	app->axesOn = 0;
+
     cl_int err;
 
     // Number of work items in each local work group
@@ -545,7 +550,7 @@ ClProgram create_cl_program(GlApplication* app, int width) {
 	GBytes* kernelSource;
 	kernelSource = g_resources_lookup_data("/io/s1m7u/cplxgrapher/clfiles/graph.cl", 0, NULL);
 	const char* initialkSrcPtr = g_bytes_get_data(kernelSource, NULL);
-	const char* kSrcPtr = malloc(strlen(initialkSrcPtr) + strlen(app->funcString) + 2*sizeof(char) + 1);
+	char* kSrcPtr = malloc(strlen(initialkSrcPtr) + strlen(app->funcString) + 2*sizeof(char) + 1);
 	strcpy(kSrcPtr, initialkSrcPtr);
 	strcat(kSrcPtr, app->funcString);
 	strcat(kSrcPtr, ";}");
@@ -557,7 +562,7 @@ ClProgram create_cl_program(GlApplication* app, int width) {
 	}
  
     // Build the clProg.program executable 
-    err = clBuildProgram(clProg.program, 0, NULL, NULL, NULL, NULL);
+    err = clBuildProgram(clProg.program, 0, NULL, "-cl-fast-relaxed-math", NULL, NULL);
 	if(err != CL_SUCCESS) {
 		printf("build error: %d\n", err);
 		size_t errorSize;
@@ -721,6 +726,9 @@ void write_to_clBuffer(GlApplication* app) {
     err |= clSetKernelArg(clProg->kernel, 5, sizeof(float), &app->zoomc);
     err |= clSetKernelArg(clProg->kernel, 6, sizeof(float)*2, &app->posOffset);
     err |= clSetKernelArg(clProg->kernel, 7, sizeof(unsigned int), &app->n);
+    err |= clSetKernelArg(clProg->kernel, 8, sizeof(unsigned int), &app->gridOn);
+    err |= clSetKernelArg(clProg->kernel, 9, sizeof(unsigned int), &app->shadOn);
+    err |= clSetKernelArg(clProg->kernel, 10, sizeof(unsigned int), &app->axesOn);
  
     // Execute the clProg->kernel over the entire range of the data set  
     err = clEnqueueNDRangeKernel(clProg->queue, clProg->kernel, 1, NULL, &app->globalSize, &app->localSize, 0, NULL, NULL);
@@ -880,7 +888,7 @@ char* funcToString(cplx* op, int opnum) {
 					oprnd1 = sstr_pop(&s);
 					oprnd2 = sstr_pop(&s);
 					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cadd(%s,%s)", oprnd1, oprnd2);
+					sprintf(sstr_top(s), "cmult(%s,%s)", oprnd1, oprnd2);
 					break;
 
 				case 3:

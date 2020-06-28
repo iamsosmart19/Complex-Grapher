@@ -153,14 +153,14 @@ inline void s_push(stack *s, cplx val) {
 cplx evalFunc(cplx z);
 float3 hsv2rgb(float H, float S, float V);
 
-__kernel void graph( __global float *a, __global float *b, __constant cplx *op, const int opnum, const double zoom, const float zoomc, const float2 offset, const unsigned int n) {
+__kernel void graph( __global float *a, __global float *b, __constant cplx *op, const int opnum, const double zoom, const float zoomc, const float2 offset, const unsigned int n, const unsigned int gridOn, const unsigned int shadOn, const unsigned axesOn) {
 	int id = get_global_id(0);
 
 	if (id < n) {
 		float3 RGB;
 		float gap = log(sqrt((float)2));
 		float2 input = vload2(0, &a[id*2]);
-		if((input.x + offset.x/zoom < 4*zoomc && input.x + offset.x/zoom > -4*zoomc) || (input.y + offset.y/zoom < 4*zoomc && input.y + offset.y/zoom > -4*zoomc)) {
+		if(((input.x + offset.x/zoom < 3*zoomc && input.x + offset.x/zoom > -3*zoomc) || (input.y + offset.y/zoom < 3*zoomc && input.y + offset.y/zoom > -3*zoomc)) && axesOn) {
 			RGB = (float3)(0, 0, 0);
 			vstore3(RGB, 0, &b[id*3]);
 		}
@@ -168,9 +168,16 @@ __kernel void graph( __global float *a, __global float *b, __constant cplx *op, 
 			cplx ret = evalFunc((cplx)(zoom*(input.x)+offset.x, zoom*(input.y)+offset.y));
 			// float3 DBG = (float3)(ret.x, ret.y, 1);
 
-			RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod((float)log(cabs(ret)), gap) + 1 - gap);
+			if(shadOn) {
+				RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), fmod((float)log(cabs(ret)), gap) + 1 - gap);
+			}
+			else {
+				RGB = (float3)(carg(ret), 1.0 - pow(zoomc, (float)cabs(ret)), 1);
+			}
 			RGB = hsv2rgb(RGB.x, RGB.y, RGB.z);
-			RGB -= (float3)(fmod(abs((int)((ceil(ret.x/5) + ceil(ret.y/5)))), 2.0)/10);
+			if(gridOn) {
+				RGB -= (float3)(fmod(abs((int)((ceil(ret.x/5) + ceil(ret.y/5)))), 2.0)/10);
+			}
 			vstore3(RGB, 0, &b[id*3]);
 			//vstore3(DBG, 0, &b[id*3]);
 		}
