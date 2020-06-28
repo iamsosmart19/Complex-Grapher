@@ -229,4 +229,4 @@ float3 hsv2rgb(float H, float S, float V) {
 	return (float3)(Rs+m, Gs+m, Bs+m);
 }
 
-cplx evalFunc(cplx z) { return 
+inline cplx evalFunc(cplx z) { return 

@@ -59,11 +59,13 @@ extern int yydebug;
 		cplx value;
 		// Number of errors.
 		int nerrs;
+		//Address of error
+		char* err;
 	} result;
 	result parse_string(const char* str, queue* out);
 	result parse(void);
 
-#line 67 "src/parse.h"
+#line 69 "src/parse.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -134,7 +136,7 @@ union YYSTYPE
 {
   cplx NUM;                                /* "number"  */
 
-#line 138 "src/parse.h"
+#line 140 "src/parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -146,7 +148,7 @@ typedef union YYSTYPE YYSTYPE;
 
 int yyparse (yyscan_t scanner, result *res, queue* out);
 /* "%code provides" blocks.  */
-#line 24 "src/parse.y"
+#line 26 "src/parse.y"
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
@@ -156,6 +158,6 @@ int yyparse (yyscan_t scanner, result *res, queue* out);
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
 	void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...);
 
-#line 160 "src/parse.h"
+#line 162 "src/parse.h"
 
 #endif /* !YY_YY_SRC_PARSE_H_INCLUDED  */

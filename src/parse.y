@@ -15,6 +15,8 @@
 		cplx value;
 		// Number of errors.
 		int nerrs;
+		//Address of error
+		char* err;
 	} result;
 	result parse_string(const char* str, queue* out);
 	result parse(void);
@@ -232,7 +234,7 @@ brexp:
 result parse(void) {
 	yyscan_t scanner;
 	yylex_init(&scanner);
-	result res = {1, 0, 0};
+	result res = {1, 0, 0, NULL};
 	yyparse(scanner, &res, NULL);
 	yylex_destroy(scanner);
 	return res;
@@ -244,7 +246,7 @@ result parse_string(const char* str, queue* out) {
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);
-	result res = {0, 0, 0};
+	result res = {0, 0, 0, NULL};
 	yyparse(scanner, &res, out);
 	yy_delete_buffer(buf, scanner);
 	yylex_destroy(scanner);
@@ -255,9 +257,11 @@ void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...) {
 	(void) scanner;
 	va_list args;
 	va_start(args, msg);
-	vfprintf(stderr, msg, args);
+	/* vfprintf(stderr, msg, args); */
+	res->err = malloc(sizeof(char) * 256);
+	sprintf(res->err, msg, args);
 	va_end(args);
-	fputc('\n', stderr);
+	/* fputc('\n', stderr); */
 	res->nerrs += 1;
 }
 

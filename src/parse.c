@@ -64,7 +64,7 @@
 #define YYPULL 1
 
 /* "%code top" blocks.  */
-#line 35 "src/parse.y"
+#line 37 "src/parse.y"
 
 	#include <stdarg.h> // va_list.
 	#include <stdio.h>  // printf.
@@ -127,11 +127,13 @@ extern int yydebug;
 		cplx value;
 		// Number of errors.
 		int nerrs;
+		//Address of error
+		char* err;
 	} result;
 	result parse_string(const char* str, queue* out);
 	result parse(void);
 
-#line 135 "src/parse.c"
+#line 137 "src/parse.c"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -202,7 +204,7 @@ union YYSTYPE
 {
   cplx NUM;                                /* "number"  */
 
-#line 206 "src/parse.c"
+#line 208 "src/parse.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -214,7 +216,7 @@ typedef union YYSTYPE YYSTYPE;
 
 int yyparse (yyscan_t scanner, result *res, queue* out);
 /* "%code provides" blocks.  */
-#line 24 "src/parse.y"
+#line 26 "src/parse.y"
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
@@ -224,7 +226,7 @@ int yyparse (yyscan_t scanner, result *res, queue* out);
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
 	void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...);
 
-#line 228 "src/parse.c"
+#line 230 "src/parse.c"
 
 #endif /* !YY_YY_SRC_PARSE_H_INCLUDED  */
 /* Symbol kind.  */
@@ -296,13 +298,13 @@ typedef enum yysymbol_kind_t yysymbol_kind_t;
 
 
 /* Unqualified %code blocks.  */
-#line 46 "src/parse.y"
+#line 48 "src/parse.y"
 
 	result parse_string(const char* str, queue* out);
 	result parse(void);
 	int precValues[5] = {2, 2, 3, 3, 4};
 
-#line 306 "src/parse.c"
+#line 308 "src/parse.c"
 
 #ifdef short
 # undef short
@@ -669,11 +671,11 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   138,   138,   139,   143,   144,   161,   161,   165,   166,
-     167,   168,   169,   170,   172,   175,   178,   181,   184,   188,
-     189,   191,   192,   194,   195,   197,   198,   199,   200,   201,
-     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
-     213,   214,   215,   216,   217,   219,   223,   224
+       0,   140,   140,   141,   145,   146,   163,   163,   167,   168,
+     169,   170,   171,   172,   174,   177,   180,   183,   186,   190,
+     191,   193,   194,   196,   197,   199,   200,   201,   202,   203,
+     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
+     215,   216,   217,   218,   219,   221,   225,   226
 };
 #endif
 
@@ -1696,269 +1698,269 @@ yyreduce:
   switch (yyn)
     {
   case 4:
-#line 143 "src/parse.y"
+#line 145 "src/parse.y"
                  { }
-#line 1702 "src/parse.c"
+#line 1704 "src/parse.c"
     break;
 
   case 5:
-#line 144 "src/parse.y"
+#line 146 "src/parse.y"
                   { /*printf("err\n");*/ yyerrok; }
-#line 1708 "src/parse.c"
+#line 1710 "src/parse.c"
     break;
 
   case 8:
-#line 165 "src/parse.y"
+#line 167 "src/parse.y"
                         { }
-#line 1714 "src/parse.c"
+#line 1716 "src/parse.c"
     break;
 
   case 9:
-#line 166 "src/parse.y"
+#line 168 "src/parse.y"
                                         { }
-#line 1720 "src/parse.c"
+#line 1722 "src/parse.c"
     break;
 
   case 10:
-#line 167 "src/parse.y"
+#line 169 "src/parse.y"
                                 { }
-#line 1726 "src/parse.c"
+#line 1728 "src/parse.c"
     break;
 
   case 11:
-#line 168 "src/parse.y"
+#line 170 "src/parse.y"
                                 { }
-#line 1732 "src/parse.c"
+#line 1734 "src/parse.c"
     break;
 
   case 12:
-#line 169 "src/parse.y"
+#line 171 "src/parse.y"
                         { }
-#line 1738 "src/parse.c"
+#line 1740 "src/parse.c"
     break;
 
   case 13:
-#line 170 "src/parse.y"
+#line 172 "src/parse.y"
                                 { }
-#line 1744 "src/parse.c"
+#line 1746 "src/parse.c"
     break;
 
   case 14:
-#line 172 "src/parse.y"
+#line 174 "src/parse.y"
                                 {
 		enqueue(out, 0 - DBL_MAX * I);
 	}
-#line 1752 "src/parse.c"
+#line 1754 "src/parse.c"
     break;
 
   case 15:
-#line 175 "src/parse.y"
+#line 177 "src/parse.y"
                                 { 
 		enqueue(out, 1 - DBL_MAX * I);
 	}
-#line 1760 "src/parse.c"
+#line 1762 "src/parse.c"
     break;
 
   case 16:
-#line 178 "src/parse.y"
+#line 180 "src/parse.y"
                                 {
 		enqueue(out, 2 - DBL_MAX * I);
 	}
-#line 1768 "src/parse.c"
+#line 1770 "src/parse.c"
     break;
 
   case 17:
-#line 181 "src/parse.y"
+#line 183 "src/parse.y"
                                 {
 		enqueue(out, 3 - DBL_MAX * I);
 	}
-#line 1776 "src/parse.c"
+#line 1778 "src/parse.c"
     break;
 
   case 18:
-#line 184 "src/parse.y"
+#line 186 "src/parse.y"
                                 {
 		enqueue(out, 4 - DBL_MAX * I);
 	}
-#line 1784 "src/parse.c"
+#line 1786 "src/parse.c"
     break;
 
   case 19:
-#line 188 "src/parse.y"
+#line 190 "src/parse.y"
                                         { }
-#line 1790 "src/parse.c"
+#line 1792 "src/parse.c"
     break;
 
   case 20:
-#line 189 "src/parse.y"
+#line 191 "src/parse.y"
                                         { enqueue(out, 5 - DBL_MAX * I); }
-#line 1796 "src/parse.c"
+#line 1798 "src/parse.c"
     break;
 
   case 21:
-#line 191 "src/parse.y"
+#line 193 "src/parse.y"
                                         { enqueue(out, 0 + DBL_MAX * I); }
-#line 1802 "src/parse.c"
+#line 1804 "src/parse.c"
     break;
 
   case 22:
-#line 192 "src/parse.y"
+#line 194 "src/parse.y"
                                                 { enqueue(out, 1 + DBL_MAX * I); }
-#line 1808 "src/parse.c"
+#line 1810 "src/parse.c"
     break;
 
   case 23:
-#line 194 "src/parse.y"
+#line 196 "src/parse.y"
                                         { enqueue(out, 2 + DBL_MAX * I); }
-#line 1814 "src/parse.c"
+#line 1816 "src/parse.c"
     break;
 
   case 24:
-#line 195 "src/parse.y"
+#line 197 "src/parse.y"
                                                         { enqueue(out, 3 + DBL_MAX * I); }
-#line 1820 "src/parse.c"
+#line 1822 "src/parse.c"
     break;
 
   case 25:
-#line 197 "src/parse.y"
+#line 199 "src/parse.y"
                                         { enqueue(out, 4 + DBL_MAX * I); }
-#line 1826 "src/parse.c"
+#line 1828 "src/parse.c"
     break;
 
   case 26:
-#line 198 "src/parse.y"
+#line 200 "src/parse.y"
                                         { enqueue(out, 5 + DBL_MAX * I); }
-#line 1832 "src/parse.c"
+#line 1834 "src/parse.c"
     break;
 
   case 27:
-#line 199 "src/parse.y"
+#line 201 "src/parse.y"
                                         { enqueue(out, 6 + DBL_MAX * I); }
-#line 1838 "src/parse.c"
+#line 1840 "src/parse.c"
     break;
 
   case 28:
-#line 200 "src/parse.y"
+#line 202 "src/parse.y"
                                         { enqueue(out, 22 + DBL_MAX * I); }
-#line 1844 "src/parse.c"
+#line 1846 "src/parse.c"
     break;
 
   case 29:
-#line 201 "src/parse.y"
+#line 203 "src/parse.y"
                                         { enqueue(out, 23 + DBL_MAX * I); }
-#line 1850 "src/parse.c"
+#line 1852 "src/parse.c"
     break;
 
   case 30:
-#line 203 "src/parse.y"
+#line 205 "src/parse.y"
                                         { enqueue(out, 7 + DBL_MAX * I); }
-#line 1856 "src/parse.c"
+#line 1858 "src/parse.c"
     break;
 
   case 31:
-#line 204 "src/parse.y"
+#line 206 "src/parse.y"
                                         { enqueue(out, 8 + DBL_MAX * I); }
-#line 1862 "src/parse.c"
+#line 1864 "src/parse.c"
     break;
 
   case 32:
-#line 205 "src/parse.y"
+#line 207 "src/parse.y"
                                         { enqueue(out, 9 + DBL_MAX * I); }
-#line 1868 "src/parse.c"
+#line 1870 "src/parse.c"
     break;
 
   case 33:
-#line 206 "src/parse.y"
+#line 208 "src/parse.y"
                                         { enqueue(out, 10 + DBL_MAX * I); }
-#line 1874 "src/parse.c"
+#line 1876 "src/parse.c"
     break;
 
   case 34:
-#line 207 "src/parse.y"
+#line 209 "src/parse.y"
                                         { enqueue(out, 11 + DBL_MAX * I); }
-#line 1880 "src/parse.c"
+#line 1882 "src/parse.c"
     break;
 
   case 35:
-#line 208 "src/parse.y"
+#line 210 "src/parse.y"
                                         { enqueue(out, 12 + DBL_MAX * I); }
-#line 1886 "src/parse.c"
+#line 1888 "src/parse.c"
     break;
 
   case 36:
-#line 209 "src/parse.y"
+#line 211 "src/parse.y"
                                         { enqueue(out, 13 + DBL_MAX * I); }
-#line 1892 "src/parse.c"
+#line 1894 "src/parse.c"
     break;
 
   case 37:
-#line 210 "src/parse.y"
+#line 212 "src/parse.y"
                                         { enqueue(out, 14 + DBL_MAX * I); }
-#line 1898 "src/parse.c"
+#line 1900 "src/parse.c"
     break;
 
   case 38:
-#line 211 "src/parse.y"
+#line 213 "src/parse.y"
                                         { enqueue(out, 15 + DBL_MAX * I); }
-#line 1904 "src/parse.c"
+#line 1906 "src/parse.c"
     break;
 
   case 39:
-#line 212 "src/parse.y"
+#line 214 "src/parse.y"
                                         { enqueue(out, 16 + DBL_MAX * I); }
-#line 1910 "src/parse.c"
+#line 1912 "src/parse.c"
     break;
 
   case 40:
-#line 213 "src/parse.y"
+#line 215 "src/parse.y"
                                         { enqueue(out, 17 + DBL_MAX * I); }
-#line 1916 "src/parse.c"
+#line 1918 "src/parse.c"
     break;
 
   case 41:
-#line 214 "src/parse.y"
+#line 216 "src/parse.y"
                                         { enqueue(out, 18 + DBL_MAX * I); }
-#line 1922 "src/parse.c"
+#line 1924 "src/parse.c"
     break;
 
   case 42:
-#line 215 "src/parse.y"
+#line 217 "src/parse.y"
                                         { enqueue(out, 19 + DBL_MAX * I); }
-#line 1928 "src/parse.c"
+#line 1930 "src/parse.c"
     break;
 
   case 43:
-#line 216 "src/parse.y"
+#line 218 "src/parse.y"
                                         { enqueue(out, 20 + DBL_MAX * I); }
-#line 1934 "src/parse.c"
+#line 1936 "src/parse.c"
     break;
 
   case 44:
-#line 217 "src/parse.y"
+#line 219 "src/parse.y"
                                         { enqueue(out, 21 + DBL_MAX * I); }
-#line 1940 "src/parse.c"
+#line 1942 "src/parse.c"
     break;
 
   case 45:
-#line 219 "src/parse.y"
+#line 221 "src/parse.y"
                                                 { enqueue(out, 24 + DBL_MAX * I); }
-#line 1946 "src/parse.c"
+#line 1948 "src/parse.c"
     break;
 
   case 46:
-#line 223 "src/parse.y"
+#line 225 "src/parse.y"
                         { }
-#line 1952 "src/parse.c"
+#line 1954 "src/parse.c"
     break;
 
   case 47:
-#line 224 "src/parse.y"
+#line 226 "src/parse.y"
                           { enqueue(out, 2 - DBL_MAX * I); }
-#line 1958 "src/parse.c"
+#line 1960 "src/parse.c"
     break;
 
 
-#line 1962 "src/parse.c"
+#line 1964 "src/parse.c"
 
       default: break;
     }
@@ -2183,7 +2185,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 227 "src/parse.y"
+#line 229 "src/parse.y"
 
 // Epilogue (C code).
 
@@ -2192,7 +2194,7 @@ yyreturn:
 result parse(void) {
 	yyscan_t scanner;
 	yylex_init(&scanner);
-	result res = {1, 0, 0};
+	result res = {1, 0, 0, NULL};
 	yyparse(scanner, &res, NULL);
 	yylex_destroy(scanner);
 	return res;
@@ -2204,7 +2206,7 @@ result parse_string(const char* str, queue* out) {
 	yyscan_t scanner;
 	yylex_init(&scanner);
 	YY_BUFFER_STATE buf = yy_scan_string(str ? str : "", scanner);
-	result res = {0, 0, 0};
+	result res = {0, 0, 0, NULL};
 	yyparse(scanner, &res, out);
 	yy_delete_buffer(buf, scanner);
 	yylex_destroy(scanner);
@@ -2215,9 +2217,11 @@ void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...) {
 	(void) scanner;
 	va_list args;
 	va_start(args, msg);
-	vfprintf(stderr, msg, args);
+	/* vfprintf(stderr, msg, args); */
+	res->err = malloc(sizeof(char) * 256);
+	sprintf(res->err, msg, args);
 	va_end(args);
-	fputc('\n', stderr);
+	/* fputc('\n', stderr); */
 	res->nerrs += 1;
 }
 

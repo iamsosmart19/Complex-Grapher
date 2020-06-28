@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 
 	glMainApp.funcString = funcToString(glMainApp.operations, glMainApp.opSize);
 
-	glMainApp.clProg = create_cl_program(&glMainApp, 1000);
+	glMainApp.clProg = create_cl_program(&glMainApp, 500);
 
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), &glMainApp);
@@ -152,15 +152,12 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	sprintf(level_of_detail_text, "%d by %d", 500, 500);
 	level_of_detail[0] = gtk_radio_button_new_with_label(NULL, level_of_detail_text);
 	g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[0]), "toggled", G_CALLBACK(radio_toggled), glMainApp);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[0]), FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[0]), TRUE);
 	gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[0], 95, 165);
 	for(int i = 1; i < 4; i++) {
 		sprintf(level_of_detail_text, "%d by %d", (int)pow(2,i)*500, (int)pow(2,i)*500);
 		level_of_detail[i] = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(level_of_detail[0]), level_of_detail_text);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[i]), FALSE);
-		if(i == 1) {
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[i]), TRUE);
-		}
 		g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[i]), "toggled", G_CALLBACK(radio_toggled), glMainApp);
 		gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[i], 88 + 115*i, 165);
 	}
@@ -271,6 +268,8 @@ static void on_entry_activate(GtkEntry* entry, GlApplication *app) {
 		}
 	}
 	else {
+		quick_message(GTK_WINDOW(gtk_widget_get_parent_window(GTK_WIDGET(entry))), res.err);
+		free(res.err);
 		/* warning popup: "with error message"*/
 		return;
 	}
@@ -282,6 +281,7 @@ static void on_entry_activate(GtkEntry* entry, GlApplication *app) {
 
 	write_to_clBuffer(app);
 
+	gtk_window_deiconify(GTK_WINDOW(app->display));
 	gtk_window_present_with_time(GTK_WINDOW(app->display), GDK_CURRENT_TIME);
 	/* gtk_window_present_with_time((app->display), GDK_CURRENT_TIME); */
 
@@ -592,7 +592,6 @@ void radio_toggled(GtkWidget* button, GlApplication* app) {
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 		g_print("%s was turned on\n", size);
 		app->clProg = create_cl_program(app, atoi(size));
-		/* g_signal_emit_by_name(app->area, "realize", app); */
 	}
 }
 
@@ -610,8 +609,8 @@ static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, Gl
 			app->posOffset[1] = 0;
 			app->zoom = 10;
 			write_to_clBuffer(app);
-			/* g_signal_emit_by_name(GTK_GL_AREA(app->area), "render", app); */
-			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
+			g_signal_emit_by_name(GTK_GL_AREA(app->area), "render", gtk_gl_area_get_context(GTK_GL_AREA(app->area)), app);
+			/* gtk_gl_area_queue_render(GTK_GL_AREA(app->area)); */
 			break;
 
 		case GDK_KEY_comma:
@@ -734,6 +733,7 @@ void write_to_clBuffer(GlApplication* app) {
 }
 
 static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindow* forward) {
+	gtk_window_iconify(GTK_WINDOW(window));
 	gtk_window_present_with_time(GTK_WINDOW(forward), GDK_CURRENT_TIME);
 	return TRUE;
 }
@@ -743,12 +743,35 @@ static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow*
 	return FALSE;
 }
 
-char* funcToString(cplx* op, int opnum) {
+void quick_message (GtkWindow *parent, gchar *message) {
+	GtkWidget *dialog, *label, *content_area;
+	GtkDialogFlags flags;
 
+	// Create the widgets
+	flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+	dialog = gtk_dialog_new_with_buttons("Error",
+			parent,
+			flags,
+			"_OK",
+			GTK_RESPONSE_NONE,
+			NULL);
+	gtk_window_set_default_size(GTK_WINDOW(dialog), 300, 75);
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
+	label = gtk_label_new(message);
+
+	// Ensure that the dialog box is destroyed when the user responds
+	g_signal_connect_swapped(dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+
+	// Add the label, and show everything we’ve added
+	gtk_container_add(GTK_CONTAINER(content_area), label);
+	gtk_widget_show_all(dialog);
+}
+
+char* funcToString(cplx* op, int opnum) {
 	char funcTable[25][7] = {
 		"csqrt",
 		"croot",
-		"cln",
+		"clog",
 		"clog",
 		"cabs",
 		"floor",
@@ -871,7 +894,7 @@ char* funcToString(cplx* op, int opnum) {
 					oprnd1 = sstr_pop(&s);
 					oprnd2 = sstr_pop(&s);
 					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cexp(%s,%s)", oprnd2, oprnd1);
+					sprintf(sstr_top(s), "cpow(%s,%s)", oprnd2, oprnd1);
 					break;
 
 				case 5:
