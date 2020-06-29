@@ -9,6 +9,9 @@
 #include "tgmath.h"
 #include <string.h>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 //GRAPHICS LIBRARIES
 /* #include "glad/glad.h" */
 #include <CL/cl.h>
@@ -133,7 +136,7 @@ static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, Gl
 static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
 
 
-static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindow* forward);
+static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, GlApplication* app);
 
 static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow* display);
 

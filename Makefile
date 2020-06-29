@@ -18,7 +18,7 @@ DDIR=dbg
 
 #Dependencies
 IDIR=src
-_DEPS = strstack.h stack.h queue.h scan.h parse.h main.h parsetest.h
+_DEPS = strstack.h stack.h queue.h scan.h parse.h main.h parsetest.h stb_image_write.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 #Object files

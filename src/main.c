@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 
 	glMainApp.gridOn = 1;
 	glMainApp.shadOn = 1;
-	glMainApp.axesOn = 1;
+	glMainApp.axesOn = 0;
 
 	app = gtk_application_new("org.s1m7u.cplxgrapher", G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), &glMainApp);
@@ -115,7 +115,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	g_signal_connect(G_OBJECT(glMainApp->display), "key_release_event", G_CALLBACK(display_controls_release), glMainApp);
 
 	//Modify to bring window to focus
-	g_signal_connect(glMainApp->display, "delete_event", G_CALLBACK(send_window_to_back), (window));
+	g_signal_connect(glMainApp->display, "delete_event", G_CALLBACK(send_window_to_back), glMainApp);
 
 	//Modify to closing the entire application
 	g_signal_connect(window, "delete_event", G_CALLBACK(close_application), glMainApp->display);
@@ -255,8 +255,8 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				g_signal_connect(buttons, "toggled", G_CALLBACK(settings_toggled), glMainApp);
 				gtk_fixed_put(GTK_FIXED(menu_fixed), buttons, 100, 130);
 
-				buttons = gtk_check_button_new_with_label("Axes on");
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(buttons), TRUE);
+				buttons = gtk_check_button_new_with_label("Axes off");
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(buttons), FALSE);
 				g_signal_connect(buttons, "toggled", G_CALLBACK(settings_toggled), glMainApp);
 				gtk_fixed_put(GTK_FIXED(menu_fixed), buttons, 100, 160);
 
@@ -799,7 +799,7 @@ void write_to_clBuffer(GlApplication* app) {
     clEnqueueReadBuffer(clProg->queue, clProg->colorBuffer, CL_TRUE, 0, app->colorSize, app->colors, 0, NULL, NULL);
 }
 
-static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindow* forward) {
+static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, GlApplication* app) {
 	GtkWidget *dialog;
 	GtkFileChooser *chooser;
 	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
@@ -810,22 +810,35 @@ static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindo
 
 	gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
 
-	gtk_file_chooser_set_current_name(chooser, "cplxgrapher.bmp");
+	gtk_file_chooser_set_current_name(chooser, "cplxgrapher.png");
 
 	res = gtk_dialog_run(GTK_DIALOG (dialog));
 	if (res == GTK_RESPONSE_ACCEPT) {
 		char *filename;
-
 		filename = gtk_file_chooser_get_filename(chooser);
-		printf("%s\n", filename);
+
+		g_print("%s\n", filename);
+
+		gtk_gl_area_make_current(GTK_GL_AREA(app->area));
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		g_print("view: %d", viewport[3]);
+
+		char *data = (char*)malloc((size_t)(viewport[2] * viewport[3] * 3));
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, data);
+
+		int saved = stbi_write_png(filename, viewport[2], viewport[3], 3, data, 0);
+
+		free(data);
+
 		/* save_to_file (filename); */
 		/* g_free (filename); */
 	}
-
 	gtk_widget_destroy (dialog);
 
 	gtk_window_iconify(GTK_WINDOW(window));
-	gtk_window_present_with_time(GTK_WINDOW(forward), GDK_CURRENT_TIME);
 	return TRUE;
 }
 
@@ -889,7 +902,7 @@ char* funcToString(cplx* op, int opnum) {
 
 	strstack s = strstackInit();
 
-	char *oprnd1, *oprnd2, *oprnd3;
+	char* oprnd[2];
 	for(int i = 0; i < opnum; i++) {
 		if( cimag(op[i]) == DBL_MAX) {
 			if( creal(op[i]) == DBL_MAX) {
@@ -912,30 +925,30 @@ char* funcToString(cplx* op, int opnum) {
 					case 22:
 					case 23:
 					case 24:
-						oprnd1 = sstr_pop(&s);
+						oprnd[0] = sstr_pop(&s);
 						sstr_push(&s, "");
-						sprintf(sstr_top(s), "%s(%s)", funcTable[(int)creal(op[i])], oprnd1);
+						sprintf(sstr_top(s), "%s(%s)", funcTable[(int)creal(op[i])], oprnd[0]);
 						break;
 
 					case 1:
-						oprnd1 = sstr_pop(&s);
-						oprnd2 = sstr_pop(&s);
+						oprnd[0] = sstr_pop(&s);
+						oprnd[1] = sstr_pop(&s);
 						sstr_push(&s, "");
-						sprintf(sstr_top(s), "cpow(%s,cdiv((cplx)(1,0),%s))", oprnd2, oprnd1);
+						sprintf(sstr_top(s), "cpow(%s,cdiv((cplx)(1,0),%s))", oprnd[1], oprnd[0]);
 						break;
 
 					case 3:
-						oprnd1 = sstr_pop(&s);
-						oprnd2 = sstr_pop(&s);
+						oprnd[0] = sstr_pop(&s);
+						oprnd[1] = sstr_pop(&s);
 						sstr_push(&s, "");
-						sprintf(sstr_top(s), "cdiv(clog(%s),clog(%s))", oprnd1, oprnd2);
+						sprintf(sstr_top(s), "cdiv(clog(%s),clog(%s))", oprnd[0], oprnd[1]);
 						break;
 
 					case 5:
 					case 6:
-						oprnd1 = sstr_pop(&s);
+						oprnd[0] = sstr_pop(&s);
 						sstr_push(&s, "");
-						sprintf(sstr_top(s), "(cplx)(%s(%s),%s(%s))", funcTable[(int)creal(op[i])], oprnd1, funcTable[(int)creal(op[i])], oprnd1);
+						sprintf(sstr_top(s), "(cplx)(%s(%s),%s(%s))", funcTable[(int)creal(op[i])], oprnd[0], funcTable[(int)creal(op[i])], oprnd[0]);
 						break;
 
 					case 13:
@@ -944,9 +957,9 @@ char* funcToString(cplx* op, int opnum) {
 					case 19:
 					case 20:
 					case 21:
-						oprnd1 = sstr_pop(&s);
+						oprnd[0] = sstr_pop(&s);
 						sstr_push(&s, "");
-						sprintf(sstr_top(s), "%s(cdiv((cplx)(1,0),%s))", funcTable[(int)creal(op[i])], oprnd1);
+						sprintf(sstr_top(s), "%s(cdiv((cplx)(1,0),%s))", funcTable[(int)creal(op[i])], oprnd[0]);
 						break;
 				}
 			}
@@ -954,44 +967,44 @@ char* funcToString(cplx* op, int opnum) {
 		else if( cimag(op[i]) == -DBL_MAX) {
 			switch((int)creal(op[i])) {
 				case 0:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
+					oprnd[0] = sstr_pop(&s);
+					oprnd[1] = sstr_pop(&s);
 					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cadd(%s,%s)", oprnd2, oprnd1);
+					sprintf(sstr_top(s), "cadd(%s,%s)", oprnd[1], oprnd[0]);
 					break;
 
 				case 1:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
+					oprnd[0] = sstr_pop(&s);
+					oprnd[1] = sstr_pop(&s);
 					sstr_push(&s, "");
-					sprintf(sstr_top(s), "csub(%s,%s)", oprnd2, oprnd1);
+					sprintf(sstr_top(s), "csub(%s,%s)", oprnd[1], oprnd[0]);
 					break;
 
 				case 2:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
+					oprnd[0] = sstr_pop(&s);
+					oprnd[1] = sstr_pop(&s);
 					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cmult(%s,%s)", oprnd1, oprnd2);
+					sprintf(sstr_top(s), "cmult(%s,%s)", oprnd[0], oprnd[1]);
 					break;
 
 				case 3:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
+					oprnd[0] = sstr_pop(&s);
+					oprnd[1] = sstr_pop(&s);
 					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cdiv(%s,%s)", oprnd2, oprnd1);
+					sprintf(sstr_top(s), "cdiv(%s,%s)", oprnd[1], oprnd[0]);
 					break;
 
 				case 4:
-					oprnd1 = sstr_pop(&s);
-					oprnd2 = sstr_pop(&s);
+					oprnd[0] = sstr_pop(&s);
+					oprnd[1] = sstr_pop(&s);
 					sstr_push(&s, "");
-					sprintf(sstr_top(s), "cpow(%s,%s)", oprnd2, oprnd1);
+					sprintf(sstr_top(s), "cpow(%s,%s)", oprnd[1], oprnd[0]);
 					break;
 
 				case 5:
-					oprnd1 = sstr_pop(&s);
+					oprnd[0] = sstr_pop(&s);
 					sstr_push(&s, "");
-					sprintf(sstr_top(s), "csub((cplx)(0,0),%s)", oprnd1);
+					sprintf(sstr_top(s), "csub((cplx)(0,0),%s)", oprnd[0]);
 					break;
 			}
 		}
