@@ -160,7 +160,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[0]), TRUE);
 	gtk_fixed_put(GTK_FIXED(funcFixed), level_of_detail[0], 95, 165);
 	for(int i = 1; i < 4; i++) {
-		sprintf(level_of_detail_text, "%d by %d", (int)pow(2,i)*500, (int)pow(2,i)*500);
+		sprintf(level_of_detail_text, "%d by %d", 250*(i+2), 250*(i+2));
 		level_of_detail[i] = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(level_of_detail[0]), level_of_detail_text);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(level_of_detail[i]), FALSE);
 		g_signal_connect(GTK_TOGGLE_BUTTON(level_of_detail[i]), "toggled", G_CALLBACK(radio_toggled), glMainApp);
@@ -621,7 +621,8 @@ void radio_toggled(GtkWidget* button, GlApplication* app) {
 	const char* size = gtk_button_get_label(GTK_BUTTON(button));
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 		g_print("%s was turned on\n", size);
-		app->clProg = create_cl_program(app, atoi(size));
+		/* app->clProg = create_cl_program(app, atoi(size)); */
+		app->width = atoi(size);
 	}
 }
 
@@ -648,7 +649,6 @@ void settings_toggled(GtkToggleButton* button, GlApplication* app) {
 			break;
 		case 'A':
 			app->axesOn = 1 - app->axesOn;
-			g_print("|%d|\n", app->axesOn);
 			if(app->axesOn) {
 				gtk_button_set_label(GTK_BUTTON(button), "Axes on");
 			}
@@ -673,8 +673,8 @@ static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, Gl
 			app->posOffset[1] = 0;
 			app->zoom = 10;
 			write_to_clBuffer(app);
-			g_signal_emit_by_name(GTK_GL_AREA(app->area), "render", gtk_gl_area_get_context(GTK_GL_AREA(app->area)), app);
-			/* gtk_gl_area_queue_render(GTK_GL_AREA(app->area)); */
+			/* g_signal_emit_by_name(GTK_GL_AREA(app->area), "render", gtk_gl_area_get_context(GTK_GL_AREA(app->area)), app); */
+			gtk_gl_area_queue_render(GTK_GL_AREA(app->area));
 			break;
 
 		case GDK_KEY_comma:
@@ -789,8 +789,6 @@ void write_to_clBuffer(GlApplication* app) {
     err |= clSetKernelArg(clProg->kernel, 9, sizeof(unsigned int), &app->shadOn);
     err |= clSetKernelArg(clProg->kernel, 10, sizeof(unsigned int), &app->axesOn);
 
-	g_print("cl: %d, %d, %d\n", app->gridOn, app->shadOn, app->axesOn);
- 
     // Execute the clProg->kernel over the entire range of the data set  
     err = clEnqueueNDRangeKernel(clProg->queue, clProg->kernel, 1, NULL, &app->globalSize, &app->localSize, 0, NULL, NULL);
  
@@ -802,6 +800,30 @@ void write_to_clBuffer(GlApplication* app) {
 }
 
 static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, gtkWindow* forward) {
+	GtkWidget *dialog;
+	GtkFileChooser *chooser;
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+	gint res;
+
+	dialog = gtk_file_chooser_dialog_new("Save Function as Image", window, action, "_Cancel", GTK_RESPONSE_CANCEL, "_Save", GTK_RESPONSE_ACCEPT, NULL);
+	chooser = GTK_FILE_CHOOSER(dialog);
+
+	gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
+
+	gtk_file_chooser_set_current_name(chooser, "cplxgrapher.bmp");
+
+	res = gtk_dialog_run(GTK_DIALOG (dialog));
+	if (res == GTK_RESPONSE_ACCEPT) {
+		char *filename;
+
+		filename = gtk_file_chooser_get_filename(chooser);
+		printf("%s\n", filename);
+		/* save_to_file (filename); */
+		/* g_free (filename); */
+	}
+
+	gtk_widget_destroy (dialog);
+
 	gtk_window_iconify(GTK_WINDOW(window));
 	gtk_window_present_with_time(GTK_WINDOW(forward), GDK_CURRENT_TIME);
 	return TRUE;
@@ -851,15 +873,15 @@ char* funcToString(cplx* op, int opnum) {
 		"csinh",
 		"ccosh",
 		"ctanh",
-		"csech",
-		"ccsch",
-		"ccoth",
+		"ccosh",
+		"csinh",
+		"ctanh",
 		"csin",
 		"ccos",
 		"ctan",
-		"csec",
-		"ccsc",
-		"ccot",
+		"csin",
+		"ccos",
+		"ctan",
 		"creal", 
 		"cimag", 
 		"cabs"

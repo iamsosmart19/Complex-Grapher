@@ -2,6 +2,7 @@
 (z+1+i)(z-1-i)(z+1-i)(z-1+i)
 cos(z)/(sin(z^4-1))
 sin(cos(ln(z)))
+sin(cos(ln(sin(cos(ln(sin(cos(ln(sin(cos(ln(sin(cos(ln(sin(cos(ln(z))))))))))))))))))
 sin(cos(ln(cosh(z))))
 (((((((((((((((((((((z^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)^2+z)
 ln(z^z)
