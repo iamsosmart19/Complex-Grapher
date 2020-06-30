@@ -285,7 +285,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 					gtk_tree_store_set(controlStore, &controlIter, 0, guide_control_table[i][0], 1, guide_control_table[i][1], -1);
 				}
 
-				funcTree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (funcStore));
+				funcTree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (controlStore));
 				g_object_unref(G_OBJECT(funcStore));
 
 				column = gtk_tree_view_column_new_with_attributes("Control", renderer, "text", 0, NULL);
