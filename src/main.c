@@ -597,6 +597,10 @@ ClProgram create_cl_program(GlApplication* app, int width) {
 	app->interval = (float)2/(float)width;
 	app->n = app->width * app->height;
 
+	gtk_gl_area_make_current(GTK_GL_AREA(app->area));
+
+	glPointSize(app->interval * 500);
+
     app->colorSize = sizeof(GLfloat) * 3 * app->n;
     app->posSize = sizeof(float) * 2 * app->n;
 
