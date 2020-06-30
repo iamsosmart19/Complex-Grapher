@@ -142,6 +142,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	funcInput = gtk_entry_new_with_buffer(funcBuffer);
 	gtk_widget_set_name((funcInput), "funcIn");
 	gtk_entry_set_max_width_chars(GTK_ENTRY(funcInput), 256);
+	gtk_entry_set_max_length(GTK_ENTRY(funcInput), 256);
 	gtk_entry_set_placeholder_text(GTK_ENTRY(funcInput), "Enter function here");
 	g_signal_connect(funcInput, "activate", G_CALLBACK(on_entry_activate), glMainApp);
 
@@ -235,33 +236,42 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				gtk_label_set_markup(GTK_LABEL(menuLabel[i]), final_string);
 				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 35, 30);
 
-				GtkTreeStore *store = gtk_tree_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-				GtkTreeIter iter;
-				GtkWidget *tree;
+				GtkTreeStore *funcStore = gtk_tree_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+				GtkTreeIter funcIter;
+				GtkWidget *funcTree;
 				GtkTreeViewColumn *column;
 				GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 				g_object_set (G_OBJECT (renderer), "foreground", "black", NULL);
 
 				for(int i = 0; i < 30; i++) {
-					gtk_tree_store_append(store, &iter, NULL);
-					gtk_tree_store_set(store, &iter, 0, guide_function_table[i][0], 1, guide_function_table[i][1], 2, guide_function_table[i][2], -1);
+					gtk_tree_store_append(funcStore, &funcIter, NULL);
+					gtk_tree_store_set(funcStore, &funcIter, 0, guide_function_table[i][0], 1, guide_function_table[i][1], 2, guide_function_table[i][2], -1);
 				}
 
-				tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
-				g_object_unref(G_OBJECT(store));
+				funcTree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (funcStore));
+				g_object_unref(G_OBJECT(funcStore));
 
 				column = gtk_tree_view_column_new_with_attributes("Syntax", renderer, "text", 0, NULL);
-				gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+				gtk_tree_view_append_column (GTK_TREE_VIEW (funcTree), column);
 
 				renderer = gtk_cell_renderer_text_new ();
 				column = gtk_tree_view_column_new_with_attributes ("Sample usage       ", renderer, "text", 1, NULL);
-				gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+				gtk_tree_view_append_column (GTK_TREE_VIEW (funcTree), column);
 
 				renderer = gtk_cell_renderer_text_new ();
 				column = gtk_tree_view_column_new_with_attributes ("Description                                ", renderer, "text", 2, NULL);
-				gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+				gtk_tree_view_append_column (GTK_TREE_VIEW (funcTree), column);
 
-				gtk_fixed_put(GTK_FIXED(menu_fixed), GTK_WIDGET(tree), 40, 80);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), GTK_WIDGET(funcTree), 40, 80);
+
+				GtkTreeStore *controlStore = gtk_tree_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+				GtkTreeIter controlIter;
+				GtkWidget *controlTree;
+
+				/* for(int i = 0; i < 30; i++) { */
+				/* 	gtk_tree_store_append(funcStore, &funcIter, NULL); */
+				/* 	gtk_tree_store_set(funcStore, &funcIter, 0, guide_function_table[i][0], 1, guide_function_table[i][1], 2, guide_function_table[i][2], -1); */
+				/* } */
 
 				gtk_container_add(GTK_CONTAINER(scrolled), menu_fixed);
 
@@ -328,7 +338,7 @@ static void on_entry_activate(GtkEntry* entry, GlApplication *app) {
 	queue out = queueInit();
 	result res = parse_string(funcString, &out);
 	if( !res.nerrs ) {
-		app->operations = (cplx*)malloc(128*sizeof(cplx));
+		app->operations = (cplx*)malloc(256*sizeof(cplx));
 
 		app->opSize = 0;
 		while(front(out) != -DBL_MAX-DBL_MAX*I) {
