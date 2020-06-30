@@ -224,11 +224,49 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 
 			case 2:
 				sprintf(menuLabelName, "Guide");
-				menuLabel[i] = gtk_label_new(menuLabelName);
+				gtkWindow* scrolled = gtk_scrolled_window_new(NULL, NULL);
+				menu_fixed = gtk_fixed_new();
 
-				gtkButton* newButton = gtk_button_new_with_label(menuLabelName);
-				gtk_stack_add_named(GTK_STACK(gStack), newButton, menuLabelName);
-				gtk_container_child_set(GTK_CONTAINER(gStack), newButton, "title", menuLabelName, NULL);
+				formatString = "<span size=\"%d\">%s</span>";
+				fontsize = 24 * PANGO_SCALE;
+				final_string = g_markup_printf_escaped(formatString, fontsize, menuLabelName);
+
+				menuLabel[i] = gtk_label_new("");
+				gtk_label_set_markup(GTK_LABEL(menuLabel[i]), final_string);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 35, 30);
+
+				GtkTreeStore *store = gtk_tree_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+				GtkTreeIter iter;
+				GtkWidget *tree;
+				GtkTreeViewColumn *column;
+				GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+				g_object_set (G_OBJECT (renderer), "foreground", "black", NULL);
+
+				for(int i = 0; i < 30; i++) {
+					gtk_tree_store_append(store, &iter, NULL);
+					gtk_tree_store_set(store, &iter, 0, guide_function_table[i][0], 1, guide_function_table[i][1], 2, guide_function_table[i][2], -1);
+				}
+
+				tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+				g_object_unref(G_OBJECT(store));
+
+				column = gtk_tree_view_column_new_with_attributes("Syntax", renderer, "text", 0, NULL);
+				gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+
+				renderer = gtk_cell_renderer_text_new ();
+				column = gtk_tree_view_column_new_with_attributes ("Sample usage       ", renderer, "text", 1, NULL);
+				gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+
+				renderer = gtk_cell_renderer_text_new ();
+				column = gtk_tree_view_column_new_with_attributes ("Description                                ", renderer, "text", 2, NULL);
+				gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+
+				gtk_fixed_put(GTK_FIXED(menu_fixed), GTK_WIDGET(tree), 40, 80);
+
+				gtk_container_add(GTK_CONTAINER(scrolled), menu_fixed);
+
+				gtk_stack_add_named(GTK_STACK(gStack), scrolled, menuLabelName);
+				gtk_container_child_set(GTK_CONTAINER(gStack), scrolled, "title", menuLabelName, NULL);
 				continue;
 				break;
 
@@ -822,7 +860,6 @@ static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, GlApplic
 		gtk_gl_area_make_current(GTK_GL_AREA(app->area));
 		GLint viewport[4];
 		glGetIntegerv(GL_VIEWPORT, viewport);
-		g_print("view: %d", viewport[3]);
 
 		char *data = (char*)malloc((size_t)(viewport[2] * viewport[3] * 3));
 
