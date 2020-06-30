@@ -124,6 +124,34 @@ char* guide_function_table[30][3] = {
 	"Gives the hyperbolic cotangent of a1"}
 };
 
+char* guide_control_table[13][2] = {
+	{"Spacebar",
+	"The display screen recentres itself at 0+0i with the default zoom"},
+	{"Comma",
+	"Zooms out by 5%"},
+	{"Less Than",
+	"Zooms out by 20%"},
+	{"Period",
+	"Zooms in by 5%"},
+	{"Greater than",
+	"Zooms in by 20%"},
+	{"Up arrow",
+	"Moves display window up by a 1%"},
+	{"Down arrow",
+	"Moves display window down by 1%"},
+	{"Left arrow",
+	"Moves display window left by 1%"},
+	{"Right arrow",
+	"Moves display window right by 1%"},
+	{"Shift + Up arrow",
+	"Moves display window up by 1%"},
+	{"Shift + Down arrow",
+	"Moves display window down by 10%"},
+	{"Shift + Left arrow",
+	"Moves display window left by 10%"},
+	{"Shift + Right arrow",
+	"Moves display window right by 10%"}
+};
 
 //GTK TYPEDEFS
 

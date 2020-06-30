@@ -268,10 +268,23 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				GtkTreeIter controlIter;
 				GtkWidget *controlTree;
 
-				/* for(int i = 0; i < 30; i++) { */
-				/* 	gtk_tree_store_append(funcStore, &funcIter, NULL); */
-				/* 	gtk_tree_store_set(funcStore, &funcIter, 0, guide_function_table[i][0], 1, guide_function_table[i][1], 2, guide_function_table[i][2], -1); */
-				/* } */
+				for(int i = 0; i < 13; i++) {
+					gtk_tree_store_append(controlStore, &controlIter, NULL);
+					gtk_tree_store_set(controlStore, &controlIter, 0, guide_control_table[i][0], 1, guide_control_table[i][1], -1);
+				}
+
+				funcTree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (funcStore));
+				g_object_unref(G_OBJECT(funcStore));
+
+				column = gtk_tree_view_column_new_with_attributes("Control", renderer, "text", 0, NULL);
+				gtk_tree_view_append_column (GTK_TREE_VIEW (funcTree), column);
+
+				renderer = gtk_cell_renderer_text_new ();
+				column = gtk_tree_view_column_new_with_attributes ("Result", renderer, "text", 1, NULL);
+				gtk_tree_view_append_column (GTK_TREE_VIEW (funcTree), column);
+
+				gtk_fixed_put(GTK_FIXED(menu_fixed), GTK_WIDGET(funcTree), 40, 880);
+
 
 				gtk_container_add(GTK_CONTAINER(scrolled), menu_fixed);
 
