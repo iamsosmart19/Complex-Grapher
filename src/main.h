@@ -42,7 +42,7 @@ char* guide_function_table[30][3] = {
 	"z-1,i-z",
 	"Subtracts a2 from a1"},
 	{"a1*a2",
-	"z*i, 3*2",
+	"z*i, 3*(2+i)",
 	"Multiplies a1 with a2"},
 	{"a1/a2",
 	"z/9, 8*8",

@@ -236,12 +236,24 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				gtk_label_set_markup(GTK_LABEL(menuLabel[i]), final_string);
 				gtk_fixed_put(GTK_FIXED(menu_fixed), menuLabel[i], 35, 30);
 
+				gtkLabel* instructions = gtk_label_new("This is a program for graphing complex functions.\n"
+														"A function (allowed functions described below) is entered into the textbox\n"
+														"on the Start screen. Once the return/enter key is pressed a window will be\n"
+														"presented displaying the function. At this point the camera can be controlled\n"
+														"with the keyboard (buttons specified below).\n"
+														"Finally, when closing the window an option will be presented to save the \n"
+														"current screen as an image. If cancelled it will return the user to the Start\n"
+														"screen.\n"
+														"\n"
+														"More explicit details can be found in the user manual.");
+
+				gtk_fixed_put(GTK_FIXED(menu_fixed), instructions, 35, 80);
+
 				GtkTreeStore *funcStore = gtk_tree_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 				GtkTreeIter funcIter;
 				GtkWidget *funcTree;
 				GtkTreeViewColumn *column;
 				GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-				g_object_set (G_OBJECT (renderer), "foreground", "black", NULL);
 
 				for(int i = 0; i < 30; i++) {
 					gtk_tree_store_append(funcStore, &funcIter, NULL);
@@ -262,7 +274,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				column = gtk_tree_view_column_new_with_attributes ("Description                                ", renderer, "text", 2, NULL);
 				gtk_tree_view_append_column (GTK_TREE_VIEW (funcTree), column);
 
-				gtk_fixed_put(GTK_FIXED(menu_fixed), GTK_WIDGET(funcTree), 40, 80);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), GTK_WIDGET(funcTree), 40, 80 + 200);
 
 				GtkTreeStore *controlStore = gtk_tree_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
 				GtkTreeIter controlIter;
@@ -283,7 +295,7 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 				column = gtk_tree_view_column_new_with_attributes ("Result", renderer, "text", 1, NULL);
 				gtk_tree_view_append_column (GTK_TREE_VIEW (funcTree), column);
 
-				gtk_fixed_put(GTK_FIXED(menu_fixed), GTK_WIDGET(funcTree), 40, 880);
+				gtk_fixed_put(GTK_FIXED(menu_fixed), GTK_WIDGET(funcTree), 40, 880 + 200);
 
 
 				gtk_container_add(GTK_CONTAINER(scrolled), menu_fixed);
