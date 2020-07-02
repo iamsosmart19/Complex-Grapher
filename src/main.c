@@ -385,8 +385,8 @@ static void on_gl_realise(GtkGLArea *area, GlApplication *app) {
 	glEnable(GL_PROGRAM_POINT_SIZE);
 
 	//Enables debug output
-	glEnable (GL_DEBUG_OUTPUT);
-	glDebugMessageCallback(MessageCallback, 0);
+	/* glEnable (GL_DEBUG_OUTPUT); */
+	/* glDebugMessageCallback(MessageCallback, 0); */
 
 	//Points
 	glPointSize(app->interval * 500);
