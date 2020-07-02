@@ -214,7 +214,6 @@ ClProgram create_cl_program(GlApplication* app, int width) {
 
     // Bind to platform
     err = clGetPlatformIDs(1, &(clProg.cpPlatform), NULL);
-
 	if(err != CL_SUCCESS) {
 		printf("platform error: %d\n", err);
 	}
