@@ -1,6 +1,5 @@
 #include "queue.h"
 
-//Initialises queue
 queue queueInit() {
 	queue temp;
 	//Assign a qnode to the beginning and the end
@@ -25,7 +24,6 @@ queue queueInit() {
 	return temp;
 }
 
-//Adds element to queue q with value val
 void enqueue(queue *q, cplx val) {
 	//Create a temporary qnode
 	qnode* temp = malloc(sizeof(qnode));
@@ -43,7 +41,6 @@ void enqueue(queue *q, cplx val) {
 	(*q).begin->next = temp;
 }
 
-//Returns value from end of queue and removes it
 cplx dequeue(queue* q) {
 	//If the node after the first node is the end
 	//of the queue, return an invalid value
@@ -65,7 +62,6 @@ cplx dequeue(queue* q) {
 	return ret;
 }
 
-//Returns value from the front of the queue
 cplx front(queue q) {
 	//If the node after the first node is the end
 	//of the queue, return an invalid value
@@ -75,7 +71,6 @@ cplx front(queue q) {
 	return q.end->prev->val;
 }
 
-//Returns value from the back of the queue
 cplx back(queue q) {
 	//If the node after the first node is the end
 	//of the queue, return an invalid value

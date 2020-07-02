@@ -9,31 +9,21 @@
 #include "tgmath.h"
 #include <string.h>
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include <CL/cl.h>
 
 //GRAPHICS LIBRARIES
-/* #include "glad/glad.h" */
-#include <CL/cl.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-/* #include <SDL2/SDL_keyboard.h> */
-
 #include <epoxy/gl.h>
 #include "glib-resources.h"
-/* #include <GL/gl.h> */
-/* #include <GL/glu.h> */
-/* #include <GLFW/glfw3.h> */
 
-//#define test 0
-char* filetobuf(char *file);
-
-void hsv2rgb(long double H, long double S, long double V, GLfloat* ret);
-
-void drawGraph(float* posData, cplx* operations, int opnum, GLfloat* colors, int height, int width, long double zoom);
-
+//Takes operations in op(size provided as opnum) and returns
+//a string containing the OpenCL version of the string
 char* funcToString(cplx* op, int opnum);
 
+//Holds strings for the table in guide
 char* guide_function_table[30][3] = {
 	{"a1+a2",
 	"z+1, 2+i",
@@ -124,6 +114,8 @@ char* guide_function_table[30][3] = {
 	"Gives the hyperbolic cotangent of a1"}
 };
 
+//Holds strings for the table of controls
+//in the guide menu
 char* guide_control_table[13][2] = {
 	{"Spacebar",
 	"The display screen recentres itself at 0+0i with the default zoom"},
@@ -155,6 +147,8 @@ char* guide_control_table[13][2] = {
 
 //GTK TYPEDEFS
 
+//GtkWidget remapped to various widgets for clarity
+//of declarations
 typedef GtkWidget gtkWindow;
 typedef GtkWidget gtkFrame;
 typedef GtkWidget gtkStack;
@@ -190,6 +184,7 @@ typedef struct ClProgram_struct_decl {
     cl_kernel kernel;                 // kernel
 } ClProgram;
 
+//Struct that holds most user data
 typedef struct GlApplication_struct_decl {
 	//FUNCTION
 	cplx* operations;
@@ -206,21 +201,30 @@ typedef struct GlApplication_struct_decl {
 	double interval;
 	int n;
 
+	//Sizes of color and pos array
     size_t colorSize, posSize;
     size_t globalSize, localSize;
+	//Holds positions and colors of points
 	float* posData;
 	GLfloat* colors;
 
+	//Holds offset from the origin (0, 0)
 	float posOffset[2];
+	//Holds how far zoomed into the program you are
+	//and zoomc (the zoom constant) used for various
+	//calculations
 	double zoom;
 	float zoomc;
 
+	//Holds whether their respective features are enabled
 	unsigned int gridOn;
 	unsigned int shadOn;
 	unsigned int axesOn;
 
+	//Vertex array and buffer object: holds points and
+	//colours of points
 	GLuint vao;
-	GLuint triangleVBO;
+	GLuint vbo;
 	guint prog;
 
 	//Controls
@@ -229,41 +233,77 @@ typedef struct GlApplication_struct_decl {
 
 //OPENCL FUNCTIONS
 
+//Creates OpenCL program
 ClProgram create_cl_program(GlApplication* app, int width);
 
+//Used for generating colours
+//Writes newly generated data to OpenCL program
+//And resulting output is placed in colors
 void write_to_clBuffer(GlApplication* app);
 
 //GTK FUNCTIONS
 
+//Triggered when Enter/Return is pressed in the entry
+//Parses the string in the entry
+//Creates an OpenCL program from the string
+//Calls render
+//and pushes the display window to the top
 static void on_entry_activate(GtkEntry* entry, GlApplication *app);
 
+//Triggered when OpenGL Area is created
+//Creates shaders and program, sets glPointSize
+//and initialises vertex buffer and array 
 static void on_gl_realise(GtkGLArea *area, GlApplication *app);
 
+//Triggered when OpenGL Area is destroyed
+//Deallocates programs, shaders and memory
 static void on_gl_unrealise(GtkGLArea *area, GlApplication *app);
 
-static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* app);
-
-static void activate (GtkApplication *app, GlApplication* glMainApp);
-
-
-void radio_toggled(GtkWidget* button, GlApplication* app);
-
-void settings_toggled(GtkToggleButton* button, GlApplication* app);
-
-static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
-
-static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
-
-
-static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, GlApplication* app);
-
-static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow* display);
-
-void quick_message (GtkWindow *parent, gchar *message);
-
 //GL functions
+//Initialises shaders and creates a program, which is placed in program
 static gboolean init_shader(guint** program);
 
+//Creates a shader of type shader_type from source, and places errors in error and the shader in shader_out
 static guint create_shader(int shader_type, const char *source, GError **error, guint *shader_out);
+
+//Triggered whenever render is called
+//Copies data in vertex buffer objects to the screen
+static gboolean render(GtkGLArea *area, GdkGLContext* context, GlApplication* app);
+
+//Triggered on application start
+//Initialises (or calls initialisers) for all objects in the application
+static void activate (GtkApplication *app, GlApplication* glMainApp);
+
+//Triggered when a radio button is toggled
+//Gets which button was toggled and sets app->width to the value
+//of that button, which will be written to the OpenCL program
+//on the next call of create_cl_program()
+void radio_toggled(GtkWidget* button, GlApplication* app);
+
+//Triggered when a settings button is toggled
+//Gets which button was toggled and enables or disables setting
+//then changes the text of the button to correspond to the state of the option
+void settings_toggled(GtkToggleButton* button, GlApplication* app);
+
+//Called when a keyboard button is pressed inside display
+//Checks which button was pressed and calls write_to_cl_buffer & render to redraw the screen as necessary
+static gboolean display_controls_press(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
+
+//Called when a keyboard button is released inside display
+//Used to tell when the shift key has been released
+static gboolean display_controls_release(GtkWidget* widget, GdkEventKey* event, GlApplication* app);
+
+//Called when display is closed
+//Creates a file save dialog, and once that has been either used or closed by the user
+//sends the display to the back (minimises on windows)
+static gboolean send_window_to_back(GtkWindow* window, GdkEvent *event, GlApplication* app);
+
+//Called when the main window is closed
+//Ends the application
+static gboolean close_application(GtkWindow* window, GdkEvent* event, gtkWindow* display);
+
+//Creates a dialog with message as the text
+//Used in entry_activate to show syntax alerts from Bison to the reader
+void quick_message (GtkWindow *parent, gchar *message);
 
 #endif /* MAIN_H */
