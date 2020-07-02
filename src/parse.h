@@ -50,6 +50,7 @@ extern int yydebug;
 	#include <complex.h>
 	#include "queue.h"
 
+	//Definition of complex numbers
 	typedef double complex cplx;
 	typedef void* yyscan_t;
 	typedef struct {
@@ -62,10 +63,12 @@ extern int yydebug;
 		//Address of error
 		char* err;
 	} result;
+	//Parses str and places the result in out; result records errors
 	result parse_string(const char* str, queue* out);
+	//Parses from stdin(standard input)
 	result parse(void);
 
-#line 69 "src/parse.h"
+#line 72 "src/parse.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -136,7 +139,7 @@ union YYSTYPE
 {
   cplx NUM;                                /* "number"  */
 
-#line 140 "src/parse.h"
+#line 143 "src/parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -148,7 +151,7 @@ typedef union YYSTYPE YYSTYPE;
 
 int yyparse (yyscan_t scanner, result *res, queue* out);
 /* "%code provides" blocks.  */
-#line 26 "src/parse.y"
+#line 29 "src/parse.y"
 
 	// Tell Flex the expected prototype of yylex.
 	// The scanner argument must be named yyscanner.
@@ -158,6 +161,6 @@ int yyparse (yyscan_t scanner, result *res, queue* out);
 	/* void yyerror(yyscan_t scanner, result *res, const char *msg, ...); */
 	void yyerror(yyscan_t scanner, result *res, queue *out, const char *msg, ...);
 
-#line 162 "src/parse.h"
+#line 165 "src/parse.h"
 
 #endif /* !YY_YY_SRC_PARSE_H_INCLUDED  */

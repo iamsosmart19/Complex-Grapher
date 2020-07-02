@@ -22,10 +22,15 @@
 	/* Scan a float. */
 [0-9]+\.[0-9]+	{
 	errno = 0;
+	//Convert string to double
 	double n = strtod(yytext, NULL);
+	//If the resulting number is smaller or larger than the smallest
+	//and largest allowed floats, or if the errno is ERANGE
+	//throw an error stating the float is out of range
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "float is out of range");
 	}
+	//Add number to out
 	enqueue(out, n); 
 	return NUM;
 }
@@ -33,30 +38,47 @@
 	/* Scan an integer.  */
 [0-9]+   {
 	errno = 0;
+	//Convert string to a long
 	long n = strtol(yytext, NULL, 10);
+	//If the resulting number is smaller or larger than the smallest
+	//and largest allowed long, or if the errno is ERANGE
+	//throw an error stating the float is out of range
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "integer is out of range");
 	}
+	//Add number to out
 	enqueue(out, n); 
 	return NUM;
 }
 
 [0-9]+i		{
 	errno = 0;
+	//Convert string to a long
+	//Note: strtol will automatically filter out the i
 	long n = strtol(yytext, NULL, 10);
+	//If the resulting number is smaller or larger than the smallest
+	//and largest allowed long, or if the errno is ERANGE
+	//throw an error stating the float is out of range
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "integer is out of range");
 	}
+	//Multiply by I because number is meant to be imaginary
 	enqueue(out, n * I); 
 	return NUM;
 }
 
 [0-9]+\.[0-9]+i	{
 	errno = 0;
+	//Convert string to double
+	//Note: strtod will automatically filter out the i
 	double n = strtod(yytext, NULL);
+	//If the resulting number is smaller or larger than the smallest
+	//and largest allowed floats, or if the errno is ERANGE
+	//throw an error stating the float is out of range
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "float is out of range");
 	}
+	//Multiply by I because number is meant to be imaginary
 	enqueue(out, n * I); 
 	return NUM;
 }

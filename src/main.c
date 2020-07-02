@@ -3,6 +3,20 @@
 /* 	setenv("CUDA_CACHE_DISABLE", "1", 1); */
 /* #endif */
 
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+  g_print( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+
 int main(int argc, char* argv[]) {
 	/* setenv("CUDA_CACHE_DISABLE", "1", 1); */
 	yydebug = !!getenv("YYDEBUG");
@@ -69,7 +83,6 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	//CSS style elements
 	GtkStyleContext *context;
 	GtkCssProvider *cssProvider = gtk_css_provider_new();
-	gtk_css_provider_load_from_resource(cssProvider, "/io/s1m7u/cplxgrapher/entry.css");
 
 	//GLarea
 	GtkWidget* GLdisplay_box;
@@ -147,7 +160,6 @@ static void activate (GtkApplication *app, GlApplication* glMainApp) {
 	g_signal_connect(funcInput, "activate", G_CALLBACK(on_entry_activate), glMainApp);
 
 	context = gtk_widget_get_style_context(funcInput);
-	gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(cssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
 
 	funcInputBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request(funcInputBox, 400, 34);
@@ -409,6 +421,9 @@ static void on_gl_realise(GtkGLArea *area, GlApplication *app) {
 
 	glViewport(0, 0, 800, 600);
 	glEnable(GL_PROGRAM_POINT_SIZE);
+
+	glEnable              ( GL_DEBUG_OUTPUT );
+	glDebugMessageCallback( MessageCallback, 0 );
 
 	//Points
 	glPointSize(app->interval * 500);

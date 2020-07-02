@@ -820,10 +820,15 @@ YY_RULE_SETUP
 #line 24 "src/scan.l"
 {
 	errno = 0;
+	//Convert string to double
 	double n = strtod(yytext, NULL);
+	//If the resulting number is smaller or larger than the smallest
+	//and largest allowed floats, or if the errno is ERANGE
+	//throw an error stating the float is out of range
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "float is out of range");
 	}
+	//Add number to out
 	enqueue(out, n); 
 	return NUM;
 }
@@ -831,300 +836,317 @@ YY_RULE_SETUP
 /* Scan an integer.  */
 case 2:
 YY_RULE_SETUP
-#line 35 "src/scan.l"
+#line 40 "src/scan.l"
 {
 	errno = 0;
+	//Convert string to a long
 	long n = strtol(yytext, NULL, 10);
+	//If the resulting number is smaller or larger than the smallest
+	//and largest allowed long, or if the errno is ERANGE
+	//throw an error stating the float is out of range
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "integer is out of range");
 	}
+	//Add number to out
 	enqueue(out, n); 
 	return NUM;
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 45 "src/scan.l"
+#line 55 "src/scan.l"
 {
 	errno = 0;
+	//Convert string to a long
+	//Note: strtol will automatically filter out the i
 	long n = strtol(yytext, NULL, 10);
+	//If the resulting number is smaller or larger than the smallest
+	//and largest allowed long, or if the errno is ERANGE
+	//throw an error stating the float is out of range
 	if (! (INT_MIN <= n && n <= INT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "integer is out of range");
 	}
+	//Multiply by I because number is meant to be imaginary
 	enqueue(out, n * I); 
 	return NUM;
 }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 55 "src/scan.l"
+#line 71 "src/scan.l"
 {
 	errno = 0;
+	//Convert string to double
+	//Note: strtod will automatically filter out the i
 	double n = strtod(yytext, NULL);
+	//If the resulting number is smaller or larger than the smallest
+	//and largest allowed floats, or if the errno is ERANGE
+	//throw an error stating the float is out of range
 	if (! (FLT_MIN <= n && n <= FLT_MAX && errno != ERANGE)) {
 		yyerror(yyscanner, res, NULL, NULL, "float is out of range");
 	}
+	//Multiply by I because number is meant to be imaginary
 	enqueue(out, n * I); 
 	return NUM;
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 65 "src/scan.l"
+#line 87 "src/scan.l"
 return COMMENT;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 67 "src/scan.l"
+#line 89 "src/scan.l"
 { return  PLUS; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 68 "src/scan.l"
+#line 90 "src/scan.l"
 { return  MINUS; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 69 "src/scan.l"
+#line 91 "src/scan.l"
 { return  STAR; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 70 "src/scan.l"
+#line 92 "src/scan.l"
 { return  SLASH; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 71 "src/scan.l"
+#line 93 "src/scan.l"
 { return  EXP; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 72 "src/scan.l"
+#line 94 "src/scan.l"
 { return  UNDERSCORE; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 74 "src/scan.l"
+#line 96 "src/scan.l"
 { return SQRT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 75 "src/scan.l"
+#line 97 "src/scan.l"
 { return  ROOT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 77 "src/scan.l"
+#line 99 "src/scan.l"
 { return  LN; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 78 "src/scan.l"
+#line 100 "src/scan.l"
 { return  LOG; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 79 "src/scan.l"
+#line 101 "src/scan.l"
 { enqueue(out, M_E); return E; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 81 "src/scan.l"
+#line 103 "src/scan.l"
 { return  ABS; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 82 "src/scan.l"
+#line 104 "src/scan.l"
 { return  FLOOR; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 83 "src/scan.l"
+#line 105 "src/scan.l"
 { return  CEIL; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 84 "src/scan.l"
+#line 106 "src/scan.l"
 { return  REAL; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 85 "src/scan.l"
+#line 107 "src/scan.l"
 { return  IMAG; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 87 "src/scan.l"
+#line 109 "src/scan.l"
 { return  ASIN; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 88 "src/scan.l"
+#line 110 "src/scan.l"
 { return  ACOS; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 89 "src/scan.l"
+#line 111 "src/scan.l"
 { return  ATAN; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 90 "src/scan.l"
+#line 112 "src/scan.l"
 { return  SINH; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 91 "src/scan.l"
+#line 113 "src/scan.l"
 { return  COSH; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 92 "src/scan.l"
+#line 114 "src/scan.l"
 { return  TANH; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 93 "src/scan.l"
+#line 115 "src/scan.l"
 { return  SECH; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 94 "src/scan.l"
+#line 116 "src/scan.l"
 { return  CSCH; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 95 "src/scan.l"
+#line 117 "src/scan.l"
 { return  COTH; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 96 "src/scan.l"
+#line 118 "src/scan.l"
 { return  SIN; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 97 "src/scan.l"
+#line 119 "src/scan.l"
 { return  COS; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 98 "src/scan.l"
+#line 120 "src/scan.l"
 { return  TAN; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 99 "src/scan.l"
+#line 121 "src/scan.l"
 { return  SEC; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 100 "src/scan.l"
+#line 122 "src/scan.l"
 { return  CSC; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 101 "src/scan.l"
+#line 123 "src/scan.l"
 { return  COT; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 102 "src/scan.l"
+#line 124 "src/scan.l"
 { enqueue(out, M_PI); return  PI; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 104 "src/scan.l"
+#line 126 "src/scan.l"
 { enqueue(out, I); return  MI; }
 	YY_BREAK
 /* Ignore white spaces. */
 case 39:
 YY_RULE_SETUP
-#line 107 "src/scan.l"
+#line 129 "src/scan.l"
 continue;
 	YY_BREAK
 case 40:
 /* rule 40 can match eol */
 YY_RULE_SETUP
-#line 109 "src/scan.l"
+#line 131 "src/scan.l"
 { return  EOL; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 111 "src/scan.l"
+#line 133 "src/scan.l"
 { return Y; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 112 "src/scan.l"
+#line 134 "src/scan.l"
 { return FZ; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 114 "src/scan.l"
+#line 136 "src/scan.l"
 { enqueue(out, DBL_MAX + DBL_MAX * I); return LETR; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 115 "src/scan.l"
+#line 137 "src/scan.l"
 { return  EQUALS; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 116 "src/scan.l"
+#line 138 "src/scan.l"
 { return  LESSTHAN; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 117 "src/scan.l"
+#line 139 "src/scan.l"
 { return  GREATERTHAN; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 118 "src/scan.l"
+#line 140 "src/scan.l"
 { return  LTHANEQTO; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 119 "src/scan.l"
+#line 141 "src/scan.l"
 { return  GTHANEQTO; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 121 "src/scan.l"
+#line 143 "src/scan.l"
 { return LBRAC; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 122 "src/scan.l"
+#line 144 "src/scan.l"
 { return RBRAC; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 124 "src/scan.l"
+#line 146 "src/scan.l"
 { return CONJ; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 126 "src/scan.l"
+#line 148 "src/scan.l"
 { return COMMA; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 128 "src/scan.l"
+#line 150 "src/scan.l"
 ;yyerror(yyscanner, res, NULL, NULL, "syntax error, invalid character: %c", yytext[0]);
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 130 "src/scan.l"
+#line 152 "src/scan.l"
 return TOK_EOF;
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 131 "src/scan.l"
+#line 153 "src/scan.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1127 "src/scan.c"
+#line 1149 "src/scan.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2253,7 +2275,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 131 "src/scan.l"
+#line 153 "src/scan.l"
 
 /* Epilogue (C code). */
 

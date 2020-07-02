@@ -10,7 +10,8 @@ all: cplxgraph
 
 .PHONY: clean
 
-LIBS=-lm -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lOpenCL -lSDL2 -lSDL2_ttf `pkg-config --libs gtk+-3.0 epoxy gio-2.0`
+#LIBS=-lm -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lOpenCL `pkg-config --libs gtk+-3.0 epoxy gio-2.0`
+LIBS=-lm -lglfw -lX11 -lpthread -lXrandr -lXi -ldl -lOpenCL `pkg-config --libs gtk+-3.0 epoxy gio-2.0`
 
 BDIR=bin
 
@@ -44,7 +45,7 @@ $(ODIR)/%.o: $(IDIR)/%.c $(DEPS)
 
 cplxgraph: bundle parse scan $(OBJ)
 		@mkdir -p $(BDIR)
-		$(CC) $(LIBS) -o $(BDIR)/$@ $(OBJ) $(IDIR)/glad/glad.c $(CFLAGS) $(LIBS)
+		$(CC) $(LIBS) -o $(BDIR)/$@ $(OBJ) $(CFLAGS) $(LIBS)
 
 run: cplxgraph
 		cd bin; ./cplxgraph
