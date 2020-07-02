@@ -579,6 +579,9 @@ static void activate(GtkApplication *app, GlApplication* glMainApp) {
 	gtkBox* stackBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtkLabel* menuLabel[4];
 
+	//GLarea
+	GtkWidget* GLdisplay_box;
+
 	//UI elements
 	gtkFrame* funcFrame;
 	gtkFixed* funcFixed = gtk_fixed_new();
@@ -629,6 +632,11 @@ static void activate(GtkApplication *app, GlApplication* glMainApp) {
 
 	//Connects window's destruction with close_application()
 	g_signal_connect(window, "delete_event", G_CALLBACK(close_application), glMainApp->display);
+
+	GLdisplay_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_set_size_request(GLdisplay_box, 600, 600);
+	gtk_container_add(GTK_CONTAINER(GLdisplay_box), glMainApp->area);
+	gtk_container_add(GTK_CONTAINER(glMainApp->display), GLdisplay_box);
 
 	//HEADER
 	//Add header bar to window with title "Complex Function Grapher"
